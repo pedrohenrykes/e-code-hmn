@@ -1,0 +1,108 @@
+<menu>
+
+    <menuitem label='Dashboard'>
+        <icon>fa:tachometer fa-fw</icon>
+        <action>DashboardCreate</action>
+    </menuitem>
+
+    <menuitem label='Cadastros'>
+        <icon>fa:list-ul fa-fw</icon>
+        <menu>
+            <menuitem label='Agendamentos'>
+                <icon>fa:calendar-check-o</icon>
+                <action>AgendamentoList</action>
+            </menuitem>
+            <menuitem label='Atendimentos'>
+                <icon>fa:map</icon>
+                <action>ComorbidadesList</action>
+            </menuitem>
+            <menuitem label='Pacientes'>
+                <icon>fa:user</icon>
+                <action>PacienteList</action>
+            </menuitem>
+            <menuitem label='Clinicas'>
+                <icon>fa:hospital-o</icon>
+                <action>ClinicaList</action>
+            </menuitem>
+            <menuitem label='Docentes'>
+                <icon>fa:user-md</icon>
+                <action>DocenteList</action>
+            </menuitem>
+            <menuitem label='Instituições'>
+                <icon>fa:university</icon>
+                <action>IesList</action>
+            </menuitem>
+            <menuitem label='Horários'>
+                <icon>fa:university</icon>
+                <action>HorarioList</action>
+            </menuitem>
+            <menuitem label='Profissões'>
+                <icon>fa:university</icon>
+                <action>ProfissoesList</action>
+            </menuitem>
+            <menuitem label='Instituições'>
+                <icon>fa:university</icon>
+                <action>ProcedimentoList</action>
+            </menuitem>
+        </menu>
+    </menuitem>
+
+    <menuitem label='Administração'>
+        <icon>fa:university fa-fw</icon>
+        <menu>
+            <menuitem label='_t{Programs}'>
+                <icon>fa:file-code-o fa-fw</icon>
+                <action>SystemProgramList</action>
+            </menuitem>
+            <menuitem label='_t{Groups}'>
+                <icon>fa:users fa-fw</icon>
+                <action>SystemGroupList</action>
+            </menuitem>
+            <menuitem label='_t{Units}'>
+                <icon>fa:university fa-fw</icon>
+                <action>SystemUnitList</action>
+            </menuitem>
+            <menuitem label='_t{Users}'>
+                <icon>fa:user fa-fw</icon>
+                <action>SystemUserList</action>
+            </menuitem>
+            <menuitem label='Sidemenu'>
+                <icon>fa:bars fa-fw</icon>
+                <action>SideMenuList</action>
+            </menuitem>
+            <menuitem label='Dashboard'>
+                <icon>fa:th fa-fw</icon>
+                <action>DashboardList</action>
+            </menuitem>
+        </menu>
+    </menuitem>
+
+    <menuitem label='Logs'>
+        <icon>fa:desktop fa-fw</icon>
+        <menu>
+            <menuitem label='_t{Access Stats}'>
+                <icon>fa:bar-chart fa-fw</icon>
+                <action>SystemAccessLogStats</action>
+            </menuitem>
+            <menuitem label='_t{Access Log}'>
+                <icon>fa:key fa-fw</icon>
+                <action>SystemAccessLogList</action>
+            </menuitem>
+        </menu>
+    </menuitem>
+
+    <menuitem label='Logout'>
+        <icon>fa:sign-out fa-fw</icon>
+        <menu>
+            <menuitem label='Profile'>
+                <icon>fa:user</icon>
+                <action>SystemProfileView</action>
+            </menuitem>
+            <menuitem label='Logout'>
+                <action>LoginForm#method=onLogout#static=1</action>
+                <icon>fa:sign-out fa-fw</icon>
+            </menuitem>
+        </menu>
+    </menuitem>
+
+</menu>

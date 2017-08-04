@@ -1,0 +1,11 @@
+@keyframes bottomOnTop {
+    0%   {left:0px; top:300px;}
+    100% {left:0px; top:0px;}
+}
+
+body > div > div > div {
+    position: relative;
+    animation-name: bottomOnTop;
+    animation-duration: 0.3s;
+    animation-delay: 0s;
+}
