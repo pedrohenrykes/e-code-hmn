@@ -2,29 +2,29 @@
 
 class GrauInstrucaoDetalhe extends TWindow
 {
-    
+
     protected $form;
-    protected $datagrid; 
+    protected $datagrid;
     protected $pageNavigation;
     protected $formgrid;
     protected $deleteButton;
     protected $transformCallback;
-    
+
     public function __construct()
     {
         parent::__construct();
         parent::setTitle('Grau Instrução');
         parent::setSize(0.600, 0.800);
-        
+
         $redstar = '<font color=red><b>*</b></font>';
-        
+
         $this->form = new BootstrapFormBuilder( "Form_GrauIntrucao" );
         $this->form->setFormTitle( "Formulário de Grau de Instrução " );
         $this->form->class = "tform";
-        
+
         $id                = new THidden( "id" );
         $nomegrauinstrucao = new TEntry ( "nomegrauinstrucao" );
-        
+
         $id->setSize('38%');
         $nomegrauinstrucao->setSize('38%');
 
@@ -32,42 +32,42 @@ class GrauInstrucaoDetalhe extends TWindow
 
         $this->form->addAction( 'Limpar', new TAction( [$this, 'onClear' ] ), 'fa:eraser red');
         $this->form->addAction( 'Salvar', new TAction( [$this, 'onSave'  ] ), 'fa:save' );
-        
+
         $this->datagrid = new BootstrapDatagridWrapper( new TDataGrid() );
         $this->datagrid->datatable = "true";
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
-        
+
         $column_nomegrauinstrucao = new TDataGridColumn( "nomegrauinstrucao", "Nome", "left");
-        
+
         $this->datagrid->addColumn( $column_nomegrauinstrucao );
-        
+
         $order_nomegrauinstrucao = new TAction( [ $this, "onReload" ] );
         $order_nomegrauinstrucao->setParameter( "order", "nomegrauinstrucao" );
         $column_nomegrauinstrucao->setAction( $order_nomegrauinstrucao );
-        
+
         $action_del = new TDataGridAction( [ $this, "onDelete" ] );
         $action_del->setButtonClass( "btn btn-default" );
         $action_del->setLabel( "Deletar" );
         $action_del->setImage( "fa:trash-o red fa-lg" );
         $action_del->setField( "id" );
-        
+
         $this->datagrid->addAction( $action_del );
         $this->datagrid->createModel();
         $this->pageNavigation = new TPageNavigation();
         $this->pageNavigation->setAction( new TAction( [ $this, "onReload" ] ) );
         $this->pageNavigation->setWidth( $this->datagrid->getWidth() );
-        
+
         $container = new TVBox();
         $container->style = "width: 90%";
-        //$container->add( new TXMLBreadCrumb( "menu.xml", __CLASS__ ) );
+        // $container->add( new TXMLBreadCrumb( "menu.xml", __CLASS__ ) );
         $container->add( $this->form );
         $container->add( TPanelGroup::pack( NULL, $this->datagrid ) );
         $container->add( $this->pageNavigation );
-        
+
         parent::add( $container );
     }
-    
+
     public function onSave()
     {
         try {
@@ -79,7 +79,7 @@ class GrauInstrucaoDetalhe extends TWindow
             $object = $this->form->getData( 'GrauInstrucaoRecord' );
             var_dump($object);
             exit;
-            
+
             $object->store();
 
             TTransaction::close();
@@ -94,7 +94,7 @@ class GrauInstrucaoDetalhe extends TWindow
             new TMessage( 'error', 'Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>' . $ex->getMessage() );
         }
     }
-    
+
     public function onSearch()
     {
         $data = $this->form->getData();
@@ -104,18 +104,18 @@ class GrauInstrucaoDetalhe extends TWindow
             {
                 TTransaction::open( "database" );
                 $repository = new TRepository( "GrauInstrucaoRecord" );
-                
+
                 if ( empty( $param[ "order" ] ) )
                 {
                     $param[ "order" ] = "id";
                     $param[ "direction" ] = "asc";
                 }
-                
+
                 $limit = 10;
                 $criteria = new TCriteria();
                 $criteria->setProperties( $param );
                 $criteria->setProperty( "limit", $limit );
-                
+
                 if( $data->opcao == "nomegrauinstrucao" )
                 {
                     $criteria->add( new TFilter( $data->opcao, "LIKE", "%" . $data->dados . "%" ) );
@@ -124,10 +124,10 @@ class GrauInstrucaoDetalhe extends TWindow
                 {
                     new TMessage( "error", "O valor informado não é valido para um" . strtoupper( $data->opcao ) . "." );
                 }
-                
+
                 $objects = $repository->load( $criteria, FALSE );
                 $this->datagrid->clear();
-                
+
                 if ( $objects )
                 {
                     foreach ( $objects as $object )
@@ -135,7 +135,7 @@ class GrauInstrucaoDetalhe extends TWindow
                         $this->datagrid->addItem( $object );
                     }
                 }
-                
+
                 $criteria->resetProperties();
                 $count = $repository->count( $criteria );
                 $this->pageNavigation->setCount( $count ); // count of records
@@ -159,12 +159,12 @@ class GrauInstrucaoDetalhe extends TWindow
             new TMessage( "error", $ex->getMessage() );
         }
     }
-    
+
     public function onClear($param)
     {
         $this->form->clear();
     }
-    
+
     public function show()
     {
         $this->onReload();
@@ -178,7 +178,7 @@ class GrauInstrucaoDetalhe extends TWindow
 
             $repository = new TRepository( 'GrauInstrucaoRecord' );
 
-            if ( empty( $param[ 'order' ] ) ) 
+            if ( empty( $param[ 'order' ] ) )
             {
                 $param[ 'order' ] = 'id';
                 $param[ 'direction' ] = 'asc';
@@ -242,11 +242,11 @@ class GrauInstrucaoDetalhe extends TWindow
             new TMessage( 'error', $ex->getMessage() );
         }
     }
-    
+
     public function onDelete($param)
     {
         try {
-            
+
             TTransaction::open( 'database' );
                 $object = new GrauInstrucaoRecord ( $param[ 'key' ] );
                 $object->delete();

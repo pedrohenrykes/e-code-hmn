@@ -14,6 +14,7 @@ class SideMenuModel extends TRecord
         parent::addAttribute( "menu_type" );
         parent::addAttribute( "name" );
         parent::addAttribute( "icon" );
+        parent::addAttribute( "sequence" );
         parent::addAttribute( "action_class" );
         parent::addAttribute( "menu_id" );
         parent::addAttribute( "active" );

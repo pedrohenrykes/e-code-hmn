@@ -104,7 +104,7 @@ class SystemUserForm extends TPage
         $this->form->addContent( [$frame_programs] );
         $container = new TVBox;
         $container->style = 'width: 90%';
-        $container->add(new TXMLBreadCrumb('menu.xml', 'SystemUserList'));
+        // $container->add(new TXMLBreadCrumb('menu.xml', 'SystemUserList'));
         $container->add($this->form);
         // add the container to the page
         parent::add($container);

@@ -2,9 +2,9 @@
 
 use Adianti\Database\TRecord;
 
-class FontAwesomeModel extends TRecord
+class FontAwesomeIconsModel extends TRecord
 {
-    const TABLENAME  = "fontawesome";
+    const TABLENAME  = "fontawesomeicons";
     const PRIMARYKEY = "id";
     const IDPOLICY   = "serial";
 

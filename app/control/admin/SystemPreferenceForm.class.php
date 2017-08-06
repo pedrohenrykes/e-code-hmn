@@ -8,7 +8,7 @@
 class SystemPreferenceForm extends TStandardForm
 {
     protected $form; // formulário
-    
+
     /**
      * método construtor
      * Cria a página e o formulário de cadastro
@@ -16,14 +16,14 @@ class SystemPreferenceForm extends TStandardForm
     function __construct()
     {
         parent::__construct();
-        
+
         $this->setDatabase('database');
         $this->setActiveRecord('SystemPreference');
-        
+
         // cria o formulário
         $this->form = new BootstrapFormBuilder('form_preferences');
         $this->form->setFormTitle(_t('Preferences'));
-        
+
         // cria os campos do formulário
         $mail_domain = new TEntry('mail_domain');
         $smtp_auth   = new TCombo('smtp_auth');
@@ -33,12 +33,12 @@ class SystemPreferenceForm extends TStandardForm
         $smtp_pass   = new TPassword('smtp_pass');
         $mail_from   = new TEntry('mail_from');
         $mail_support= new TEntry('mail_support');
-        
+
         $yesno = array();
         $yesno['1'] = _t('Yes');
         $yesno['0'] = _t('No');
         $smtp_auth->addItems($yesno);
-        
+
         $this->form->addFields( [new TLabel(_t('Mail from'))], [$mail_from] );
         $this->form->addFields( [new TLabel(_t('SMTP Auth'))], [$smtp_auth] );
         $this->form->addFields( [new TLabel(_t('SMTP Host'))], [$smtp_host] );
@@ -46,7 +46,7 @@ class SystemPreferenceForm extends TStandardForm
         $this->form->addFields( [new TLabel(_t('SMTP User'))], [$smtp_user] );
         $this->form->addFields( [new TLabel(_t('SMTP Pass'))], [$smtp_pass] );
         $this->form->addFields( [new TLabel(_t('Support mail'))], [$mail_support] );
-        
+
         $mail_from->setSize('70%');
         $smtp_auth->setSize('70%');
         $smtp_host->setSize('70%');
@@ -54,16 +54,16 @@ class SystemPreferenceForm extends TStandardForm
         $smtp_user->setSize('70%');
         $smtp_pass->setSize('70%');
         $mail_support->setSize('70%');
-        
+
         $this->form->addAction(_t('Save'), new TAction(array($this, 'onSave')), 'fa:floppy-o');
-        
+
         $container = new TVBox;
         $container->{'style'} = 'width: 90%; max-width: 1200px';
-        $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
+        // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $container->add($this->form);
         parent::add($container);
     }
-    
+
     /**
      * Carrega o formulário de preferências
      */
@@ -73,13 +73,13 @@ class SystemPreferenceForm extends TStandardForm
         {
             // open a transaction with database
             TTransaction::open($this->database);
-            
+
             $preferences = SystemPreference::getAllPreferences();
             if ($preferences)
             {
                 $this->form->setData((object) $preferences);
-            } 
-            
+            }
+
             // close the transaction
             TTransaction::close();
         }
@@ -91,7 +91,7 @@ class SystemPreferenceForm extends TStandardForm
             TTransaction::rollback();
         }
     }
-    
+
     /**
      * method onSave()
      * Executed whenever the user clicks at the save button
@@ -102,11 +102,11 @@ class SystemPreferenceForm extends TStandardForm
         {
             // open a transaction with database
             TTransaction::open($this->database);
-            
+
             // get the form data
             $data = $this->form->getData();
             $data_array = (array) $data;
-            
+
             foreach ($data_array as $property => $value)
             {
                 $object = new SystemPreference;
@@ -114,13 +114,13 @@ class SystemPreferenceForm extends TStandardForm
                 $object->{'value'} = $value;
                 $object->store();
             }
-            
+
             // fill the form with the active record data
             $this->form->setData($data);
-            
+
             // close the transaction
             TTransaction::close();
-            
+
             // shows the success message
             new TMessage('info', AdiantiCoreTranslator::translate('Record saved'));
             // reload the listing
@@ -129,13 +129,13 @@ class SystemPreferenceForm extends TStandardForm
         {
             // get the form data
             $object = $this->form->getData($this->activeRecord);
-            
+
             // fill the form with the active record data
             $this->form->setData($object);
-            
+
             // shows the exception error message
             new TMessage('error', $e->getMessage());
-            
+
             // undo all pending operations
             TTransaction::rollback();
         }

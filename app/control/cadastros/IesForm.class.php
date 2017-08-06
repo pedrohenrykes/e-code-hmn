@@ -61,7 +61,7 @@ class IesForm extends TWindow
 
         $container = new TVBox();
         $container->style = "width: 100%";
-        $container->add( new TXMLBreadCrumb( "menu.xml", "IesList" ) );
+        // $container->add( new TXMLBreadCrumb( "menu.xml", "IesList" ) );
         $container->add( $this->form );
 
         parent::add( $container );

@@ -37,7 +37,7 @@ class EspecialidadeForm extends TPage
 
         $container = new TVBox();
         $container->style = "width: 90%";
-        $container->add( new TXMLBreadCrumb( "menu.xml", "EspecialidadeList" ) );
+        // $container->add( new TXMLBreadCrumb( "menu.xml", "EspecialidadeList" ) );
         $container->add( $this->form );
 
         parent::add( $container );

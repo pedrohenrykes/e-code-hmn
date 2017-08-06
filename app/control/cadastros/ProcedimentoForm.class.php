@@ -14,7 +14,7 @@ class ProcedimentoForm extends TPage
 
         $id  = new THidden( "id" );
         $nomeprocedimento = new TEntry( "nomeprocedimento" );
-        
+
         $nomeprocedimento->setProperty( "title", "O campo é obrigatório" );
 
         $nomeprocedimento->setSize( "30%" );
@@ -27,7 +27,7 @@ class ProcedimentoForm extends TPage
 
         $container = new TVBox();
         $container->style = "width: 90%";
-        //$container->add( new TXMLBreadCrumb( "menu.xml", "ProcedimentoList" ) );
+        // $container->add( new TXMLBreadCrumb( "menu.xml", "ProcedimentoList" ) );
         $container->add( $this->form );
 
         parent::add( $container );

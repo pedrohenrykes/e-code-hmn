@@ -24,12 +24,14 @@ class SideMenuList extends TPage
 
         $column_name = new TDataGridColumn( "name", "Nome", "left", 200 );
         $column_type = new TDataGridColumn( "menu_type", "Tipo", "left" );
-        $column_icon = new TDataGridColumn( "icon", "Icone", "left" );
+        $column_icon = new TDataGridColumn( "icon", "Icone", "center" );
+        $column_sequence = new TDataGridColumn( "sequence", "Sequência", "center" );
         $column_active = new TDataGridColumn( "active", "Situação", "center" );
 
         $this->datagrid->addColumn( $column_name );
         $this->datagrid->addColumn( $column_type );
         $this->datagrid->addColumn( $column_icon );
+        $this->datagrid->addColumn( $column_sequence );
         $this->datagrid->addColumn( $column_active );
 
         $column_active->setTransformer( function($value, $object, $row)
@@ -54,7 +56,7 @@ class SideMenuList extends TPage
 
                 TTransaction::open("database");
 
-                $repo = new TRepository( "FontAwesomeModel" );
+                $repo = new TRepository( "FontAwesomeIconsModel" );
 
                 $crit = new TCriteria();
                 $crit->setProperty( "order", "id" );
@@ -94,6 +96,13 @@ class SideMenuList extends TPage
         $action_del->setField( "id" );
         $this->datagrid->addAction( $action_del );
 
+        $action_onoff = new TDataGridAction( [ $this, "onTurnOnOff" ] );
+        $action_onoff->setButtonClass( "btn btn-default" );
+        $action_onoff->setLabel( "Ativar/Desativar" );
+        $action_onoff->setImage( "fa:power-off fa-lg orange" );
+        $action_onoff->setField( "id" );
+        $this->datagrid->addAction( $action_onoff );
+
         $this->datagrid->createModel();
 
         $this->pageNavigation = new TPageNavigation();
@@ -102,7 +111,7 @@ class SideMenuList extends TPage
 
         $container = new TVBox();
         $container->style = "width: 90%";
-        $container->add( new TXMLBreadCrumb( "menu.xml", __CLASS__ ) );
+        // $container->add( new TXMLBreadCrumb( "menu.xml", __CLASS__ ) );
         $container->add( $this->form );
         $container->add( TPanelGroup::pack( NULL, $this->datagrid ) );
         $container->add( $this->pageNavigation );
@@ -119,7 +128,7 @@ class SideMenuList extends TPage
             $repository = new TRepository( "SideMenuModel" );
 
             if ( empty( $param[ "order" ] ) ) {
-                $param[ "order" ] = "id";
+                $param[ "order" ] = "sequence";
                 $param[ "direction" ] = "asc";
             }
 
@@ -193,6 +202,32 @@ class SideMenuList extends TPage
             TTransaction::rollback();
 
             new TMessage("error", $ex->getMessage());
+        }
+    }
+
+    public function onTurnOnOff( $param )
+    {
+        try
+        {
+            TTransaction::open( "database" );
+
+            $menu = SideMenuModel::find( $param[ "id" ] );
+
+            if ( $menu instanceof SideMenuModel ) {
+                $menu->active = $menu->active == "Y" ? "N" : "Y";
+                $menu->store();
+            }
+
+            TTransaction::close();
+
+            $this->onReload( $param );
+
+        } catch (Exception $e) {
+
+            new TMessage( "error", $e->getMessage() );
+
+            TTransaction::rollback();
+
         }
     }
 

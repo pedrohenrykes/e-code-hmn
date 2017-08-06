@@ -17,8 +17,8 @@ class HorarioForm extends TPage
         $horainicio->setProperty('type', 'time');
         $horafim = new TEntry( "horafim" );
         $horafim->setProperty('type', 'time');
-        
-        
+
+
         $horainicio->setProperty( "title", "O campo é obrigatório" );
         $horafim->setProperty( "title", "O campo é obrigatório" );
 
@@ -28,13 +28,13 @@ class HorarioForm extends TPage
         $this->form->addFields( [ new TLabel( "Horario de Inicio:", "#F00" ) ], [ $horainicio ] );
         $this->form->addFields( [ new TLabel( "Horario Fim:", "#F00" ) ], [ $horafim ] );
         $this->form->addFields( [ $id ] );
-    
+
         $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );
         $this->form->addAction( "Voltar para a listagem", new TAction( [ "HorarioList", "onReload" ] ), "fa:table blue" );
 
         $container = new TVBox();
         $container->style = "width: 90%";
-        //$container->add( new TXMLBreadCrumb( "menu.xml", "ProcedimentoList" ) );
+        // $container->add( new TXMLBreadCrumb( "menu.xml", "ProcedimentoList" ) );
         $container->add( $this->form );
 
         parent::add( $container );
@@ -45,9 +45,9 @@ class HorarioForm extends TPage
         try {
 
             $this->form->validate();
-            
+
             TTransaction::open( "database" );
-            
+
             $object = $this->form->getData( "HorarioRecord" );
 
             $horainicio = strtotime($object->horainicio);

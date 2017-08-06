@@ -81,7 +81,7 @@ class SystemGroupForm extends TPage
 
         $container = new TVBox;
         $container->style = 'width:90%';
-        $container->add(new TXMLBreadCrumb('menu.xml', 'SystemGroupList'));
+        // $container->add(new TXMLBreadCrumb('menu.xml', 'SystemGroupList'));
         $container->add($this->form);
 
         // add the form to the page

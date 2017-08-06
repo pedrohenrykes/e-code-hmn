@@ -1,5 +1,5 @@
 <?php
-use Adianti\Control\TWindow;
+
 class SideMenuForm extends TWindow
 {
     private $form;
@@ -7,7 +7,7 @@ class SideMenuForm extends TWindow
     public function __construct()
     {
         parent::__construct();
-        parent::setTitle( "Cadastro das Opções do Sidemenu" );
+        parent::setTitle( "Cadastro de Itens do Sidemenu" );
         parent::setSize( 0.600, 0.800 );
 
         $redstar = '<font color="red"><b>*</b></font>';
@@ -16,30 +16,36 @@ class SideMenuForm extends TWindow
         $this->form->setFormTitle( "($redstar) campos obrigatórios" );
         $this->form->class = "tform";
 
-        $id        = new THidden( "id" );
-        $menu_type = new TCombo( "menu_type" );
-        $name      = new TEntry( "name" );
-        $action_class    = new TEntry( "action_class" );
+        $id           = new THidden( "id" );
+        $menu_type    = new TCombo( "menu_type" );
+        $name         = new TEntry( "name" );
+        $action_class = new TMultiSearch( "action_class" );
+        $sequence     = new TEntry( "sequence" );
 
         $criteria = new TCriteria();
         $criteria->add( new TFilter( "menu_type", "=", "menu" ) );
         $menu_id = new TDBCombo( "menu_id", "database", "SideMenuModel", "id", "name", "name", $criteria );
 
-        $icon = new TDBCombo( "icon", "database", "FontAwesomeModel", "class", "unicode", "id" );
+        $icon = new TDBCombo( "icon", "database", "FontAwesomeIconsModel", "class", "unicode", "id" );
         $icon->style = "font-family:'FontAwesome',Helvetica;font-size:20px";
         $icon->setValue( "fa-500px" );
 
-        $changeAction = new TAction( array( $this, 'onChangeAction' ) );
-        $menu_type->setChangeAction( $changeAction );
+        $menu_type->setChangeAction( new TAction( array( $this, 'onChangeAction' ) ) );
         $menu_type->addItems( [ "menu" => "Menu", "submenu" => "Sub-Menu" ] );
         $menu_type->setValue( "menu" );
 
         $menu_id->setDefaultOption( "..::SELECIONE::.." );
         $menu_type->setDefaultOption( "..::SELECIONE::.." );
+        $sequence->setProperty("placeholder", "Apenas números naturais ou decimais");
+
+        $action_class->addItems( $this->getPageClasses() );
+        $action_class->setMaxSize(1);
+        $action_class->setMinLength(0);
 
         $menu_type->setSize( "38%" );
         $name->setSize( "38%" );
         $icon->setSize( "38%" );
+        $sequence->setSize( "38%" );
         $action_class->setSize( "38%" );
         $menu_id->setSize( "38%" );
 
@@ -52,6 +58,7 @@ class SideMenuForm extends TWindow
         $this->form->addFields( [ new TLabel( "Tipo: $redstar") ], [ $menu_type ] );
         $this->form->addFields( [ new TLabel( "Nome: $redstar") ], [ $name ] );
         $this->form->addFields( [ new TLabel( "Icone:") ], [ $icon ] );
+        $this->form->addFields( [ new TLabel( "Sequência:") ], [ $sequence ] );
         $this->form->addFields( [ new TLabel( "Classe:") ], [ $action_class ] );
         $this->form->addFields( [ new TLabel( "Menu:") ], [ $menu_id ] );
         $this->form->addFields( [ $id ] );
@@ -60,7 +67,7 @@ class SideMenuForm extends TWindow
 
         $container = new TVBox();
         $container->style = "width: 100%";
-        $container->add( new TXMLBreadCrumb( "menu.xml", "SideMenuList" ) );
+        // $container->add( new TXMLBreadCrumb( "menu.xml", "SideMenuList" ) );
         $container->add( $this->form );
 
         parent::add( $container );
@@ -76,10 +83,19 @@ class SideMenuForm extends TWindow
 
             TTransaction::open( "database" );
 
-            $object->active = "N";
+            $object->active = "Y";
+            $object->sequence = str_replace( ",", ".", $object->sequence );
+            $object->action_class = reset( $object->action_class );
+
+            if ( empty( $object->menu_id ) ) {
+                $object->menu_id = 0;
+            }
+
             $object->store();
 
             TTransaction::close();
+
+            TWindow::closeWindow();
 
             $action = new TAction( [ "SideMenuList", "onReload" ] );
 
@@ -107,6 +123,8 @@ class SideMenuForm extends TWindow
 
                 $object = new SideMenuModel( $param[ "key" ] );
 
+                $object->action_class = [ $object->action_class, $object->action_class ];
+
                 TTransaction::close();
 
                 $this->form->setData( $object );
@@ -130,25 +148,52 @@ class SideMenuForm extends TWindow
     {
         $object = new StdClass;
         $object->menu_id = "";
-        $object->action_class = "";
+        $object->action_class = [ "", "" ];
 
         switch ( $param[ "key" ] ) {
 
             case "menu":
 
-                TEntry::disableField( "form_sidemenu", "action_class" );
-                TDBCombo::disableField( "form_sidemenu", "menu_id" );
-                TForm::sendData( "form_sidemenu", $object );
+                TQuickForm::hideField("form_sidemenu", "action_class");
+                TQuickForm::hideField( "form_sidemenu", "menu_id" );
+                TQuickForm::sendData( "form_sidemenu", $object );
 
                 break;
 
             case "submenu":
 
-                TEntry::enableField( "form_sidemenu", "action_class" );
-                TDBCombo::enableField( "form_sidemenu", "menu_id" );
+                TQuickForm::showField( "form_sidemenu", "action_class" );
+                TQuickForm::showField( "form_sidemenu", "menu_id" );
 
                 break;
 
         }
+    }
+
+    private function getPageClasses()
+    {
+        $entries = [];
+
+        foreach ( new RecursiveIteratorIterator( new RecursiveDirectoryIterator( "app/control" ),
+            RecursiveIteratorIterator::CHILD_FIRST) as $arquivo )
+        {
+
+            if ( substr( $arquivo, -4 ) == ".php" ) {
+
+                $name = $arquivo->getFileName();
+
+                $pieces = explode( '.', $name );
+
+                $class = (string) $pieces[ 0 ];
+
+                $entries[ $class ] = $class;
+
+            }
+
+        }
+
+        ksort( $entries );
+
+        return $entries;
     }
 }

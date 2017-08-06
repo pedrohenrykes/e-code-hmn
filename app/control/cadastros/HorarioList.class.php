@@ -19,7 +19,7 @@ class HorarioList extends TPage
         $dados = new TEntry("dados");
 
         $opcao->addItems( [ "horainicio" => "Horário de Inicio","horafim" => "Horário Fim" ] );
-       
+
 
         $this->form->addFields( [ new TLabel( "Opção de filtro:" )] ,  [$opcao ] );
         $this->form->addFields(  [new TLabel( "Dados da busca:" )] , [ $dados ] );
@@ -43,12 +43,12 @@ class HorarioList extends TPage
 
         $this->datagrid->addColumn( $column_horainicio );
         $this->datagrid->addColumn( $column_horafim );
-        
+
         $order_horainicio = new TAction( [ $this, "onReload" ] );
         $order_horainicio->setParameter( "order", "horainicio" );
-        
+
         $column_horainicio->setAction( $order_horainicio );
-        
+
         $order_horafim = new TAction( [ $this, "onReload" ] );
         $order_horafim->setParameter( "order", "horafim" );
         $column_horafim->setAction( $order_horafim );
@@ -76,7 +76,7 @@ class HorarioList extends TPage
 
         $container = new TVBox();
         $container->style = "width: 90%";
-        //$container->add( new TXMLBreadCrumb( "menu.xml", __CLASS__ ) );
+        // $container->add( new TXMLBreadCrumb( "menu.xml", __CLASS__ ) );
         $container->add( $this->form );
         $container->add( TPanelGroup::pack( NULL, $this->datagrid ) );
         $container->add( $this->pageNavigation );

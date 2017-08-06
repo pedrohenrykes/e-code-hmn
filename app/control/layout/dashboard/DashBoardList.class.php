@@ -1,6 +1,6 @@
 <?php
 
-class DashboardList extends TPage
+class DashBoardList extends TPage
 {
     private $form;
     private $datagrid;
@@ -15,19 +15,19 @@ class DashboardList extends TPage
         $this->form->setFormTitle( "Listegem de Itens do Dashboard" );
         $this->form->class = "tform";
 
-        $this->form->addQuickAction( "Novo", new TAction( [ "DashboardForm", "onEdit" ] ), "bs:plus-sign green" );
-        $this->form->addQuickAction( "Ir para dashboard", new TAction( [ "DashboardCreate", "loadData" ] ), "fa:table blue" );
+        $this->form->addQuickAction( "Novo", new TAction( [ "DashBoardForm", "onEdit" ] ), "bs:plus-sign green" );
+        $this->form->addQuickAction( "Ir para dashboard", new TAction( [ "DashBoardCreate", "onReload" ] ), "fa:table blue" );
 
         $this->datagrid = new BootstrapDatagridWrapper( new TDataGrid() );
         $this->datagrid->datatable = "true";
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
 
-        $column_title = new TDataGridColumn( "title", "Titulo", "center" );
-        $column_dataview = new TDataGridColumn( "dataview", "View", "center" );
+        $column_title = new TDataGridColumn( "title", "Titulo", "left", 200);
+        $column_dataview = new TDataGridColumn( "dataview", "View", "left", 150);
         $column_icon = new TDataGridColumn( "icon", "Icone", "center" );
-        $column_color = new TDataGridColumn( "color", "Cor", "center" );
-        $column_page = new TDataGridColumn( "page", "Página", "center" );
+        $column_color = new TDataGridColumn( "color", "Cor", "left" );
+        $column_page = new TDataGridColumn( "page", "Página", "left" );
 
         $this->datagrid->addColumn( $column_title );
         $this->datagrid->addColumn( $column_dataview );
@@ -44,7 +44,7 @@ class DashboardList extends TPage
 
                 TTransaction::open("database");
 
-                $repo = new TRepository( "FontAwesomeModel" );
+                $repo = new TRepository( "FontAwesomeIconsModel" );
 
                 $crit = new TCriteria();
                 $crit->setProperty( "order", "id" );
@@ -70,7 +70,7 @@ class DashboardList extends TPage
             return $div;
         });
 
-        $action_edit = new TDataGridAction( [ "DashboardForm", "onEdit" ] );
+        $action_edit = new TDataGridAction( [ "DashBoardForm", "onEdit" ] );
         $action_edit->setButtonClass( "btn btn-default" );
         $action_edit->setLabel( "Editar" );
         $action_edit->setImage( "fa:pencil-square-o blue fa-lg" );
@@ -92,7 +92,7 @@ class DashboardList extends TPage
 
         $container = new TVBox();
         $container->style = "width: 90%";
-        $container->add( new TXMLBreadCrumb( "menu.xml", __CLASS__ ) );
+        // $container->add( new TXMLBreadCrumb( "menu.xml", __CLASS__ ) );
         $container->add( $this->form );
         $container->add( TPanelGroup::pack( NULL, $this->datagrid ) );
         $container->add( $this->pageNavigation );
@@ -106,7 +106,7 @@ class DashboardList extends TPage
 
             TTransaction::open( "database" );
 
-            $repository = new TRepository( "DashboardModel" );
+            $repository = new TRepository( "DashBoardModel" );
 
             if ( empty( $param[ "order" ] ) ) {
                 $param[ "order" ] = "id";
@@ -168,7 +168,7 @@ class DashboardList extends TPage
 
             TTransaction::open( "database" );
 
-            $object = new DashboardModel( $param[ "key" ] );
+            $object = new DashBoardModel( $param[ "key" ] );
 
             $object->delete();
 

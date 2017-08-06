@@ -47,7 +47,7 @@ class CidForm extends TPage
         //Criacao do container que recebe o formulario
         $container = new TVBox();
         $container->style = "width: 90%";
-        $container->add( new TXMLBreadCrumb( "menu.xml", "CidList" ) );
+        // $container->add( new TXMLBreadCrumb( "menu.xml", "CidList" ) );
         $container->add( $this->form );
         parent::add( $container );
     }

@@ -47,7 +47,7 @@ class PacienteList extends TPage{
         $this->datagrid->addColumn( $column_numerosus);
         $this->datagrid->addColumn( $column_cpf );
         $this->datagrid->addColumn( $column_numeroidentidade);
-        $this->datagrid->addColumn ($column_telcelular);    
+        $this->datagrid->addColumn ($column_telcelular);
 
         $order_nomepaciente = new TAction( [ $this, "onReload" ] );
         $order_nomepaciente->setParameter( "order", "nomepaciente" );
@@ -75,7 +75,7 @@ class PacienteList extends TPage{
 
         $container = new TVBox();
         $container->style = "width: 90%";
-        //$container->add( new TXMLBreadCrumb( "menu.xml", __CLASS__ ) );
+        // $container->add( new TXMLBreadCrumb( "menu.xml", __CLASS__ ) );
         $container->add( $this->form );
         $container->add( TPanelGroup::pack( NULL, $this->datagrid ) );
         $container->add( $this->pageNavigation );

@@ -40,7 +40,7 @@ class ProcedimentoList extends TPage
         $column_nome = new TDataGridColumn( "nomeprocedimento", "Procedimento", "center" );
 
         $this->datagrid->addColumn( $column_nome );
-        
+
         $order_nome = new TAction( [ $this, "onReload" ] );
         $order_nome->setParameter( "order", "nomeprocedimento" );
         $column_nome->setAction( $order_nome );
@@ -67,7 +67,7 @@ class ProcedimentoList extends TPage
 
         $container = new TVBox();
         $container->style = "width: 90%";
-        //$container->add( new TXMLBreadCrumb( "menu.xml", __CLASS__ ) );
+        // $container->add( new TXMLBreadCrumb( "menu.xml", __CLASS__ ) );
         $container->add( $this->form );
         $container->add( TPanelGroup::pack( NULL, $this->datagrid ) );
         $container->add( $this->pageNavigation );

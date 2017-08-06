@@ -42,7 +42,7 @@ class ClinicaForm extends TWindow
 
         $container = new TVBox();
         $container->style = "width: 100%";
-        $container->add( new TXMLBreadCrumb( "menu.xml", "ClinicaList" ) );
+        // $container->add( new TXMLBreadCrumb( "menu.xml", "ClinicaList" ) );
         $container->add( $this->form );
 
         parent::add( $container );

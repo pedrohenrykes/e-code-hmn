@@ -2,7 +2,7 @@
 
 use Adianti\Database\TRecord;
 
-class DashboardModel extends TRecord
+class DashBoardModel extends TRecord
 {
     const TABLENAME  = "dashboard";
     const PRIMARYKEY = "id";

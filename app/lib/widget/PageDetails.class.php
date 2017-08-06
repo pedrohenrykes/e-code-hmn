@@ -9,10 +9,10 @@ class PageDetails
 
         $html = str_replace('{smallLogo}', $smallimage, $html);
         $html = str_replace('{largeLogo}', $largeimage, $html);
-        $html = str_replace('{systemname}', "CISUnP", $html);
+        $html = str_replace('{systemname}', "Kiron Saúde", $html);
         $html = str_replace('{systemversion}', "Beta", $html);
         $html = str_replace('{systemowner}', "e-Code", $html);
-        $html = str_replace('{pagetitle}', "CISUnP", $html);
+        $html = str_replace('{pagetitle}', "Kiron Saúde", $html);
         $html = str_replace('{pagefavicon}', "app/images/default/favicon.png", $html);
         $html = str_replace('{homepage}', "#", $html);
 

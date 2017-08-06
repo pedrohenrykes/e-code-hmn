@@ -45,7 +45,7 @@ class PacienteForm extends TPage
 
             $cadastros = $repository->load($criteria);
 
-            foreach ($cadastros as $object) 
+            foreach ($cadastros as $object)
             {
                 $items[$object->id] = $object->nomeprofissao;
             }
@@ -60,7 +60,7 @@ class PacienteForm extends TPage
 
             $cadastros = $repository->load($criteria);
 
-            foreach ($cadastros as $object) 
+            foreach ($cadastros as $object)
             {
                 $items[$object->id] = $object->nomegrauinstrucao;
             }
@@ -75,7 +75,7 @@ class PacienteForm extends TPage
 
             $cadastros = $repository->load($criteria);
 
-            foreach ($cadastros as $object) 
+            foreach ($cadastros as $object)
             {
                 $items[$object->sigla] = $object->sigla;
             }
@@ -138,7 +138,7 @@ class PacienteForm extends TPage
 
         $container = new TVBox();
         $container->style = "width: 90%";
-        //$container->add( new TXMLBreadCrumb( "menu.xml", "PacienteList" ) );
+        // $container->add( new TXMLBreadCrumb( "menu.xml", "PacienteList" ) );
         $container->add( $this->form );
         parent::add( $container );
 }
@@ -148,26 +148,26 @@ class PacienteForm extends TPage
         try
         {
             $this->form->validate();
-            
+
             TTransaction::open( 'database' );
-            
+
             $object = $this->form->getData( 'PacienteRecord' );
             $object->store();
 
             TTransaction::close();
-            
+
             $action = new TAction( [ 'PacienteList', 'onReload' ] );
-            
+
             new TMessage( 'info', 'Registro salvo com sucesso!', $action );
-            
+
         } catch ( Exception $ex )
         {
             TTransaction::rollback();
-            
+
             new TMessage( 'error', 'Ocorreu um erro ao tentar salvar o registro!<br><br>' . $ex->getMessage() );
         }
     }
-    
+
     public function onEdit( $param )
     {
         try
@@ -175,22 +175,22 @@ class PacienteForm extends TPage
             if( isset( $param[ 'key' ] ) )
             {
                 TTransaction::open( 'database' );
-                
+
                 $object = new PacienteRecord( $param[ 'key' ] );
                 $object->nascimento = TDate::date2br( $object->nascimento );
-				
+
 				if ( ! isset($object->cidade) ){
 					$object->cidade = "NATAL";
 				}
-                
+
                 $this->form->setData( $object );
-                
+
                 TTransaction::close();
             }
         }catch ( Exception $ex )
         {
             TTransaction::rollback();
-            
+
             new TMessage( 'error', 'Ocorreu um erro ao tentar carregar o registro para edição!<br><br>' . $ex->getMessage() );
         }
     }
