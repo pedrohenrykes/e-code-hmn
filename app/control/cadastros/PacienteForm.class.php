@@ -54,7 +54,7 @@ class PacienteForm extends TPage
 
         $items = array();
         TTransaction::open('database');
-            $repository = new TRepository('GrauinstrucaoRecord');
+            $repository = new TRepository('GrauInstrucaoRecord');
             $criteria = new TCriteria;
             $criteria->setProperty('order', 'nomegrauinstrucao');
 
