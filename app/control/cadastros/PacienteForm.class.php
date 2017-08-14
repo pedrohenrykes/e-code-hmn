@@ -71,6 +71,9 @@ class PacienteForm extends TPage
         $grauinstrucao_id->setDefaultOption( "..::SELECIONE::.." );
         $profissao_id->setDefaultOption( "..::SELECIONE::.." );
 
+        $cidade->setValue( "NATAL" );
+        $uf->setValue( "RN" );
+
         $datanascimento->setMask ( "dd/mm/yyyy" );
         $datanascimento->setDatabaseMask("yyyy-mm-dd");
         $numerosus->setMask( "9!" );
@@ -97,47 +100,31 @@ class PacienteForm extends TPage
         $label01 = new RequiredTextFormat( [ "Nome do Paciente", "#F00", "bold" ] );
         $label02 = new RequiredTextFormat( [ "Sexo", "#F00", "bold" ] );
         $label03 = new RequiredTextFormat( [ "Data de Nascimento", "#F00", "bold" ] );
-        $label04 = new RequiredTextFormat( [ "Nome do Pai", "#F00", "bold" ] );
-        $label05 = new RequiredTextFormat( [ "Nome da Mãe", "#F00", "bold" ] );
-        $label06 = new RequiredTextFormat( [ "RG", "#F00", "bold" ] );
-        $label07 = new RequiredTextFormat( [ "UF Expedidor", "#F00", "bold" ] );
-        $label08 = new RequiredTextFormat( [ "Orgão Expedidor", "#F00", "bold" ] );
-        $label09 = new RequiredTextFormat( [ "Cartão SUS", "#F00", "bold" ] );
-        $label10 = new RequiredTextFormat( [ "Endereço", "#F00", "bold" ] );
-        $label11 = new RequiredTextFormat( [ "Bairro", "#F00", "bold" ] );
-        $label12 = new RequiredTextFormat( [ "Cidade", "#F00", "bold" ] );
-        $label13 = new RequiredTextFormat( [ "UF", "#F00", "bold" ] );
+        $label04 = new RequiredTextFormat( [ "Nome da Mãe", "#F00", "bold" ] );
+        $label05 = new RequiredTextFormat( [ "Cartão SUS", "#F00", "bold" ] );
 
         $nomepaciente->addValidation( $label01->getText(), new TRequiredValidator );
         $sexo->addValidation( $label02->getText(), new TRequiredValidator );
         $datanascimento->addValidation( $label03->getText(), new TRequiredValidator );
-        $nomepai->addValidation( $label04->getText(), new TRequiredValidator );
-        $nomemae->addValidation( $label05->getText(), new TRequiredValidator );
-        $numerorg->addValidation( $label06->getText(), new TRequiredValidator );
-        $ufrg->addValidation( $label07->getText(), new TRequiredValidator );
-        $orgaorg->addValidation( $label08->getText(), new TRequiredValidator );
-        $numerosus->addValidation( $label09->getText(), new TRequiredValidator );
-        $endereco->addValidation( $label10->getText(), new TRequiredValidator );
-        $bairro->addValidation( $label11->getText(), new TRequiredValidator );
-        $cidade->addValidation( $label12->getText(), new TRequiredValidator );
-        $uf->addValidation( $label13->getText(), new TRequiredValidator );
+        $nomemae->addValidation( $label04->getText(), new TRequiredValidator );
+        $numerosus->addValidation( $label05->getText(), new TRequiredValidator );
 
         $page1 = new TLabel( "Indentificação", '#7D78B6', 12, 'bi');
         $page1->style='text-align:left;border-bottom:1px solid #c0c0c0;width:100%';
         $this->form->appendPage( "Pessoais" );
         $this->form->addContent( [ $page1 ] );
 
+        $this->form->addFields( [ new TLabel( "Cartão SUS: $redstar" ) ], [ $numerosus ] );
         $this->form->addFields( [ new TLabel( "Nome do Paciente: $redstar" ) ], [ $nomepaciente ] );
         $this->form->addFields( [ new TLabel( "Sexo: $redstar" ) ], [ $sexo ] );
         $this->form->addFields( [ new TLabel( "Data de Nascimento: $redstar" ) ], [ $datanascimento ] );
-        $this->form->addFields( [ new TLabel( "Nome do Pai: $redstar" ) ], [ $nomepai ] );
         $this->form->addFields( [ new TLabel( "Nome da Mãe: $redstar" ) ], [ $nomemae ] );
+        $this->form->addFields( [ new TLabel( "Nome do Pai:" ) ], [ $nomepai ] );
         $this->form->addFields( [ new TLabel( "Estado Civil:" ) ], [ $estadocivil ] );
-        $this->form->addFields( [ new TLabel( "RG: $redstar" ) ], [ $numerorg ] );
-        $this->form->addFields( [ new TLabel( "UF Expedidor: $redstar" ) ], [ $ufrg ] );
-        $this->form->addFields( [ new TLabel( "Orgão Expedidor: $redstar" ) ], [ $orgaorg ] );
+        $this->form->addFields( [ new TLabel( "RG:" ) ], [ $numerorg ] );
+        $this->form->addFields( [ new TLabel( "UF Expedidor:" ) ], [ $ufrg ] );
+        $this->form->addFields( [ new TLabel( "Orgão Expedidor:" ) ], [ $orgaorg ] );
         $this->form->addFields( [ new TLabel( "CPF:" ) ], [ $numerocpf ] );
-        $this->form->addFields( [ new TLabel( "Cartão SUS: $redstar" ) ], [ $numerosus ] );
         $this->form->addFields( [ new TLabel( "Grupo Sanguineo:" ) ], [ $gruposanguineo ] );
         $this->form->addFields( [ new TLabel( "Fator Rh:" ) ], [ $fatorrh ] );
         $this->form->addFields( [ new TLabel( "Grau de Instrução:" ) ], [ $grauinstrucao_id ] );
@@ -149,10 +136,10 @@ class PacienteForm extends TPage
         $this->form->appendPage( "Residênciais" );
         $this->form->addContent( [ $page2 ] );
 
-        $this->form->addFields( [ new TLabel( "Endereço: $redstar" ) ], [ $endereco ]);
-        $this->form->addFields( [ new TLabel( "Bairro: $redstar " ) ], [ $bairro ] );
-        $this->form->addFields( [ new TLabel( "Cidade: $redstar " ) ], [ $cidade ] );
-        $this->form->addFields( [ new TLabel( "UF: $redstar" ) ], [ $uf ] );
+        $this->form->addFields( [ new TLabel( "Endereço:" ) ], [ $endereco ]);
+        $this->form->addFields( [ new TLabel( "Bairro:" ) ], [ $bairro ] );
+        $this->form->addFields( [ new TLabel( "Cidade:" ) ], [ $cidade ] );
+        $this->form->addFields( [ new TLabel( "UF:" ) ], [ $uf ] );
         $this->form->addFields( [ new TLabel( "Tel. Celular:" ) ], [ $telcelular ] );
         $this->form->addFields( [ new TLabel( "Tel. Residêncial:" ) ], [ $telresidencial ] );
         $this->form->addFields( [ new TLabel( "Tel. Comercial:" ) ], [ $telcomercial ] );
@@ -161,7 +148,7 @@ class PacienteForm extends TPage
         $this->form->addAction( "Voltar para a listagem", new TAction( [ "PacienteList", "onReload" ] ), "fa:table blue" );
 
         $container = new TVBox();
-        $container->style = "width: 100%";
+        $container->style = "width: 90%";
         $container->add( $this->form );
 
         parent::add( $container );
