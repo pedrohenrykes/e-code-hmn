@@ -30,16 +30,18 @@ class DashBoardForm extends TWindow
         $color = new TDBCombo( "color", "database", "AdminLteColorsModel", "class", "colorname", "id" );
         $color->setDefaultOption( "..::SELECIONE::.." );
 
-        $quantifier->addItems( [ "amount"  => "Quantidade", "percent" => "Percentual" ] );
+        // $quantifier->addItems( [ "amount"  => "Quantidade", "percent" => "Percentual" ] );
         $quantifier->setDefaultOption( "..::SELECIONE::.." );
+        $quantifier->setEditable( false );
 
         $dataview->addItems( $this->getDatabaseViews() );
         $dataview->setDefaultOption( "..::SELECIONE::.." );
+        $dataview->setChangeAction( new TAction( array( $this, 'onChangeComboQuantifier' ) ) );
 
         $page->addItems( $this->getPageClasses() );
         $page->setMaxSize(1);
         $page->setMinLength(0);
-        $page->setChangeAction( new TAction( array( $this, 'onChangeAction' ) ) );
+        $page->setChangeAction( new TAction( array( $this, 'onChangeMultiSearchPage' ) ) );
 
         $dataview->setSize( "38%" );
         $quantifier->setSize( "38%" );
@@ -74,7 +76,6 @@ class DashBoardForm extends TWindow
 
         $container = new TVBox();
         $container->style = "width: 100%";
-        // $container->add( new TXMLBreadCrumb( "menu.xml", "DashBoardList" ) );
         $container->add( $this->form );
 
         TQuickForm::hideField("form_dashboard", "action");
@@ -148,7 +149,7 @@ class DashBoardForm extends TWindow
         }
     }
 
-    public static function onChangeAction( $param )
+    public static function onChangeMultiSearchPage( $param = null )
     {
         $object = new StdClass;
 
@@ -156,15 +157,94 @@ class DashBoardForm extends TWindow
 
             $object->action = "";
             TQuickForm::sendData( "form_dashboard", $object );
-            TQuickForm::hideField("form_dashboard", "action");
+            TQuickForm::hideField( "form_dashboard", "action" );
 
         } else {
 
             $object->action = "onReload";
             TQuickForm::sendData( "form_dashboard", $object );
-            TQuickForm::showField("form_dashboard", "action");
+            TQuickForm::showField( "form_dashboard", "action" );
 
         }
+    }
+
+    public static function onChangeComboQuantifier( $param = null )
+    {
+        $columns = [];
+
+        if ( isset( $param[ "dataview" ] ) ) {
+
+            try {
+
+                TTransaction::open( "database" );
+
+                $conn = TTransaction::get();
+
+                $stm = $conn->prepare("
+                    SELECT COLUMNS.COLUMN_NAME viewcolumns
+                    FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE COLUMNS.TABLE_NAME = ?;
+                ");
+
+                $stm->execute( [ $param[ "dataview" ] ] );
+
+                $result = $stm->fetchAll( PDO::FETCH_CLASS );
+
+                foreach ( $result as $row ) {
+                    $columns[ $row->viewcolumns ] = $row->viewcolumns;
+                }
+
+                TTransaction::close();
+
+            } catch ( Exception $ex ) {
+
+                TTransaction::rollback();
+
+                new TMessage( "error", $ex->getMessage() );
+
+            }
+
+            TCombo::enableField( "form_dashboard", "quantifier" );
+            TCombo::reload( "form_dashboard", "quantifier", $columns, true );
+        }
+
+    }
+
+    private function getDatabaseViews()
+    {
+        $views = [];
+
+        try {
+
+            TTransaction::open( "database" );
+
+            $conn = TTransaction::get();
+
+            $stm = $conn->prepare("
+                SELECT VIEWS.TABLE_NAME view_name
+                FROM INFORMATION_SCHEMA.VIEWS
+                WHERE VIEWS.TABLE_SCHEMA = ?;
+            ");
+
+            $stm->execute( [ TTransaction::getDatabaseInfo()[ "name" ] ] );
+
+            $result = $stm->fetchAll( PDO::FETCH_CLASS );
+
+            foreach ( $result as $row ) {
+                $views[ $row->view_name ] = $row->view_name;
+            }
+
+            TTransaction::close();
+
+        } catch ( Exception $ex ) {
+
+            TTransaction::rollback();
+
+            new TMessage( "error", $ex->getMessage() );
+
+        }
+
+        return $views;
     }
 
     private function getPageClasses()
@@ -192,42 +272,5 @@ class DashBoardForm extends TWindow
         ksort( $entries );
 
         return $entries;
-    }
-
-    private function getDatabaseViews()
-    {
-        $views = [];
-
-        try {
-
-            TTransaction::open( "database" );
-
-            $conn = TTransaction::get();
-
-            $stm = $conn->prepare(
-                "SELECT TABLE_NAME FROM information_schema.TABLES
-                WHERE TABLE_TYPE LIKE ?
-                AND TABLE_SCHEMA LIKE ?"
-            );
-
-            $stm->execute( [ "VIEW", TTransaction::getDatabaseInfo()[ "name" ] ] );
-
-            $result = $stm->fetchObject();
-
-            foreach ( $result as $row ) {
-                $views[ $row ] = $row;
-            }
-
-            TTransaction::close();
-
-        } catch ( Exception $ex ) {
-
-            TTransaction::rollback();
-
-            new TMessage( "error", $ex->getMessage() );
-
-        }
-
-        return $views;
     }
 }
