@@ -7,7 +7,7 @@ class PacienteList extends TPage
     private $pageNavigation;
     private $loaded;
 
-    public function __construct() 
+    public function __construct()
     {
         parent::__construct();
 
@@ -24,12 +24,7 @@ class PacienteList extends TPage
         $opcao->setSize( "38%" );
         $dados->setSize( "38%" );
 
-        $opcao->addItems([
-            "nomepaciente" => "Nome",
-            "numerosus"    => "Cartão SUS",
-            "numerorg"     => "RG",
-            "numerocpf"    => "CPF"
-        ]);
+        $opcao->addItems( [ "nomepaciente" => "Nome", "numerosus" => "Cartão SUS", "numerorg" => "RG", "numerocpf" => "CPF" ] );
 
         $this->form->addFields( [ new TLabel( "Opção de busca:" ) ], [ $opcao ] );
         $this->form->addFields( [ new TLabel( "Dados à buscar:" )  ], [ $dados ] );
@@ -161,13 +156,17 @@ class PacienteList extends TPage
                         $criteria->add( new TFilter( $data->opcao, "LIKE", "%" . $data->dados . "%" ) );
                         break;
 
+                    case "numerocpf":
+                        $criteria->add( new TFilter( $data->opcao, "LIKE", $data->dados . "%" ) );
+                        break;
+
                     default:
                         if ( is_numeric( $data->dados ) ) {
                             $criteria->add( new TFilter( $data->opcao, "=", $data->dados ) );
                         } else {
                             new TMessage( "erro", "Para a opção selecionada, informe apenas valores numéricos." );
-                        }                       
-                        
+                        }
+
                 }
 
                 $objects = $repository->load( $criteria, FALSE );
@@ -183,6 +182,7 @@ class PacienteList extends TPage
                 }
 
                 $criteria->resetProperties();
+
                 $count = $repository->count( $criteria );
 
                 $this->pageNavigation->setCount( $count );
@@ -190,7 +190,9 @@ class PacienteList extends TPage
                 $this->pageNavigation->setLimit( $limit );
 
                 TTransaction::close();
+
                 $this->form->setData( $data );
+                
                 $this->loaded = true;
 
             } else {
