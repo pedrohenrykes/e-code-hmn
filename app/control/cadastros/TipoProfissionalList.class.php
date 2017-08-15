@@ -46,14 +46,14 @@ class TipoProfissionalList extends TPage
         $action_edit->setLabel( "Editar" );
         $action_edit->setImage( "fa:pencil-square-o blue fa-lg" );
         $action_edit->setField( "id" );
-        // $this->datagrid->addAction( $action_edit );
+        //$this->datagrid->addAction( $action_edit );
 
         $action_del = new TDataGridAction( [ $this, "onDelete" ] );
         $action_del->setButtonClass( "btn btn-default" );
         $action_del->setLabel( "Deletar" );
         $action_del->setImage( "fa:trash-o red fa-lg" );
         $action_del->setField( "id" );
-        // $this->datagrid->addAction( $action_del );
+        //$this->datagrid->addAction( $action_del );
 
         $this->datagrid->createModel();
 
