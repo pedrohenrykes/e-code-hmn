@@ -7,7 +7,7 @@ class TipoProfissionalForm extends TWindow
     public function __construct()
     {
         parent::__construct();
-        parent::setTitle( "Cadastro Tipo Profissional" );
+        parent::setTitle( "Cadastro Tipo de Profissional" );
         parent::setSize( 0.600, 0.800 );
 
         $redstar = '<font color="red"><b>*</b></font>';
@@ -26,7 +26,7 @@ class TipoProfissionalForm extends TWindow
         $label01 = new RequiredTextFormat( [ "Nome", "#F00", "bold" ] );
         $nometipoprofissional->addValidation( $label01->getText(), new TRequiredValidator );
 
-        $this->form->addFields([new TLabel("Nome: $redstar")], [$nometipoprofissional]);
+        $this->form->addFields([new TLabel("Nome Tipo Profissional: $redstar")], [$nometipoprofissional]);
         $this->form->addFields( [ $id ] );
 
         $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );

@@ -12,7 +12,7 @@ class TipoProfissionalList extends TPage
         parent::__construct();
 
         $this->form = new BootstrapFormBuilder( "form_list_tipo_profissional" );
-        $this->form->setFormTitle( "Listagem Tipo Profissional" );
+        $this->form->setFormTitle( "Listagem Tipo de Profissional" );
         $this->form->class = "tform";
 
         $opcao = new TCombo( "opcao" );
@@ -37,7 +37,7 @@ class TipoProfissionalList extends TPage
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
 
-        $column_nometipoprofissional = new TDataGridColumn( "nometipoprofissional", "Nome", "left" );
+        $column_nometipoprofissional = new TDataGridColumn( "nometipoprofissional", "Tipo de Profissional", "left" );
 
         $this->datagrid->addColumn( $column_nometipoprofissional );
 
@@ -46,14 +46,14 @@ class TipoProfissionalList extends TPage
         $action_edit->setLabel( "Editar" );
         $action_edit->setImage( "fa:pencil-square-o blue fa-lg" );
         $action_edit->setField( "id" );
-        //$this->datagrid->addAction( $action_edit );
+        $this->datagrid->addAction( $action_edit );
 
         $action_del = new TDataGridAction( [ $this, "onDelete" ] );
         $action_del->setButtonClass( "btn btn-default" );
         $action_del->setLabel( "Deletar" );
         $action_del->setImage( "fa:trash-o red fa-lg" );
         $action_del->setField( "id" );
-        //$this->datagrid->addAction( $action_del );
+        $this->datagrid->addAction( $action_del );
 
         $this->datagrid->createModel();
 
