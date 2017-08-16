@@ -18,6 +18,7 @@ class TransporteForm extends TWindow
 
         $id                   = new THidden( "id" );
         $nometransporte = new TEntry("nometransporte");
+        $situacao       = new TCombo( "situacao" );
 
         $nometransporte->setProperty("title", "O campo e obrigatorio");
 
@@ -26,7 +27,11 @@ class TransporteForm extends TWindow
         $label01 = new RequiredTextFormat( [ "Nome", "#F00", "bold" ] );
         $nometransporte->addValidation( $label01->getText(), new TRequiredValidator );
 
+        $label02 = new RequiredTextFormat( [ "Situação", "#F00", "bold" ] );
+        $situacao->addValidation( $label02->getText(), new TRequiredValidator );
+
         $this->form->addFields([new TLabel("Nome Transporte: $redstar")], [$nometransporte]);
+        $this->form->addFields([new TLabel("Situação: $redstar")], [$situacao]);
         $this->form->addFields( [ $id ] );
 
         $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );
