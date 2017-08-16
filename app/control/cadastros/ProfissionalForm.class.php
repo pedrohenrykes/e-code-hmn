@@ -16,10 +16,10 @@ class ProfissionalForm extends TWindow
         $this->form->setFormTitle( "($redstar) campos obrigatórios" );
         $this->form->class = "tform";
 
-        $id        = new THidden( "id" );
-        $nomeprofissional = new TEntry( "nomeprofissional" );
-        $numeroconselho   = new TEntry( "numeroconselho" );
-        $tipoprofissional_id = new TDBCombo ( "tipoprofissional_id ", "database", "TipoProfissionalRecord", "id", "nometipoprofissional", "nometipoprofissional" );
+        $id                  = new THidden( "id" );
+        $nomeprofissional    = new TEntry( "nomeprofissional" );
+        $numeroconselho      = new TEntry( "numeroconselho" );
+        $tipoprofissional_id = new TDBCombo( "tipoprofissional_id ", "database", "TipoProfissionalRecord", "id", "nometipoprofissional", "nometipoprofissional" );
        
         //$nomeprofissional->forceUpperCase();
         //$numeroconselho->setMask( "A!" );
@@ -45,7 +45,7 @@ class ProfissionalForm extends TWindow
         $this->form->addFields( [ $id ] );
 
         $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );
-        $this->form->addAction( "Voltar para a listagem", new TAction( [ "CidList", "onReload" ] ), "fa:table blue" );
+        $this->form->addAction( "Voltar para a listagem", new TAction( [ "ProfissionalList", "onReload" ] ), "fa:table blue" );
 
         $container = new TVBox();
         $container->style = "width: 100%";
@@ -62,8 +62,8 @@ class ProfissionalForm extends TWindow
 
             TTransaction::open( "database" );
 
-            $object = $this->form->getData("ProfissionalRecord");
-            $object->store();
+                $object = $this->form->getData("ProfissionalRecord");
+                $object->store();
 
             TTransaction::close();
 
@@ -88,7 +88,7 @@ class ProfissionalForm extends TWindow
 
                 TTransaction::open( "database" );
 
-                $object = new CidRecord($param["key"]);
+                $object = new ProfissionalRecord($param["key"]);
 
                 $this->form->setData($object);
 

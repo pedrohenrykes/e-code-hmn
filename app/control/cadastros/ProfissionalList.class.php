@@ -38,24 +38,26 @@ class ProfissionalList extends TPage
         $this->datagrid->setHeight( 320 );
 
         $column_nomeprofissional = new TDataGridColumn( "nomeprofissional", "Profissional", "left" );
-        $column_numeroconselho = new TDataGridColumn( "numeroconselho", "Numero do Conselho", "left" );
+        $column_numeroconselho       = new TDataGridColumn( "numeroconselho", "Numero do Conselho", "left" );
+        $column_tipoprofissional_id  = new TDataGridColumn( "tipo_profissional", "Tipo de Profissional", "left" );
 
         $this->datagrid->addColumn( $column_nomeprofissional );
         $this->datagrid->addColumn( $column_numeroconselho );
+        $this->datagrid->addColumn( $column_tipoprofissional_id );
 
         $action_edit = new TDataGridAction( [ "ProfissionalForm", "onEdit" ] );
         $action_edit->setButtonClass( "btn btn-default" );
         $action_edit->setLabel( "Editar" );
         $action_edit->setImage( "fa:pencil-square-o blue fa-lg" );
         $action_edit->setField( "id" );
-        // $this->datagrid->addAction( $action_edit );
+        $this->datagrid->addAction( $action_edit );
 
         $action_del = new TDataGridAction( [ $this, "onDelete" ] );
         $action_del->setButtonClass( "btn btn-default" );
         $action_del->setLabel( "Deletar" );
         $action_del->setImage( "fa:trash-o red fa-lg" );
         $action_del->setField( "id" );
-        // $this->datagrid->addAction( $action_del );
+        $this->datagrid->addAction( $action_del );
 
         $this->datagrid->createModel();
 
@@ -223,7 +225,7 @@ class ProfissionalList extends TPage
 
             TTransaction::open( "database" );
 
-            $object = new CidRecord( $param[ "key" ] );
+            $object = new ProfissionalRecord( $param[ "key" ] );
             $object->delete();
 
             TTransaction::close();
