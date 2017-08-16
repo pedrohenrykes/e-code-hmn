@@ -23,7 +23,11 @@ class TransporteForm extends TWindow
         $nometransporte->setProperty("title", "O campo e obrigatorio");
 
         $nometransporte->setSize("38%");
+        $situacao->setSize("38%");
 
+        $situacao->addItems( [ "ATIVO" => "ATIVO", "INATIVO" => "INATIVO" ] );
+        $situacao->setDefaultOption( "..::SELECIONE::.." );
+		
         $label01 = new RequiredTextFormat( [ "Nome", "#F00", "bold" ] );
         $nometransporte->addValidation( $label01->getText(), new TRequiredValidator );
 
