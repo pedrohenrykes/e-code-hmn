@@ -1,5 +1,5 @@
 <?php
-
+//A
 class BauForm extends TPage
 {
     private $form;
