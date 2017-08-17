@@ -13,7 +13,7 @@ class CidForm extends TWindow
         $redstar = '<font color="red"><b>*</b></font>';
 
         $this->form = new BootstrapFormBuilder( "form_cid" );
-        $this->form->setFormTitle( "($redstar) campos obrigatórios" );
+        $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 
         $id        = new THidden( "id" );
@@ -35,8 +35,8 @@ class CidForm extends TWindow
         $codigocid->addValidation( $label01->getText(), new TRequiredValidator );
         $nomecid->addValidation( $label02->getText(), new TRequiredValidator );
 
-        $this->form->addFields([new TLabel("Código: $redstar")], [$codigocid]);
-        $this->form->addFields([new TLabel("Nome: $redstar")], [$nomecid]);
+        $this->form->addFields([new TLabel("Código: {$redstar}")], [$codigocid]);
+        $this->form->addFields([new TLabel("Nome: {$redstar}")], [$nomecid]);
         $this->form->addFields( [ $id ] );
 
         $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );
