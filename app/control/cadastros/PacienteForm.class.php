@@ -11,7 +11,7 @@ class PacienteForm extends TPage
         $redstar = '<font color="red"><b>*</b></font>';
 
         $this->form = new BootstrapFormBuilder( "form_paciente" );
-        $this->form->setFormTitle( "($redstar) campos obrigatórios" );
+        $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 
         $id               = new THidden( "id" );
@@ -71,6 +71,11 @@ class PacienteForm extends TPage
         $grauinstrucao_id->setDefaultOption( "..::SELECIONE::.." );
         $profissao_id->setDefaultOption( "..::SELECIONE::.." );
 
+        $sexo->addItems( [ "M" => "Masculino", "F" => "Feminino" ] );
+        $fatorrh->addItems( [ "P" => "Positivo", "N" => "Negativo" ] );
+        $estadocivil->addItems( [ "Solteiro" => "Solteiro", "Casado" => "Casado", "Divorciado" => "Divorciado", "Viuvo" => "Viuvo" ] );
+        $gruposanguineo->addItems( [ "A" => "A", "B" => "B", "AB" => "AB", "O" => "O" ] );
+
         $cidade->setValue( "NATAL" );
         $uf->setValue( "RN" );
 
@@ -92,11 +97,6 @@ class PacienteForm extends TPage
         $nomemae->forceUpperCase();
         $nomepai->forceUpperCase();
 
-        $sexo->addItems( [ "M" => "Masculino", "F" => "Feminino" ] );
-        $fatorrh->addItems( [ "P" => "Positivo", "N" => "Negativo" ] );
-        $estadocivil->addItems( [ "Solteiro" => "Solteiro", "Casado" => "Casado", "Divorciado" => "Divorciado", "Viuvo" => "Viuvo" ] );
-        $gruposanguineo->addItems( [ "A" => "A", "B" => "B", "AB" => "AB", "O" => "O" ] );
-
         $label01 = new RequiredTextFormat( [ "Nome do Paciente", "#F00", "bold" ] );
         $label02 = new RequiredTextFormat( [ "Sexo", "#F00", "bold" ] );
         $label03 = new RequiredTextFormat( [ "Data de Nascimento", "#F00", "bold" ] );
@@ -109,16 +109,16 @@ class PacienteForm extends TPage
         $nomemae->addValidation( $label04->getText(), new TRequiredValidator );
         $numerosus->addValidation( $label05->getText(), new TRequiredValidator );
 
-        $page1 = new TLabel( "Indentificação", '#7D78B6', 12, 'bi');
+        $page1 = new TLabel( "Identificação", '#7D78B6', 12, 'bi');
         $page1->style='text-align:left;border-bottom:1px solid #c0c0c0;width:100%';
         $this->form->appendPage( "Pessoal" );
         $this->form->addContent( [ $page1 ] );
 
-        $this->form->addFields( [ new TLabel( "Cartão SUS: $redstar" ) ], [ $numerosus ] );
-        $this->form->addFields( [ new TLabel( "Nome do Paciente: $redstar" ) ], [ $nomepaciente ] );
-        $this->form->addFields( [ new TLabel( "Sexo: $redstar" ) ], [ $sexo ] );
-        $this->form->addFields( [ new TLabel( "Data de Nascimento: $redstar" ) ], [ $datanascimento ] );
-        $this->form->addFields( [ new TLabel( "Nome da Mãe: $redstar" ) ], [ $nomemae ] );
+        $this->form->addFields( [ new TLabel( "Cartão SUS: {$redstar}" ) ], [ $numerosus ] );
+        $this->form->addFields( [ new TLabel( "Nome do Paciente: {$redstar}" ) ], [ $nomepaciente ] );
+        $this->form->addFields( [ new TLabel( "Sexo: {$redstar}" ) ], [ $sexo ] );
+        $this->form->addFields( [ new TLabel( "Data de Nascimento: {$redstar}" ) ], [ $datanascimento ] );
+        $this->form->addFields( [ new TLabel( "Nome da Mãe: {$redstar}" ) ], [ $nomemae ] );
         $this->form->addFields( [ new TLabel( "Nome do Pai:" ) ], [ $nomepai ] );
         $this->form->addFields( [ new TLabel( "Estado Civil:" ) ], [ $estadocivil ] );
         $this->form->addFields( [ new TLabel( "RG:" ) ], [ $numerorg ] );
@@ -131,7 +131,7 @@ class PacienteForm extends TPage
         $this->form->addFields( [ new TLabel( "Profissão Exercida:" ) ], [ $profissao_id ] );
         $this->form->addFields( [ $id ] );
 
-        $page2 = new TLabel( "Endereço e contatos", '#7D78B6', 12, 'bi');
+        $page2 = new TLabel( "Endereço e Contatos", '#7D78B6', 12, 'bi');
         $page2->style='text-align:left;border-bottom:1px solid #c0c0c0;width:100%';
         $this->form->appendPage( "Residêncial" );
         $this->form->addContent( [ $page2 ] );
