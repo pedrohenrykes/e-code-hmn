@@ -1,6 +1,6 @@
 <?php
 
-class ProfissionalList extends TPage
+class MedicamentoList extends TPage
 {
     private $form;
     private $datagrid;
@@ -11,8 +11,8 @@ class ProfissionalList extends TPage
     {
         parent::__construct();
 
-        $this->form = new BootstrapFormBuilder( "form_list_profissional" );
-        $this->form->setFormTitle( "Listagem de Profissionais" );
+        $this->form = new BootstrapFormBuilder( "form_list_medicamento" );
+        $this->form->setFormTitle( "Listagem de Medicamentos" );
         $this->form->class = "tform";
 
         $opcao = new TCombo( "opcao" );
@@ -24,28 +24,26 @@ class ProfissionalList extends TPage
         $opcao->setSize( "38%" );
         $dados->setSize( "38%" );
 
-        $opcao->addItems( [ "nomeprofissional" => "Profissional", "numeroconselho" => "Conselho","tipoprofissional_id" => " Tipo de Profissional" ] );
+        $opcao->addItems( [ "nomemedicamento" => "Medicamento", "principioativo_id" => "Principio Ativo" ] );
 
         $this->form->addFields( [ new TLabel( "Opção de busca:" ) ], [ $opcao ] );
         $this->form->addFields( [ new TLabel( "Dados à buscar:" )  ], [ $dados ] );
 
         $this->form->addAction( "Buscar", new TAction( [ $this, "onSearch" ] ), "fa:search" );
-        $this->form->addAction( "Novo", new TAction( [ "ProfissionalForm", "onEdit" ] ), "bs:plus-sign green" );
+        $this->form->addAction( "Novo", new TAction( [ "MedicamentoForm", "onEdit" ] ), "bs:plus-sign green" );
 
         $this->datagrid = new BootstrapDatagridWrapper( new TDataGrid() );
         $this->datagrid->datatable = "true";
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
 
-        $column_nomeprofissional = new TDataGridColumn( "nomeprofissional", "Profissional", "left" );
-        $column_numeroconselho       = new TDataGridColumn( "numeroconselho", "Numero do Conselho", "left" );
-        $column_tipoprofissional_id  = new TDataGridColumn( "tipo_profissional", "Tipo de Profissional", "left" );
+        $column_nomemedicamento = new TDataGridColumn( "nomemedicamento", "Medicamento", "left" );
+        $column_principioativo_id = new TDataGridColumn( "principioativo", "Princípio Ativo", "left" );
 
-        $this->datagrid->addColumn( $column_nomeprofissional );
-        $this->datagrid->addColumn( $column_numeroconselho );
-        $this->datagrid->addColumn( $column_tipoprofissional_id );
+        $this->datagrid->addColumn( $column_nomemedicamento );
+        $this->datagrid->addColumn( $column_principioativo_id );
 
-        $action_edit = new TDataGridAction( [ "ProfissionalForm", "onEdit" ] );
+        $action_edit = new TDataGridAction( [ "MedicamentoForm", "onEdit" ] );
         $action_edit->setButtonClass( "btn btn-default" );
         $action_edit->setLabel( "Editar" );
         $action_edit->setImage( "fa:pencil-square-o blue fa-lg" );
@@ -80,7 +78,7 @@ class ProfissionalList extends TPage
 
             TTransaction::open( "database" );
 
-            $repository = new TRepository( "ProfissionalRecord" );
+            $repository = new TRepository( "MedicamentoRecord" );
 
             if ( empty( $param[ "order" ] ) ) {
                 $param[ "order" ] = "id";
@@ -134,7 +132,7 @@ class ProfissionalList extends TPage
 
                 TTransaction::open( "database" );
 
-                $repository = new TRepository( "ProfissionalRecord" );
+                $repository = new TRepository( "MedicamentoRecord" );
 
                 if ( empty( $param[ "order" ] ) ) {
                     $param[ "order" ] = "id";
@@ -149,7 +147,7 @@ class ProfissionalList extends TPage
 
                 switch ( $data->opcao ) {
 
-                    case "nomeprofissional":
+                    case "nomemedicamento":
                         $criteria->add( new TFilter( $data->opcao, "LIKE", "%" . $data->dados . "%" ) );
                         break;
 
@@ -225,7 +223,7 @@ class ProfissionalList extends TPage
 
             TTransaction::open( "database" );
 
-            $object = new ProfissionalRecord( $param[ "key" ] );
+            $object = new MedicamentoRecord( $param[ "key" ] );
             $object->delete();
 
             TTransaction::close();
