@@ -16,9 +16,9 @@ class TipoClassificacaoRiscoForm extends TWindow
         $this->form->setFormTitle( "($redstar) campos obrigatórios" );
         $this->form->class = "tform";
 
-        $id       = new THidden( "id" );
-        $ordem    = new TEntry("ordem");
-        $situacao = new TEntry("situacao");
+        $id                         = new THidden( "id" );
+        $ordem                      = new TEntry("ordem");
+        $situacao                   = new TEntry("situacao");
         $nometipoclassificacaorisco = new TEntry( "nometipoclassificacaorisco" );
         $cortipoclassificacaorisco  = new TEntry( "cortipoclassificacaorisco" );
         $tempoparaatendimento       = new TEntry("tempoparaatendimento");

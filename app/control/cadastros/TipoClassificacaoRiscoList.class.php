@@ -12,7 +12,7 @@ class TipoClassificacaoRiscoList extends TPage
         parent::__construct();
 
         $this->form = new BootstrapFormBuilder( "form_list_tipo_classificacao_risco" );
-        $this->form->setFormTitle( "Listagem Tipo Classificação de Risco" );
+        $this->form->setFormTitle( "<b>Listagem Tipo Classificação de Risco</b>" );
         $this->form->class = "tform";
 
         $opcao = new TCombo( "opcao" );
