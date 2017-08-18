@@ -123,17 +123,17 @@ class BauForm extends TPage
         $declaracaoobitohora->setMask( "hh:ii" );
 
         $dataentrada        ->setValue( date( "d/m/Y" ) );
-        // $datainternamento   ->setValue( date('Y-m-d H:i:s') );
-        // $dataremocao        ->setValue( "dd/mm/yyyy" );
-        // $datatransferencia  ->setValue( "dd/mm/yyyy" );
-        // $datatransporte     ->setValue( "dd/mm/yyyy" );
-        // $dataaltahospitalar ->setValue( "dd/mm/yyyy" );
-        // $dataobito          ->setValue( "dd/mm/yyyy" );
-        // $declaracaoobitodata->setValue( "dd/mm/yyyy" );
+        $datainternamento   ->setValue( date( "d/m/Y" ) );
+        $dataremocao        ->setValue( date( "d/m/Y" ) );
+        $datatransferencia  ->setValue( date( "d/m/Y" ) );
+        $datatransporte     ->setValue( date( "d/m/Y" ) );
+        $dataaltahospitalar ->setValue( date( "d/m/Y" ) );
+        $dataobito          ->setValue( date( "d/m/Y" ) );
+        $declaracaoobitodata->setValue( date( "d/m/Y" ) );
         $horaentrada        ->setValue( date( "H:i" ) );
-        // $horaaltahospitalar ->setValue( "hh:ii" );
-        // $horaobito          ->setValue( "hh:ii" );
-        // $declaracaoobitohora->setValue( "hh:ii" );
+        $horaaltahospitalar ->setValue( date( "H:i" ) );
+        $horaobito          ->setValue( date( "H:i" ) );
+        $declaracaoobitohora->setValue( date( "H:i" ) );
 
         $responsavel->forceUpperCase();
 
@@ -185,21 +185,23 @@ class BauForm extends TPage
         // $page6 = new TLabel( "Transporte", "#7D78B6", 12, "bi");
         // $page6->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
         // $this->form->addContent( [ $page6 ] );
-        $this->form->addFields( [ new TLabel( "Destino do Transporte:" ) ], [ $transportedestino_id ] );
-        $this->form->addFields( [ new TLabel( "Informações do Transporte:" ) ], [ $especificartransporte ] );
-        $this->form->addFields( [ new TLabel( "Data do Transporte:" ) ], [ $datatransporte ] );
+        // $this->form->addFields( [ new TLabel( "Destino do Transporte:" ) ], [ $transportedestino_id ] );
+        // $this->form->addFields( [ new TLabel( "Informações do Transporte:" ) ], [ $especificartransporte ] );
+        // $this->form->addFields( [ new TLabel( "Data do Transporte:" ) ], [ $datatransporte ] );
 
-        // $page7 = new TLabel( "Alta Hospitalar", "#7D78B6", 12, "bi");
-        // $page7->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
-        // $this->form->addContent( [ $page7 ] );
+        $page7 = new TLabel( "Alta Hospitalar", "#7D78B6", 12, "bi");
+        $page7->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
+        $this->form->appendPage( "Alta" );
+        $this->form->addContent( [ $page7 ] );
         $this->form->addFields( [ new TLabel( "Tipo de Alta:" ) ], [ $tipoaltahospitalar_id ] );
         $this->form->addFields( [ new TLabel( "Data da Alta:" ) ], [ $dataaltahospitalar ] );
         $this->form->addFields( [ new TLabel( "Hora da Alta:" ) ], [ $horaaltahospitalar ] );
         $this->form->addFields( [ new TLabel( "Médico Responsável:" ) ], [ $medicoalta_id ] );
 
-        // $page8 = new TLabel( "Declaração de Óbito", "#7D78B6", 12, "bi");
-        // $page8->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
-        // $this->form->addContent( [ $page8 ] );
+        $page8 = new TLabel( "Declaração de Óbito", "#7D78B6", 12, "bi");
+        $page8->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
+        $this->form->appendPage( "Óbito" );
+        $this->form->addContent( [ $page8 ] );
         $this->form->addFields( [ new TLabel( "Data do Óbito:" ) ], [ $dataobito ] );
         $this->form->addFields( [ new TLabel( "Hora do Óbito:" ) ], [ $horaobito ] );
         $this->form->addFields( [ new TLabel( "Data da Declaração:" ) ], [ $declaracaoobitodata ] );
