@@ -30,14 +30,9 @@ class FabricantemedicamentoForm extends TWindow
         $nomefabricante->setSize("38%");
         $cnpj->setSize("38%");
 
-        //$label01 = new RequiredTextFormat( [ "Nome", "#F00", "bold" ] );
-        //$nomefabricante->addValidation( $label01->getText(), new TRequiredValidator );
-
         $this->form->addFields([new TLabel("Fabricante de Medicamentos: $redstar")], [$nomefabricante]);
-        $this->form->addFields( [ $id ] );
-
         $this->form->addFields([new TLabel("CNPJ: $redstar")], [$cnpj]);
-
+        $this->form->addFields( [ $id ] );
 
         $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );
         $this->form->addAction( "Voltar para a listagem", new TAction( [ "FabricantemedicamentoList", "onReload" ] ), "fa:table blue" );

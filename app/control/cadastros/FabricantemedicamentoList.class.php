@@ -41,7 +41,7 @@ class FabricantemedicamentoList extends TPage{
         $this->datagrid->setHeight( 320 );
 
         $column_nomefabricante = new TDataGridColumn( "nomefabricante", "Nome do Fabricante", "left" );
-        $column_cnpj = new TDataGridColumn( "cpnj", "CNPJ", "left" );
+        $column_cnpj = new TDataGridColumn( "cnpj", "CNPJ", "left" );
 
         $this->datagrid->addColumn( $column_nomefabricante );
         $this->datagrid->addColumn( $column_cnpj );
