@@ -30,9 +30,9 @@ class SideMenuForm extends TWindow
         $icon->style = "font-family:'FontAwesome',Helvetica;font-size:20px";
         $icon->setValue( "fa-500px" );
 
-        $menu_type->setChangeAction( new TAction( array( $this, 'onChangeAction' ) ) );
+        $menu_type->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
         $menu_type->addItems( [ "menu" => "Menu", "submenu" => "Sub-Menu" ] );
-        $menu_type->setValue( "menu" );
+        // $menu_type->setValue( "menu" );
 
         $menu_id->setDefaultOption( "..::SELECIONE::.." );
         $menu_type->setDefaultOption( "..::SELECIONE::.." );

@@ -36,12 +36,12 @@ class DashBoardForm extends TWindow
 
         $dataview->addItems( $this->getDatabaseViews() );
         $dataview->setDefaultOption( "..::SELECIONE::.." );
-        $dataview->setChangeAction( new TAction( array( $this, 'onChangeComboQuantifier' ) ) );
+        $dataview->setChangeAction( new TAction( [ $this, 'onChangeComboQuantifier' ] ) );
 
         $page->addItems( $this->getPageClasses() );
         $page->setMaxSize(1);
         $page->setMinLength(0);
-        $page->setChangeAction( new TAction( array( $this, 'onChangeMultiSearchPage' ) ) );
+        $page->setChangeAction( new TAction( [ $this, 'onChangeMultiSearchPage' ] ) );
 
         $dataview->setSize( "38%" );
         $quantifier->setSize( "38%" );
