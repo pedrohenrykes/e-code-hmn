@@ -24,8 +24,8 @@ class ClassificacaoRiscoDetalhe extends TStandardList
 
         $redstar = '<font color="red"><b>*</b></font>';
         
-        $id                        = new THidden( "id" );
-        $paciente_id               = new TDBCombo("paciente_id", "database", "PacienteRecord", "id", "nome");
+        $id                     = new THidden( "id" );
+        $paciente_id            = new TDBCombo("paciente_id", "database", "PacienteRecord", "id", "nome");
         //$tipoclassificacaorisco_id = new TDBCombo("tipoclassificacaorisco_id", "database", "TipoClassificacaoRiscoRecord", "id", "");
         //$bau_id                    = new TDBCombo("bau_id", "database", "BauRecord", "id", "");
         //$enfermeiro_id             = new TDBCombo("enfermeiro_id", "database", "", "id", ");
@@ -93,8 +93,8 @@ class ClassificacaoRiscoDetalhe extends TStandardList
         $this->form->addFields( [ new TLabel( 'Queixa Principal:'        ) ], [ $queixaprincipal        ] );
         
         //$this->form->addFields( [ new TLabel( 'BAU:'                     ) ], [ $bau_id                    ] );
-        //$this->form->addFields( [ new TLabel( 'BAU:'                     ) ], [ $tipoclassificacaorisco_id ] );
-        //$this->form->addFields( [ new TLabel( 'BAU:'                     ) ], [ $enfermeiro_id             ] );
+        //$this->form->addFields( [ new TLabel( 'Classificação de Risco:'                     ) ], [ $tipoclassificacaorisco_id ] );
+        //$this->form->addFields( [ new TLabel( ':'                     ) ], [ $enfermeiro_id             ] );
         
         $this->form->addFields([new TLabel('<font color=red><b>* Campos Obrigatórios </b></font>'), []] );
 
@@ -238,7 +238,4 @@ class ClassificacaoRiscoDetalhe extends TStandardList
         $this->form->clear();
     }
 
-    //public function onReload(){}
-
-    //public function onDelete(){}
 }
