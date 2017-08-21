@@ -13,13 +13,11 @@ class FabricantemedicamentoList extends TPage{
         parent::__construct();
 
         $this->form = new BootstrapFormBuilder( "form_Fabricante_medicamento" );
-        $this->form->setFormTitle( "Listagem Fabricante de Medicamentos" );
+        $this->form->setFormTitle( "<b>Listagem Fabricante de Medicamentos</b>" );
         $this->form->class = "tform";;
-
 
         $opcao = new TCombo('opcao');
         $dados = new TEntry( "dados" );
-
 
         $opcao->setDefaultOption( "..::SELECIONE::.." );
         $dados->setProperty( "title", "Informe os dados de acordo com a opção" );
@@ -30,7 +28,7 @@ class FabricantemedicamentoList extends TPage{
         $opcao->addItems( [ "nomefabricante" => "Nome do Fabricante", "cnpj" => "CNPJ" ] );
 
         $this->form->addFields( [ new TLabel( "Opção de busca:" ) ], [ $opcao ] );
-        $this->form->addFields( [ new TLabel( "Dados à buscar:" )  ], [ $dados ] );
+        $this->form->addFields( [ new TLabel( "Dados à buscar:" ) ], [ $dados ] );
 
         $this->form->addAction( "Buscar", new TAction( [ $this, "onSearch" ] ), "fa:search" );
         $this->form->addAction( "Novo", new TAction( [ "FabricantemedicamentoForm", "onEdit" ] ), "bs:plus-sign green" );
@@ -51,13 +49,14 @@ class FabricantemedicamentoList extends TPage{
         $action_edit->setLabel( "Editar" );
         $action_edit->setImage( "fa:pencil-square-o blue fa-lg" );
         $action_edit->setField( "id" );
-        $this->datagrid->addAction( $action_edit );
 
         $action_del = new TDataGridAction( [ $this, "onDelete" ] );
         $action_del->setButtonClass( "btn btn-default" );
         $action_del->setLabel( "Deletar" );
         $action_del->setImage( "fa:trash-o red fa-lg" );
         $action_del->setField( "id" );
+        
+        $this->datagrid->addAction( $action_edit );
         $this->datagrid->addAction( $action_del );
 
         $this->datagrid->createModel();
