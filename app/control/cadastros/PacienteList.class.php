@@ -63,6 +63,17 @@ class PacienteList extends TPage
         $action_del->setField( "id" );
         $this->datagrid->addAction( $action_del );
 
+        $action_bau = new TDataGridAction( [ "BauForm", "onReload" ] );
+        $action_bau->setButtonClass( "btn btn-default" );
+        $action_bau->setLabel( "B.A.U." );
+        $action_bau->setImage( "fa:address-card-o green fa-lg" );
+        $action_bau->setField( "id" );
+
+        $action_group = new TDataGridActionGroup('Opções', 'bs:th');
+        $action_group->addAction( $action_bau );
+
+        $this->datagrid->addActionGroup( $action_group );
+
         $this->datagrid->createModel();
 
         $this->pageNavigation = new TPageNavigation();
@@ -192,7 +203,7 @@ class PacienteList extends TPage
                 TTransaction::close();
 
                 $this->form->setData( $data );
-                
+
                 $this->loaded = true;
 
             } else {

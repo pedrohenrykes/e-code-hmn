@@ -3,6 +3,9 @@
 class BauForm extends TPage
 {
     private $form;
+    private $datagrid;
+    private $pageNavigation;
+    private $loaded;
 
     public function __construct()
     {
@@ -15,6 +18,8 @@ class BauForm extends TPage
         $this->form->class = "tform";
 
         $id                       = new THidden("id");
+        $paciente_id              = new THidden( "paciente_id" );
+        $paciente_nome            = new TEntry( "paciente_nome" );
         $especificartransporte    = new TEntry("especificartransporte");
         $responsavel              = new TEntry("responsavel");
         $queixaprincipal          = new TText("queixaprincipal");
@@ -34,9 +39,6 @@ class BauForm extends TPage
         $remocao                  = new TCombo("remocao");
         $transferencia            = new TCombo("transferencia");
 
-        $paciente_id              = new THidden( "paciente_id" );
-        $paciente_nome            = new TDBSeekButton( "paciente_nome", "database", "form_bau", "PacienteRecord", "nomepaciente", "paciente_id", "paciente_nome" );
-
         $localremocao_id          = new TCombo("localremocao_id");
         $localtransferencia_id    = new TCombo("localtransferencia_id");
         $transportedestino_id     = new TCombo("transportedestino_id");
@@ -47,6 +49,7 @@ class BauForm extends TPage
         $convenio_id              = new TDBCombo( "convenio_id", "database", "ConvenioRecord", "id", "nome", "nome");
 
         $id                      ->setSize( "38%" );
+        $paciente_nome           ->setSize( "38%" );
         $especificartransporte   ->setSize( "38%" );
         $queixaprincipal         ->setSize( "38%" );
         $dataentrada             ->setSize( "38%" );
@@ -64,7 +67,6 @@ class BauForm extends TPage
         $remocao                 ->setSize( "38%" );
         $transferencia           ->setSize( "38%" );
         $internamentolocal       ->setSize( "38%" );
-        $paciente_nome           ->setSize( "275" );
         $localremocao_id         ->setSize( "38%" );
         $localtransferencia_id   ->setSize( "38%" );
         $transportedestino_id    ->setSize( "38%" );
@@ -134,6 +136,8 @@ class BauForm extends TPage
         $horaaltahospitalar ->setValue( date( "H:i" ) );
         $horaobito          ->setValue( date( "H:i" ) );
         $declaracaoobitohora->setValue( date( "H:i" ) );
+
+        $paciente_nome->setEditable( false );
 
         $responsavel->forceUpperCase();
 
@@ -212,9 +216,44 @@ class BauForm extends TPage
         $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );
         $this->form->addAction( "Voltar para a listagem", new TAction( [ "BauList", "onReload" ] ), "fa:table blue" );
 
+        $this->datagrid = new BootstrapDatagridWrapper( new TDataGrid() );
+        $this->datagrid->datatable = "true";
+        $this->datagrid->style = "width: 100%";
+        $this->datagrid->setHeight( 320 );
+
+        $column_paciente_nome = new TDataGridColumn( "paciente_nome", "Nome", "left" );
+        $column_dataentrada = new TDataGridColumn( "dataentrada", "Dia", "left" );
+        $column_horaentrada = new TDataGridColumn( "horaentrada", "Hora", "center" );
+
+        $this->datagrid->addColumn( $column_paciente_nome );
+        $this->datagrid->addColumn( $column_dataentrada );
+        $this->datagrid->addColumn( $column_horaentrada );
+
+        $action_edit = new TDataGridAction( [ $this, "onEdit" ] );
+        $action_edit->setButtonClass( "btn btn-default" );
+        $action_edit->setLabel( "Editar" );
+        $action_edit->setImage( "fa:pencil-square-o blue fa-lg" );
+        $action_edit->setField( "id" );
+        $this->datagrid->addAction( $action_edit );
+
+        $action_del = new TDataGridAction( [ $this, "onDelete" ] );
+        $action_del->setButtonClass( "btn btn-default" );
+        $action_del->setLabel( "Deletar" );
+        $action_del->setImage( "fa:trash-o red fa-lg" );
+        $action_del->setField( "id" );
+        $this->datagrid->addAction( $action_del );
+
+        $this->datagrid->createModel();
+
+        $this->pageNavigation = new TPageNavigation();
+        $this->pageNavigation->setAction( new TAction( [ $this, "onReload" ] ) );
+        $this->pageNavigation->setWidth( $this->datagrid->getWidth() );
+
         $container = new TVBox();
         $container->style = "width: 90%";
         $container->add( $this->form );
+        $container->add( TPanelGroup::pack( NULL, $this->datagrid ) );
+        $container->add( $this->pageNavigation );
 
         parent::add( $container );
     }
@@ -257,7 +296,7 @@ class BauForm extends TPage
         }
     }
 
-    public function onEdit( $param )
+    public function onEdit( $param = null )
     {
         try {
 
@@ -265,7 +304,7 @@ class BauForm extends TPage
 
             if( isset( $param[ "key" ] ) ) {
 
-                TTransaction::open( "dbsic" );
+                TTransaction::open( "database" );
 
                 $object = new BauRecord( $param[ "key" ] );
 
@@ -298,7 +337,93 @@ class BauForm extends TPage
         }
     }
 
-    public static function onChangeAction( $param )
+    public function onReload( $param = null )
+    {
+        try {
+
+            TTransaction::open( "database" );
+
+            $repository = new TRepository( "BauRecord" );
+
+            if ( empty( $param[ "order" ] ) ) {
+                $param[ "order" ] = "dataentrada";
+                $param[ "direction" ] = "asc";
+            }
+
+            $limit = 10;
+
+            $criteria = new TCriteria();
+            $criteria->setProperties( $param );
+            $criteria->setProperty( "limit", $limit );
+
+            $objects = $repository->load( $criteria, FALSE );
+
+            $this->datagrid->clear();
+
+            if ( !empty( $objects ) ) {
+                foreach ( $objects as $object ) {
+                    $this->datagrid->addItem( $object );
+                }
+            }
+
+            $criteria->resetProperties();
+
+            $count = $repository->count( $criteria );
+
+            $this->pageNavigation->setCount( $count );
+            $this->pageNavigation->setProperties( $param );
+            $this->pageNavigation->setLimit( $limit );
+
+            TTransaction::close();
+
+            $this->loaded = true;
+
+        } catch ( Exception $ex ) {
+
+            TTransaction::rollback();
+
+            new TMessage( "error", $ex->getMessage() );
+        }
+    }
+
+    public function onDelete( $param = null )
+    {
+        if( isset( $param[ "key" ] ) ) {
+
+            $action1 = new TAction( [ $this, "Delete" ] );
+            $action2 = new TAction( [ $this, "onReload" ] );
+
+            $action1->setParameter( "key", $param[ "key" ] );
+
+            new TQuestion( "Deseja realmente apagar o registro?", $action1, $action2 );
+        }
+    }
+
+    function Delete( $param = null )
+    {
+        try {
+
+            TTransaction::open( "database" );
+
+            $object = new BauRecord( $param[ "key" ] );
+            $object->delete();
+
+            TTransaction::close();
+
+            $this->onReload();
+
+            new TMessage( "info", "O Registro foi apagado com sucesso!" );
+
+        } catch ( Exception $ex ) {
+
+            TTransaction::rollback();
+
+            new TMessage( "erro", $ex->getMessage() );
+
+        }
+    }
+
+    public static function onChangeAction( $param = null )
     {
         $object = new StdClass;
 
@@ -349,5 +474,12 @@ class BauForm extends TPage
                 break;
 
         }
+    }
+
+    public function show()
+    {
+        $this->onReload();
+
+        parent::show();
     }
 }
