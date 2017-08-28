@@ -75,7 +75,7 @@ class FabricanteMedicamentoForm extends TWindow
             if( isset( $param[ "key" ] ) ) {
 
                 TTransaction::open( "database" );
-                $object = new TipoProfissionalRecord($param["key"]);
+                $object = new FabricanteMedicamentoRecord($param["key"]);
                 $this->form->setData($object);
                 TTransaction::close();
             }
