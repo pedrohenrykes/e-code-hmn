@@ -1,6 +1,6 @@
 <?php
 
-class FabricantemedicamentoRecord extends TRecord {
+class FabricanteMedicamentoRecord extends TRecord {
 
     const TABLENAME = 'fabricantemedicamento';
     const PRIMARYKEY = 'id';

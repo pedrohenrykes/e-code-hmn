@@ -2,7 +2,7 @@
 
 
 
-class FabricantemedicamentoForm extends TWindow
+class FabricanteMedicamentoForm extends TWindow
 {
 
     private $form;
@@ -24,7 +24,7 @@ class FabricantemedicamentoForm extends TWindow
         $nomefabricante = new TEntry("nomefabricante");
         $cnpj           = new TEntry("cnpj");
 
-        $cnpj->setProperty("title", "O campo e obrigatorio");
+        $cnpj->setProperty("title", "O campo e obrigatório");
         $nomefabricante->setProperty("title", "Digite o nome do Fabricante");
 
         $nomefabricante->setSize("38%");
@@ -35,7 +35,7 @@ class FabricantemedicamentoForm extends TWindow
         $this->form->addFields( [ $id ] );
 
         $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );
-        $this->form->addAction( "Voltar para a listagem", new TAction( [ "FabricantemedicamentoList", "onReload" ] ), "fa:table blue" );
+        $this->form->addAction( "Voltar para a listagem", new TAction( [ "FabricanteMedicamentoList", "onReload" ] ), "fa:table blue" );
 
         $container = new TVBox();
         $container->style = "width: 100%";
@@ -51,11 +51,11 @@ class FabricantemedicamentoForm extends TWindow
             $this->form->validate();
 
             TTransaction::open( "database" );
-            $object = $this->form->getData("FabricantemedicamentoRecord");
+            $object = $this->form->getData("FabricanteMedicamentoRecord");
             $object->store();
             TTransaction::close();
 
-            $action = new TAction( [ "FabricantemedicamentoList", "onReload" ] );
+            $action = new TAction( [ "FabricanteMedicamentoList", "onReload" ] );
 
             new TMessage( "info", "Registro salvo com sucesso!", $action );
 

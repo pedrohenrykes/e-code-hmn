@@ -1,6 +1,6 @@
 <?php
 
-class FabricantemedicamentoList extends TPage{
+class FabricanteMedicamentoList extends TPage{
 
     private $form;
     private $datagrid;
@@ -31,7 +31,7 @@ class FabricantemedicamentoList extends TPage{
         $this->form->addFields( [ new TLabel( "Dados à buscar:" ) ], [ $dados ] );
 
         $this->form->addAction( "Buscar", new TAction( [ $this, "onSearch" ] ), "fa:search" );
-        $this->form->addAction( "Novo", new TAction( [ "FabricantemedicamentoForm", "onEdit" ] ), "bs:plus-sign green" );
+        $this->form->addAction( "Novo", new TAction( [ "FabricanteMedicamentoForm", "onEdit" ] ), "bs:plus-sign green" );
 
         $this->datagrid = new BootstrapDatagridWrapper( new TDataGrid() );
         $this->datagrid->datatable = "true";
@@ -44,7 +44,7 @@ class FabricantemedicamentoList extends TPage{
         $this->datagrid->addColumn( $column_nomefabricante );
         $this->datagrid->addColumn( $column_cnpj );
 
-        $action_edit = new TDataGridAction( [ "FabricantemedicamentoForm", "onEdit" ] );
+        $action_edit = new TDataGridAction( [ "FabricanteMedicamentoForm", "onEdit" ] );
         $action_edit->setButtonClass( "btn btn-default" );
         $action_edit->setLabel( "Editar" );
         $action_edit->setImage( "fa:pencil-square-o blue fa-lg" );
@@ -80,7 +80,7 @@ class FabricantemedicamentoList extends TPage{
 
             TTransaction::open( "database" );
 
-            $repository = new TRepository( "FabricantemedicamentoRecord" );
+            $repository = new TRepository( "FabricanteMedicamentoRecord" );
 
             if ( empty( $param[ "order" ] ) ) {
                 $param[ "order" ] = "id";
@@ -134,7 +134,7 @@ class FabricantemedicamentoList extends TPage{
 
                 TTransaction::open( "database" );
 
-                $repository = new TRepository( "FabricantemedicamentoRecord" );
+                $repository = new TRepository( "FabricanteMedicamentoRecord" );
 
                 if ( empty( $param[ "order" ] ) ) {
                     $param[ "order" ] = "id";
@@ -225,7 +225,7 @@ class FabricantemedicamentoList extends TPage{
 
             TTransaction::open( "database" );
 
-            $object = new FabricantemedicamentoRecord( $param[ "key" ] );
+            $object = new FabricanteMedicamentoRecord( $param[ "key" ] );
             $object->delete();
 
             TTransaction::close();
