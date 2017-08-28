@@ -16,6 +16,7 @@ class CustomDataGrid extends TDataGrid
         $field  = $action->getField();
 
         $key = isset( $object->$field ) ? $object->$field : NULL;
+
         $action->setParameter( 'key', $key );
 
         $fieldfk = $action->getFk();
@@ -27,6 +28,7 @@ class CustomDataGrid extends TDataGrid
             }
 
             $fk = isset( $object->$fieldfk ) ? $object->$fieldfk : NULL;
+
             $action->setParameter( 'fk', $fk );
         }
 
@@ -39,6 +41,7 @@ class CustomDataGrid extends TDataGrid
             }
 
             $did = isset( $object->$fielddid ) ? $object->$fielddid : NULL;
+            
             $action->setParameter( 'did', $did );
         }
     }

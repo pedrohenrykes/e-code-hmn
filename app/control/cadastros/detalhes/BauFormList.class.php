@@ -6,14 +6,13 @@ class BauFormList extends TPage
     private $datagrid;
     private $pageNavigation;
     private $loaded;
+    private $changeFields;
 
     public function __construct()
     {
         parent::__construct();
 
         $redstar = '<font color="red"><b>*</b></font>';
-
-        $fk = filter_input( INPUT_GET, "fk" );
 
         $this->form = new BootstrapFormBuilder( "form_list_bau" );
         $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
@@ -51,6 +50,10 @@ class BauFormList extends TPage
         $destinoobito_id          = new TCombo("destinoobito_id");
         $declaracaoobitomedico_id = new TCombo("declaracaoobitomedico_id");
         $convenio_id              = new TDBCombo( "convenio_id", "database", "ConvenioRecord", "id", "nome", "nome");
+
+        $this->changeFields = [ "internamentolocal", "remocao", "transferencia", "alta", "obito" ];
+
+        $fk = filter_input( INPUT_GET, "fk" );
 
         try {
 
@@ -135,7 +138,6 @@ class BauFormList extends TPage
         $obito            ->setValue( "N" );
         $convenio_id      ->setValue( "5" );
 
-
         $dataentrada        ->setMask( "dd/mm/yyyy" );
         $dataentrada        ->setDatabaseMask("yyyy-mm-dd");
         $datainternamento   ->setMask( "dd/mm/yyyy" );
@@ -157,18 +159,8 @@ class BauFormList extends TPage
         $horaobito          ->setMask( "hh:ii" );
         $declaracaoobitohora->setMask( "hh:ii" );
 
-        $dataentrada        ->setValue( date( "d/m/Y" ) );
-        $datainternamento   ->setValue( date( "d/m/Y" ) );
-        $dataremocao        ->setValue( date( "d/m/Y" ) );
-        $datatransferencia  ->setValue( date( "d/m/Y" ) );
-        $datatransporte     ->setValue( date( "d/m/Y" ) );
-        $dataaltahospitalar ->setValue( date( "d/m/Y" ) );
-        $dataobito          ->setValue( date( "d/m/Y" ) );
-        $declaracaoobitodata->setValue( date( "d/m/Y" ) );
-        $horaentrada        ->setValue( date( "H:i" ) );
-        $horaaltahospitalar ->setValue( date( "H:i" ) );
-        $horaobito          ->setValue( date( "H:i" ) );
-        $declaracaoobitohora->setValue( date( "H:i" ) );
+        $dataentrada->setValue( date( "d/m/Y" ) );
+        $horaentrada->setValue( date( "H:i" ) );
 
         $paciente_nome->setEditable( false );
 
@@ -255,7 +247,7 @@ class BauFormList extends TPage
         $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
         $this->form->addAction( "Voltar para a listagem", new TAction( [ "PacienteList", "onReload" ] ), "fa:table blue" );
 
-        $this->datagrid = new BootstrapDatagridWrapper( new TDataGrid() );
+        $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
         $this->datagrid->datatable = "true";
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
@@ -268,7 +260,7 @@ class BauFormList extends TPage
         $this->datagrid->addColumn( $column_dataentrada );
         $this->datagrid->addColumn( $column_horaentrada );
 
-        $action_edit = new TDataGridAction( [ $this, "onEdit" ] );
+        $action_edit = new CustomDataGridAction( [ $this, "onEdit" ] );
         $action_edit->setButtonClass( "btn btn-default" );
         $action_edit->setLabel( "Editar" );
         $action_edit->setImage( "fa:pencil-square-o blue fa-lg" );
@@ -276,13 +268,20 @@ class BauFormList extends TPage
         $action_edit->setParameter( "fk", $fk );
         $this->datagrid->addAction( $action_edit );
 
-        $action_del = new TDataGridAction( [ $this, "onDelete" ] );
+        $action_del = new CustomDataGridAction( [ $this, "onDelete" ] );
         $action_del->setButtonClass( "btn btn-default" );
         $action_del->setLabel( "Deletar" );
         $action_del->setImage( "fa:trash-o red fa-lg" );
         $action_del->setField( "id" );
         $action_del->setParameter( "fk", $fk );
         $this->datagrid->addAction( $action_del );
+
+        $action_avaliacao = new CustomDataGridAction( [ "ClassificacaoRiscoFormList", "onReload" ] );
+        $action_avaliacao->setButtonClass( "btn btn-default" );
+        $action_avaliacao->setLabel( "Avaliação" );
+        $action_avaliacao->setImage( "fa:stethoscope green fa-lg" );
+        $action_avaliacao->setField( "id" );
+        $this->datagrid->addAction( $action_avaliacao );
 
         $this->datagrid->createModel();
 
@@ -327,9 +326,7 @@ class BauFormList extends TPage
 
             $this->form->setData( $object );
 
-            $fields = [ "internamentolocal", "remocao", "transferencia", "alta", "obito" ];
-
-            foreach ( $fields as $field ) {
+            foreach ( $this->changeFields as $field ) {
                 self::onChangeAction([
                     "_field_name" => $field,
                     $field => $object->$field
@@ -345,9 +342,7 @@ class BauFormList extends TPage
     {
         try {
 
-            $fields = [ "internamentolocal", "remocao", "transferencia", "alta", "obito" ];
-
-            if( isset( $param[ "key" ] ) ) {
+            if ( isset( $param[ "key" ] ) ) {
 
                 TTransaction::open( "database" );
 
@@ -381,22 +376,15 @@ class BauFormList extends TPage
 
                 $this->form->setData( $object );
 
-                foreach ( $fields as $field ) {
-                    self::onChangeAction([
-                        "_field_name" => $field,
-                        $field => $object->$field
-                    ]);
-                }
+                TTransaction::close();
 
-            } else {
+            }
 
-                foreach ( $fields as $field ) {
-                    self::onChangeAction([
-                        "_field_name" => $field,
-                        $field => "N"
-                    ]);
-                }
-
+            foreach ( $this->changeFields as $field ) {
+                self::onChangeAction([
+                    "_field_name" => $field,
+                    $field => ( isset( $param[ "key" ] ) ? $object->$field : "N" )
+                ]);
             }
 
         } catch ( Exception $ex ) {
@@ -405,84 +393,6 @@ class BauFormList extends TPage
 
             new TMessage( "error", "Ocorreu um erro ao tentar carregar o registro para edição!<br><br>" . $ex->getMessage() );
 
-        }
-    }
-
-    public function onReload( $param = null )
-    {
-        try {
-
-            TTransaction::open( "database" );
-
-            $repository = new TRepository( "BauRecord" );
-
-            $properties = [
-                "order" => "dataentrada",
-                "direction" => "asc"
-            ];
-
-            $limit = 10;
-
-            $criteria = new TCriteria();
-            $criteria->setProperties( $properties );
-            $criteria->setProperty( "limit", $limit );
-            $criteria->add( new TFilter( "paciente_id", "=", $param[ "fk" ] ) );
-
-            $objects = $repository->load( $criteria, FALSE );
-
-            $this->datagrid->clear();
-
-            if ( !empty( $objects ) ) {
-
-                foreach ( $objects as $object ) {
-
-                    $dataobito           = new DateTime( $object->dataobito );
-                    $horaobito           = new DateTime( $object->horaobito );
-                    $dataentrada         = new DateTime( $object->dataentrada );
-                    $horaentrada         = new DateTime( $object->horaentrada );
-                    $dataremocao         = new DateTime( $object->dataremocao );
-                    $datainternamento    = new DateTime( $object->datainternamento );
-                    $datatransferencia   = new DateTime( $object->datatransferencia );
-                    $dataaltahospitalar  = new DateTime( $object->dataaltahospitalar );
-                    $horaaltahospitalar  = new DateTime( $object->horaaltahospitalar );
-                    $declaracaoobitodata = new DateTime( $object->declaracaoobitodata );
-                    $declaracaoobitohora = new DateTime( $object->declaracaoobitohora );
-
-                    $object->dataobito           = $dataobito->format("d/m/Y");
-                    $object->horaobito           = $horaobito->format("H:i");
-                    $object->dataentrada         = $dataentrada->format("d/m/Y");
-                    $object->horaentrada         = $horaentrada->format("H:i");
-                    $object->dataremocao         = $dataremocao->format("d/m/Y");
-                    $object->datainternamento    = $datainternamento->format("d/m/Y");
-                    $object->datatransferencia   = $datatransferencia->format("d/m/Y");
-                    $object->dataaltahospitalar  = $dataaltahospitalar->format("d/m/Y");
-                    $object->horaaltahospitalar  = $horaaltahospitalar->format("H:i");
-                    $object->declaracaoobitodata = $declaracaoobitodata->format("d/m/Y");
-                    $object->declaracaoobitohora = $declaracaoobitohora->format("H:i");
-
-                    $this->datagrid->addItem( $object );
-
-                }
-
-            }
-
-            $criteria->resetProperties();
-
-            $count = $repository->count( $criteria );
-
-            $this->pageNavigation->setCount( $count );
-            $this->pageNavigation->setProperties( $properties );
-            $this->pageNavigation->setLimit( $limit );
-
-            TTransaction::close();
-
-            $this->loaded = true;
-
-        } catch ( Exception $ex ) {
-
-            TTransaction::rollback();
-
-            new TMessage( "error", $ex->getMessage() );
         }
     }
 
@@ -517,7 +427,7 @@ class BauFormList extends TPage
 
             TTransaction::close();
 
-            $this->onReload();
+            $this->onReload( $param );
 
             new TMessage( "info", "O Registro foi apagado com sucesso!" );
 
@@ -525,8 +435,75 @@ class BauFormList extends TPage
 
             TTransaction::rollback();
 
-            new TMessage( "erro", $ex->getMessage() );
+            new TMessage( "error", $ex->getMessage() );
 
+        }
+    }
+
+    public function onReload( $param = null )
+    {
+        try {
+
+            TTransaction::open( "database" );
+
+            $repository = new TRepository( "BauRecord" );
+
+            $properties = [
+                "order" => "dataentrada",
+                "direction" => "asc"
+            ];
+
+            $limit = 10;
+
+            $criteria = new TCriteria();
+            $criteria->setProperties( $properties );
+            $criteria->setProperty( "limit", $limit );
+            $criteria->add( new TFilter( "paciente_id", "=", $param[ "fk" ] ) );
+
+            $objects = $repository->load( $criteria, FALSE );
+
+            if ( isset( $objects ) ) {
+
+                $this->datagrid->clear();
+
+                foreach ( $objects as $object ) {
+
+                    $dataentrada         = new DateTime( $object->dataentrada );
+                    $horaentrada         = new DateTime( $object->horaentrada );
+
+                    $object->dataentrada         = $dataentrada->format("d/m/Y");
+                    $object->horaentrada         = $horaentrada->format("H:i");
+
+                    $this->datagrid->addItem( $object );
+
+                }
+
+            }
+
+            $criteria->resetProperties();
+
+            $count = $repository->count( $criteria );
+
+            $this->pageNavigation->setCount( $count );
+            $this->pageNavigation->setProperties( $properties );
+            $this->pageNavigation->setLimit( $limit );
+
+            TTransaction::close();
+
+            $this->loaded = true;
+
+            foreach ( $this->changeFields as $field ) {
+                self::onChangeAction([
+                    "_field_name" => $field,
+                    $field => "N"
+                ]);
+            }
+
+        } catch ( Exception $ex ) {
+
+            TTransaction::rollback();
+
+            new TMessage( "error", $ex->getMessage() );
         }
     }
 
