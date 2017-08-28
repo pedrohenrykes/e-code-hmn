@@ -1,6 +1,6 @@
 <?php
 
-class BauForm extends TPage
+class BauFormList extends TPage
 {
     private $form;
     private $datagrid;
@@ -13,7 +13,9 @@ class BauForm extends TPage
 
         $redstar = '<font color="red"><b>*</b></font>';
 
-        $this->form = new BootstrapFormBuilder( "form_bau" );
+        $fk = filter_input( INPUT_GET, "fk" );
+
+        $this->form = new BootstrapFormBuilder( "form_list_bau" );
         $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 
@@ -38,6 +40,8 @@ class BauForm extends TPage
         $internamentolocal        = new TCombo("internamentolocal");
         $remocao                  = new TCombo("remocao");
         $transferencia            = new TCombo("transferencia");
+        $alta                     = new TCombo("alta");
+        $obito                    = new TCombo("obito");
 
         $localremocao_id          = new TCombo("localremocao_id");
         $localtransferencia_id    = new TCombo("localtransferencia_id");
@@ -47,6 +51,25 @@ class BauForm extends TPage
         $destinoobito_id          = new TCombo("destinoobito_id");
         $declaracaoobitomedico_id = new TCombo("declaracaoobitomedico_id");
         $convenio_id              = new TDBCombo( "convenio_id", "database", "ConvenioRecord", "id", "nome", "nome");
+
+        try {
+
+            TTransaction::open( "database" );
+
+            $paciente = new PacienteRecord( $fk );
+
+            if( isset( $paciente ) ){
+                $paciente_id->setValue( $paciente->id );
+                $paciente_nome->setValue( $paciente->nomepaciente );
+            }
+
+            TTransaction::close();
+
+        } catch ( Exception $ex ) {
+
+            new TMessage( "error", "Não foi possível carregar os dados do paciente.<br><br>" . $ex->getMessage() );
+
+        }
 
         $id                      ->setSize( "38%" );
         $paciente_nome           ->setSize( "38%" );
@@ -67,6 +90,8 @@ class BauForm extends TPage
         $remocao                 ->setSize( "38%" );
         $transferencia           ->setSize( "38%" );
         $internamentolocal       ->setSize( "38%" );
+        $alta                    ->setSize( "38%" );
+        $obito                   ->setSize( "38%" );
         $localremocao_id         ->setSize( "38%" );
         $localtransferencia_id   ->setSize( "38%" );
         $transportedestino_id    ->setSize( "38%" );
@@ -80,6 +105,8 @@ class BauForm extends TPage
         $remocao                 ->setDefaultOption( "..::SELECIONE::.." );
         $transferencia           ->setDefaultOption( "..::SELECIONE::.." );
         $internamentolocal       ->setDefaultOption( "..::SELECIONE::.." );
+        $alta                    ->setDefaultOption( "..::SELECIONE::.." );
+        $obito                   ->setDefaultOption( "..::SELECIONE::.." );
         $localremocao_id         ->setDefaultOption( "..::SELECIONE::.." );
         $localtransferencia_id   ->setDefaultOption( "..::SELECIONE::.." );
         $transportedestino_id    ->setDefaultOption( "..::SELECIONE::.." );
@@ -92,14 +119,20 @@ class BauForm extends TPage
         $internamentolocal->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
         $remocao          ->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
         $transferencia    ->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
+        $alta             ->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
+        $obito            ->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
 
         $internamentolocal->addItems( [ "S" => "SIM", "N" => "NÃO" ] );
         $remocao          ->addItems( [ "S" => "SIM", "N" => "NÃO" ] );
         $transferencia    ->addItems( [ "S" => "SIM", "N" => "NÃO" ] );
+        $alta             ->addItems( [ "S" => "SIM", "N" => "NÃO" ] );
+        $obito            ->addItems( [ "S" => "SIM", "N" => "NÃO" ] );
 
         $internamentolocal->setValue( "N" );
         $remocao          ->setValue( "N" );
         $transferencia    ->setValue( "N" );
+        $alta             ->setValue( "N" );
+        $obito            ->setValue( "N" );
         $convenio_id      ->setValue( "5" );
 
 
@@ -140,6 +173,7 @@ class BauForm extends TPage
         $paciente_nome->setEditable( false );
 
         $responsavel->forceUpperCase();
+        $responsavel->setProperty( "title", "Caso o paciente seja menor de idade." );
 
         $label01 = new RequiredTextFormat( [ "Nome do Paciente", "#F00", "bold" ] );
         $label02 = new RequiredTextFormat( [ "Sexo", "#F00", "bold" ] );
@@ -197,6 +231,7 @@ class BauForm extends TPage
         $page7->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
         $this->form->appendPage( "Alta" );
         $this->form->addContent( [ $page7 ] );
+        $this->form->addFields( [ new TLabel( "Alta:" ) ], [ $alta ] );
         $this->form->addFields( [ new TLabel( "Tipo de Alta:" ) ], [ $tipoaltahospitalar_id ] );
         $this->form->addFields( [ new TLabel( "Data da Alta:" ) ], [ $dataaltahospitalar ] );
         $this->form->addFields( [ new TLabel( "Hora da Alta:" ) ], [ $horaaltahospitalar ] );
@@ -206,6 +241,7 @@ class BauForm extends TPage
         $page8->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
         $this->form->appendPage( "Óbito" );
         $this->form->addContent( [ $page8 ] );
+        $this->form->addFields( [ new TLabel( "Óbito:" ) ], [ $obito ] );
         $this->form->addFields( [ new TLabel( "Data do Óbito:" ) ], [ $dataobito ] );
         $this->form->addFields( [ new TLabel( "Hora do Óbito:" ) ], [ $horaobito ] );
         $this->form->addFields( [ new TLabel( "Data da Declaração:" ) ], [ $declaracaoobitodata ] );
@@ -213,8 +249,11 @@ class BauForm extends TPage
         $this->form->addFields( [ new TLabel( "Destino do Corpo:" ) ], [ $destinoobito_id ] );
         $this->form->addFields( [ new TLabel( "Medico Responsável:" ) ], [ $declaracaoobitomedico_id ] );
 
-        $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );
-        $this->form->addAction( "Voltar para a listagem", new TAction( [ "BauList", "onReload" ] ), "fa:table blue" );
+        $onSave = new TAction( [ $this, "onSave" ] );
+        $onSave->setParameter( "fk", $fk );
+
+        $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
+        $this->form->addAction( "Voltar para a listagem", new TAction( [ "PacienteList", "onReload" ] ), "fa:table blue" );
 
         $this->datagrid = new BootstrapDatagridWrapper( new TDataGrid() );
         $this->datagrid->datatable = "true";
@@ -234,6 +273,7 @@ class BauForm extends TPage
         $action_edit->setLabel( "Editar" );
         $action_edit->setImage( "fa:pencil-square-o blue fa-lg" );
         $action_edit->setField( "id" );
+        $action_edit->setParameter( "fk", $fk );
         $this->datagrid->addAction( $action_edit );
 
         $action_del = new TDataGridAction( [ $this, "onDelete" ] );
@@ -241,6 +281,7 @@ class BauForm extends TPage
         $action_del->setLabel( "Deletar" );
         $action_del->setImage( "fa:trash-o red fa-lg" );
         $action_del->setField( "id" );
+        $action_del->setParameter( "fk", $fk );
         $this->datagrid->addAction( $action_del );
 
         $this->datagrid->createModel();
@@ -258,7 +299,7 @@ class BauForm extends TPage
         parent::add( $container );
     }
 
-    public function onSave()
+    public function onSave( $param = null )
     {
         $object = $this->form->getData( "BauRecord" );
 
@@ -268,11 +309,15 @@ class BauForm extends TPage
 
             TTransaction::open( "database" );
 
+            unset( $object->alta );
+            unset( $object->obito );
+
             $object->store();
 
             TTransaction::close();
 
-            $action = new TAction( [ "BauList", "onReload" ] );
+            $action = new TAction( [ "BauFormList", "onReload" ] );
+            $action->setParameter( "fk", $param[ "fk" ] );
 
             new TMessage( "info", "Registro salvo com sucesso!", $action );
 
@@ -282,7 +327,7 @@ class BauForm extends TPage
 
             $this->form->setData( $object );
 
-            $fields = [ "internamentolocal", "remocao", "transferencia" ];
+            $fields = [ "internamentolocal", "remocao", "transferencia", "alta", "obito" ];
 
             foreach ( $fields as $field ) {
                 self::onChangeAction([
@@ -300,13 +345,39 @@ class BauForm extends TPage
     {
         try {
 
-            $fields = [ "internamentolocal", "remocao", "transferencia" ];
+            $fields = [ "internamentolocal", "remocao", "transferencia", "alta", "obito" ];
 
             if( isset( $param[ "key" ] ) ) {
 
                 TTransaction::open( "database" );
 
                 $object = new BauRecord( $param[ "key" ] );
+
+                $dataobito           = new DateTime( $object->dataobito );
+                $horaobito           = new DateTime( $object->horaobito );
+                $dataentrada         = new DateTime( $object->dataentrada );
+                $horaentrada         = new DateTime( $object->horaentrada );
+                $dataremocao         = new DateTime( $object->dataremocao );
+                $datainternamento    = new DateTime( $object->datainternamento );
+                $datatransferencia   = new DateTime( $object->datatransferencia );
+                $dataaltahospitalar  = new DateTime( $object->dataaltahospitalar );
+                $horaaltahospitalar  = new DateTime( $object->horaaltahospitalar );
+                $declaracaoobitodata = new DateTime( $object->declaracaoobitodata );
+                $declaracaoobitohora = new DateTime( $object->declaracaoobitohora );
+
+                $object->dataobito           = $dataobito->format("d/m/Y");
+                $object->horaobito           = $horaobito->format("H:i");
+                $object->dataentrada         = $dataentrada->format("d/m/Y");
+                $object->horaentrada         = $horaentrada->format("H:i");
+                $object->dataremocao         = $dataremocao->format("d/m/Y");
+                $object->datainternamento    = $datainternamento->format("d/m/Y");
+                $object->datatransferencia   = $datatransferencia->format("d/m/Y");
+                $object->dataaltahospitalar  = $dataaltahospitalar->format("d/m/Y");
+                $object->horaaltahospitalar  = $horaaltahospitalar->format("H:i");
+                $object->declaracaoobitodata = $declaracaoobitodata->format("d/m/Y");
+                $object->declaracaoobitohora = $declaracaoobitohora->format("H:i");
+
+                $this->onReload( $param );
 
                 $this->form->setData( $object );
 
@@ -345,25 +416,54 @@ class BauForm extends TPage
 
             $repository = new TRepository( "BauRecord" );
 
-            if ( empty( $param[ "order" ] ) ) {
-                $param[ "order" ] = "dataentrada";
-                $param[ "direction" ] = "asc";
-            }
+            $properties = [
+                "order" => "dataentrada",
+                "direction" => "asc"
+            ];
 
             $limit = 10;
 
             $criteria = new TCriteria();
-            $criteria->setProperties( $param );
+            $criteria->setProperties( $properties );
             $criteria->setProperty( "limit", $limit );
+            $criteria->add( new TFilter( "paciente_id", "=", $param[ "fk" ] ) );
 
             $objects = $repository->load( $criteria, FALSE );
 
             $this->datagrid->clear();
 
             if ( !empty( $objects ) ) {
+
                 foreach ( $objects as $object ) {
+
+                    $dataobito           = new DateTime( $object->dataobito );
+                    $horaobito           = new DateTime( $object->horaobito );
+                    $dataentrada         = new DateTime( $object->dataentrada );
+                    $horaentrada         = new DateTime( $object->horaentrada );
+                    $dataremocao         = new DateTime( $object->dataremocao );
+                    $datainternamento    = new DateTime( $object->datainternamento );
+                    $datatransferencia   = new DateTime( $object->datatransferencia );
+                    $dataaltahospitalar  = new DateTime( $object->dataaltahospitalar );
+                    $horaaltahospitalar  = new DateTime( $object->horaaltahospitalar );
+                    $declaracaoobitodata = new DateTime( $object->declaracaoobitodata );
+                    $declaracaoobitohora = new DateTime( $object->declaracaoobitohora );
+
+                    $object->dataobito           = $dataobito->format("d/m/Y");
+                    $object->horaobito           = $horaobito->format("H:i");
+                    $object->dataentrada         = $dataentrada->format("d/m/Y");
+                    $object->horaentrada         = $horaentrada->format("H:i");
+                    $object->dataremocao         = $dataremocao->format("d/m/Y");
+                    $object->datainternamento    = $datainternamento->format("d/m/Y");
+                    $object->datatransferencia   = $datatransferencia->format("d/m/Y");
+                    $object->dataaltahospitalar  = $dataaltahospitalar->format("d/m/Y");
+                    $object->horaaltahospitalar  = $horaaltahospitalar->format("H:i");
+                    $object->declaracaoobitodata = $declaracaoobitodata->format("d/m/Y");
+                    $object->declaracaoobitohora = $declaracaoobitohora->format("H:i");
+
                     $this->datagrid->addItem( $object );
+
                 }
+
             }
 
             $criteria->resetProperties();
@@ -371,7 +471,7 @@ class BauForm extends TPage
             $count = $repository->count( $criteria );
 
             $this->pageNavigation->setCount( $count );
-            $this->pageNavigation->setProperties( $param );
+            $this->pageNavigation->setProperties( $properties );
             $this->pageNavigation->setLimit( $limit );
 
             TTransaction::close();
@@ -390,22 +490,29 @@ class BauForm extends TPage
     {
         if( isset( $param[ "key" ] ) ) {
 
+            $param = [
+                "key" => $param[ "key" ],
+                "fk"  => $param[ "fk" ]
+            ];
+
             $action1 = new TAction( [ $this, "Delete" ] );
             $action2 = new TAction( [ $this, "onReload" ] );
 
-            $action1->setParameter( "key", $param[ "key" ] );
+            $action1->setParameters( $param );
+            $action2->setParameters( $param );
 
             new TQuestion( "Deseja realmente apagar o registro?", $action1, $action2 );
         }
     }
 
-    function Delete( $param = null )
+    public function Delete( $param = null )
     {
         try {
 
             TTransaction::open( "database" );
 
             $object = new BauRecord( $param[ "key" ] );
+
             $object->delete();
 
             TTransaction::close();
@@ -434,11 +541,11 @@ class BauForm extends TPage
             case "internamentolocal":
 
                 if( $param[ $fieldName ] == "S" ) {
-                    TQuickForm::showField( "form_bau", "datainternamento" );
+                    TQuickForm::showField( "form_list_bau", "datainternamento" );
                 } else {
                     $object->datainternamento = "";
-                    TQuickForm::sendData( "form_bau", $object );
-                    TQuickForm::hideField( "form_bau", "datainternamento" );
+                    TQuickForm::sendData( "form_list_bau", $object );
+                    TQuickForm::hideField( "form_list_bau", "datainternamento" );
                 }
 
                 break;
@@ -446,14 +553,14 @@ class BauForm extends TPage
             case "remocao":
 
                 if( $param[ $fieldName ] == "S" ) {
-                    TQuickForm::showField( "form_bau", "dataremocao" );
-                    TQuickForm::showField( "form_bau", "localremocao_id" );
+                    TQuickForm::showField( "form_list_bau", "dataremocao" );
+                    TQuickForm::showField( "form_list_bau", "localremocao_id" );
                 } else {
                     $object->dataremocao = "";
                     $object->localremocao_id = "..::SELECIONE::..";
-                    TQuickForm::sendData( "form_bau", $object );
-                    TQuickForm::hideField( "form_bau", "dataremocao" );
-                    TQuickForm::hideField( "form_bau", "localremocao_id" );
+                    TQuickForm::sendData( "form_list_bau", $object );
+                    TQuickForm::hideField( "form_list_bau", "dataremocao" );
+                    TQuickForm::hideField( "form_list_bau", "localremocao_id" );
                 }
 
                 break;
@@ -461,25 +568,76 @@ class BauForm extends TPage
             case "transferencia":
 
                 if( $param[ $fieldName ] == "S" ) {
-                    TQuickForm::showField( "form_bau", "datatransferencia" );
-                    TQuickForm::showField( "form_bau", "localtransferencia_id" );
+                    TQuickForm::showField( "form_list_bau", "datatransferencia" );
+                    TQuickForm::showField( "form_list_bau", "localtransferencia_id" );
                 } else {
                     $object->datatransferencia = "";
                     $object->localtransferencia_id = "..::SELECIONE::..";
-                    TQuickForm::sendData( "form_bau", $object );
-                    TQuickForm::hideField( "form_bau", "datatransferencia" );
-                    TQuickForm::hideField( "form_bau", "localtransferencia_id" );
+                    TQuickForm::sendData( "form_list_bau", $object );
+                    TQuickForm::hideField( "form_list_bau", "datatransferencia" );
+                    TQuickForm::hideField( "form_list_bau", "localtransferencia_id" );
+                }
+
+                break;
+
+            case "alta":
+
+                if( $param[ $fieldName ] == "S" ) {
+
+                    TQuickForm::showField( "form_list_bau", "medicoalta_id" );
+                    TQuickForm::showField( "form_list_bau", "horaaltahospitalar" );
+                    TQuickForm::showField( "form_list_bau", "dataaltahospitalar" );
+                    TQuickForm::showField( "form_list_bau", "tipoaltahospitalar_id" );
+
+                } else {
+
+                    $object->medicoalta_id = "";
+                    $object->horaaltahospitalar = "";
+                    $object->dataaltahospitalar = "";
+                    $object->tipoaltahospitalar_id = "";
+
+                    TQuickForm::sendData( "form_list_bau", $object );
+                    TQuickForm::hideField( "form_list_bau", "medicoalta_id" );
+                    TQuickForm::hideField( "form_list_bau", "horaaltahospitalar" );
+                    TQuickForm::hideField( "form_list_bau", "dataaltahospitalar" );
+                    TQuickForm::hideField( "form_list_bau", "tipoaltahospitalar_id" );
+
+                }
+
+                break;
+
+            case "obito":
+
+                if( $param[ $fieldName ] == "S" ) {
+
+                    TQuickForm::showField( "form_list_bau", "dataobito" );
+                    TQuickForm::showField( "form_list_bau", "horaobito" );
+                    TQuickForm::showField( "form_list_bau", "declaracaoobitodata" );
+                    TQuickForm::showField( "form_list_bau", "declaracaoobitohora" );
+                    TQuickForm::showField( "form_list_bau", "destinoobito_id" );
+                    TQuickForm::showField( "form_list_bau", "declaracaoobitomedico_id" );
+
+                } else {
+
+                    $object->dataobito = "";
+                    $object->horaobito = "";
+                    $object->declaracaoobitodata = "";
+                    $object->declaracaoobitohora = "";
+                    $object->destinoobito_id = "";
+                    $object->declaracaoobitomedico_id = "";
+
+                    TQuickForm::sendData( "form_list_bau", $object );
+                    TQuickForm::hideField( "form_list_bau", "dataobito" );
+                    TQuickForm::hideField( "form_list_bau", "horaobito" );
+                    TQuickForm::hideField( "form_list_bau", "declaracaoobitodata" );
+                    TQuickForm::hideField( "form_list_bau", "declaracaoobitohora" );
+                    TQuickForm::hideField( "form_list_bau", "destinoobito_id" );
+                    TQuickForm::hideField( "form_list_bau", "declaracaoobitomedico_id" );
+
                 }
 
                 break;
 
         }
-    }
-
-    public function show()
-    {
-        $this->onReload();
-
-        parent::show();
     }
 }

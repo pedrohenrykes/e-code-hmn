@@ -2,12 +2,12 @@
 
 use Adianti\Widget\Datagrid\TDataGridAction;
 
-class DataGridActionCustom extends TDataGridAction
+class CustomDataGridAction extends TDataGridAction
 {
     private $fk;
     private $did;
 
-    public function setFk($field)
+    public function setFk( $field )
     {
         $this->fk = $field;
     }
@@ -17,7 +17,7 @@ class DataGridActionCustom extends TDataGridAction
         return $this->fk;
     }
 
-    public function setDid($field)
+    public function setDid( $field )
     {
         $this->did = $field;
     }

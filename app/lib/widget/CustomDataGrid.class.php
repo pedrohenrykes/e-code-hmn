@@ -2,21 +2,27 @@
 
 use Adianti\Widget\Datagrid\TDataGrid;
 
-class DataGridCustom extends TDataGrid
+class CustomDataGrid extends TDataGrid
 {
-    private function prepareAction( TAction $action, $object )
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    protected function prepareAction( TAction $action, $object )
     {
       	parent::prepareAction( $action, $object );
+
+        $field  = $action->getField();
 
         $key = isset( $object->$field ) ? $object->$field : NULL;
         $action->setParameter( 'key', $key );
 
         $fieldfk = $action->getFk();
 
-        if ( isset( $fieldfk ) )
-        {
-            if ( !isset( $object->$fieldfk ) )
-            {
+        if ( isset( $fieldfk ) ) {
+
+            if ( !isset( $object->$fieldfk ) ) {
                 throw new Exception( AdiantiCoreTranslator::translate( 'FK ^1 not exists', $field ) );
             }
 
@@ -26,10 +32,9 @@ class DataGridCustom extends TDataGrid
 
         $fielddid = $action->getDid();
 
-        if ( isset( $fielddid ) )
-        {
-            if ( !isset( $object->$fielddid ) )
-            {
+        if ( isset( $fielddid ) ) {
+
+            if ( !isset( $object->$fielddid ) ) {
                 throw new Exception( AdiantiCoreTranslator::translate( 'DID ^1 not exists', $fielddid ) );
             }
 

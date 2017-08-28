@@ -32,7 +32,7 @@ class PacienteList extends TPage
         $this->form->addAction( "Buscar", new TAction( [$this, "onSearch"  ] ), "fa:search" );
         $this->form->addAction( "Novo"  , new TAction( ["PacienteForm", "onEdit"] ), "bs:plus-sign green" );
 
-        $this->datagrid = new BootstrapDatagridWrapper( new TDataGrid() );
+        $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
         $this->datagrid->datatable = "true";
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
@@ -49,25 +49,26 @@ class PacienteList extends TPage
         $this->datagrid->addColumn( $column_numerocpf );
         $this->datagrid->addColumn( $column_telcelular );
 
-        $action_edit = new TDataGridAction ( [ "PacienteForm", "onEdit" ] );
+        $action_edit = new CustomDataGridAction ( [ "PacienteForm", "onEdit" ] );
         $action_edit->setButtonClass ( "btn btn-default" );
         $action_edit->setLabel ( "Editar" );
         $action_edit->setImage ( "fa:pencil-square-o blue fa-lg" );
         $action_edit->setField ( "id" );
         $this->datagrid->addAction ( $action_edit );
 
-        $action_del = new TDataGridAction( [ $this, "onDelete" ] );
+        $action_del = new CustomDataGridAction( [ $this, "onDelete" ] );
         $action_del->setButtonClass( "btn btn-default" );
         $action_del->setLabel( "Deletar" );
         $action_del->setImage( "fa:trash-o red fa-lg" );
         $action_del->setField( "id" );
         $this->datagrid->addAction( $action_del );
 
-        $action_bau = new TDataGridAction( [ "BauForm", "onReload" ] );
+        $action_bau = new CustomDataGridAction( [ "BauFormList", "onReload" ] );
         $action_bau->setButtonClass( "btn btn-default" );
         $action_bau->setLabel( "B.A.U." );
         $action_bau->setImage( "fa:address-card-o green fa-lg" );
         $action_bau->setField( "id" );
+        $action_bau->setFk( "id" );
 
         $action_group = new TDataGridActionGroup('Opções', 'bs:th');
         $action_group->addAction( $action_bau );
