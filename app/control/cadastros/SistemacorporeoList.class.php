@@ -1,6 +1,6 @@
 <?php
 
-class SistemacorporeoList extends TPage{
+class SistemaCorporeoList extends TPage{
 
     private $form;
     private $datagrid;
@@ -9,11 +9,10 @@ class SistemacorporeoList extends TPage{
 
     public function __construct()
     {
-
         parent::__construct();
 
-        $this->form = new BootstrapFormBuilder( "form_Sistema_corporeo" );
-        $this->form->setFormTitle( "<b>istema Corporeo</b>" );
+        $this->form = new BootstrapFormBuilder( "list_sistema_corporeo" );
+        $this->form->setFormTitle( "Listagem de Sistemas Corpóreos" );
         $this->form->class = "tform";;
 
         $opcao = new TCombo('opcao');
@@ -25,26 +24,24 @@ class SistemacorporeoList extends TPage{
         $opcao->setSize( "38%" );
         $dados->setSize( "38%" );
 
-        $opcao->addItems( [ "sistemacorporeo" => "Sistema Corporeo" ] );
+        $opcao->addItems( [ "nomesistemacorporeo" => "Nome" ] );
 
         $this->form->addFields( [ new TLabel( "Opção de busca:" ) ], [ $opcao ] );
         $this->form->addFields( [ new TLabel( "Dados à buscar:" ) ], [ $dados ] );
 
         $this->form->addAction( "Buscar", new TAction( [ $this, "onSearch" ] ), "fa:search" );
-        $this->form->addAction( "Novo", new TAction( [ "SistemacorporeoForm", "onEdit" ] ), "bs:plus-sign green" );
+        $this->form->addAction( "Novo", new TAction( [ "SistemaCorporeoForm", "onEdit" ] ), "bs:plus-sign green" );
 
         $this->datagrid = new BootstrapDatagridWrapper( new TDataGrid() );
         $this->datagrid->datatable = "true";
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
 
-        $column_nomesistemacorporeo = new TDataGridColumn( "nomesistemacorporeo", "sistema Corporeo", "left" );
-
+        $column_nomesistemacorporeo = new TDataGridColumn( "nomesistemacorporeo", "Nome", "left" );
 
         $this->datagrid->addColumn( $column_nomesistemacorporeo );
 
-
-        $action_edit = new TDataGridAction( [ "SistemacorporeoForm", "onEdit" ] );
+        $action_edit = new TDataGridAction( [ "SistemaCorporeoForm", "onEdit" ] );
         $action_edit->setButtonClass( "btn btn-default" );
         $action_edit->setLabel( "Editar" );
         $action_edit->setImage( "fa:pencil-square-o blue fa-lg" );
@@ -80,7 +77,7 @@ class SistemacorporeoList extends TPage{
 
             TTransaction::open( "database" );
 
-            $repository = new TRepository( "SistemacorporeoRecord" );
+            $repository = new TRepository( "SistemaCorporeoRecord" );
 
             if ( empty( $param[ "order" ] ) ) {
                 $param[ "order" ] = "id";
@@ -134,7 +131,7 @@ class SistemacorporeoList extends TPage{
 
                 TTransaction::open( "database" );
 
-                $repository = new TRepository( "SistemacorporeoRecord" );
+                $repository = new TRepository( "SistemaCorporeoRecord" );
 
                 if ( empty( $param[ "order" ] ) ) {
                     $param[ "order" ] = "id";
@@ -149,13 +146,9 @@ class SistemacorporeoList extends TPage{
 
                 switch ( $data->opcao ) {
 
-                    case "sistemacorporeo":
-                    $criteria->add( new TFilter( $data->opcao, "LIKE", "%" . $data->dados . "%" ) );
-                    break;
-
-                    default:
-                    $criteria->add( new TFilter( $data->opcao, "LIKE", $data->dados . "%" ) );
-                    break;
+                    case "nomesistemacorporeo":
+                        $criteria->add( new TFilter( $data->opcao, "LIKE", "%" . $data->dados . "%" ) );
+                        break;
 
                 }
 

@@ -245,7 +245,7 @@ class BauFormList extends TPage
         $onSave->setParameter( "fk", $fk );
 
         $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
-        $this->form->addAction( "Voltar para a listagem", new TAction( [ "PacienteList", "onReload" ] ), "fa:table blue" );
+        $this->form->addAction( "Voltar para Pacientes", new TAction( [ "PacienteList", "onReload" ] ), "fa:table blue" );
 
         $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
         $this->datagrid->datatable = "true";
@@ -281,6 +281,8 @@ class BauFormList extends TPage
         $action_avaliacao->setLabel( "Avaliação" );
         $action_avaliacao->setImage( "fa:stethoscope green fa-lg" );
         $action_avaliacao->setField( "id" );
+        $action_avaliacao->setFk( "id" );
+        $action_avaliacao->setDid( "paciente_id" );
         $this->datagrid->addAction( $action_avaliacao );
 
         $this->datagrid->createModel();

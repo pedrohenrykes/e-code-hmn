@@ -1,41 +1,30 @@
 <?php
 
-
-
-class SistemacorporeoForm extends TWindow
+class SistemaCorporeoForm extends TWindow
 {
-
     private $form;
 
     public function __construct()
     {
-
         parent::__construct();
-        parent::setTitle( "Sistema Corporeo" );
+        parent::setTitle( "Sistemas Corpóreos" );
         parent::setSize( 0.600, 0.800 );
 
         $redstar = '<font color="red"><b>*</b></font>';
 
-        $this->form = new BootstrapFormBuilder( "form_Sistema_corporeo" );
-        $this->form->setFormTitle( "($redstar) campos obrigatórios" );
+        $this->form = new BootstrapFormBuilder( "form_sistema_corporeo" );
+        $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 
-        $id             = new THidden( "id" );
-        $Sistemacorporeo= new TEntry("Sistemacorporeo");
+        $id                  = new THidden( "id" );
+        $nomesistemacorporeo = new TEntry( "nomesistemacorporeo" );
+        $nomesistemacorporeo->setProperty("title", "Digite o nome do sistema");
+        $nomesistemacorporeo->setSize("38%");
 
-
-
-        $Sistemacorporeo->setProperty("title", "Digite o nome do Sistema");
-
-        $Sistemacorporeo->setSize("38%");
-
-
-        $this->form->addFields([new TLabel("Sistema Corporeo : $redstar")], [$Sistemacorporeo]);
-
+        $this->form->addFields( [ new TLabel( "Nome: {$redstar}" ) ], [ $nomesistemacorporeo ] );
         $this->form->addFields( [ $id ] );
 
         $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );
-        $this->form->addAction( "Voltar para a listagem", new TAction( [ "SistemacorporeoList", "onReload" ] ), "fa:table blue" );
 
         $container = new TVBox();
         $container->style = "width: 100%";
@@ -51,11 +40,14 @@ class SistemacorporeoForm extends TWindow
             $this->form->validate();
 
             TTransaction::open( "database" );
-            $object = $this->form->getData("SistemacorporeoRecord");
+
+            $object = $this->form->getData("SistemaCorporeoRecord");
+
             $object->store();
+
             TTransaction::close();
 
-            $action = new TAction( [ "SistemacorporeoList", "onReload" ] );
+            $action = new TAction( [ "SistemaCorporeoList", "onReload" ] );
 
             new TMessage( "info", "Registro salvo com sucesso!", $action );
 
@@ -75,9 +67,13 @@ class SistemacorporeoForm extends TWindow
             if( isset( $param[ "key" ] ) ) {
 
                 TTransaction::open( "database" );
-                $object = new SistemacorporeoRecord($param["key"]);
-                $this->form->setData($object);
+
+                $object = new SistemaCorporeoRecord( $param["key"] );
+
+                $this->form->setData( $object );
+
                 TTransaction::close();
+
             }
 
         } catch ( Exception $ex ) {

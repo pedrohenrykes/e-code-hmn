@@ -20,29 +20,41 @@ class ClassificacaoRiscoFormList extends TPage
         $id                        = new THidden( "id" );
         $paciente_id               = new THidden( "paciente_id" );
         $bau_id                    = new THidden( "bau_id" );
-        $dataclassificacao         = new TDate("dataclassificacao");
-        $horaclassificacao         = new TDateTime("horaclassificacao");
-        $paciente_nome             = new TEntry("paciente_nome");
-        $pressaoarterial           = new TEntry("pressaoarterial");
-        $frequenciacardiaca        = new TEntry("frequenciacardiaca");
-        $frequenciarespiratoria    = new TEntry("frequenciarespiratoria");
-        $temperatura               = new TEntry("temperatura");
-        $spo2                      = new TEntry("spo2");
-        $htg                       = new TEntry("htg");
-        $dor                       = new TEntry("dor");
-        $observacoes               = new TEntry("observacoes");
-        $queixaprincipal           = new TEntry("queixaprincipal");
+        $enfermeiro_id             = new THidden( "enfermeiro_id" ); // Deve ser capturado a partir da sessão
+        $dataclassificacao         = new TDate( "dataclassificacao" );
+        $horaclassificacao         = new TDateTime( "horaclassificacao" );
+        $paciente_nome             = new TEntry( "paciente_nome" );
+        $pressaoarterial           = new TEntry( "pressaoarterial" );
+        $frequenciacardiaca        = new TEntry( "frequenciacardiaca" );
+        $frequenciarespiratoria    = new TEntry( "frequenciarespiratoria" );
+        $temperatura               = new TEntry( "temperatura" );
+        $spo2                      = new TEntry( "spo2" );
+        $htg                       = new TEntry( "htg" );
+        $observacoes               = new TText( "observacoes" );
+        $queixaprincipal           = new TText( "queixaprincipal" );
+        $dor                       = new TCombo( "dor" );
 
-        $tipoclassificacaorisco_id = new TDBCombo("tipoclassificacaorisco_id", "database", "TipoClassificacaoRiscoRecord", "id", "");
-        $enfermeiro_id             = new TDBCombo("enfermeiro_id", "database", "", "id", "");
+        $tipoclassificacaorisco_id = new TDBCombo(
+            "tipoclassificacaorisco_id",
+            "database", "TipoClassificacaoRiscoRecord",
+            "id", "nometipoclassificacaorisco",
+            "nometipoclassificacaorisco"
+        );
+
+        $dor->addItems([
+            "LEVE" => "LEVE",
+            "MODERADA" => "MODERADA",
+            "INTENSA" => "INTENSA"
+        ]);
 
         $fk = filter_input( INPUT_GET, "fk" );
+        $did = filter_input( INPUT_GET, "did" );
 
         try {
 
             TTransaction::open( "database" );
 
-            $paciente = new PacienteRecord( $fk );
+            $paciente = new PacienteRecord( $did );
 
             if( isset( $paciente ) ){
                 $paciente_id->setValue( $paciente->id );
@@ -57,17 +69,17 @@ class ClassificacaoRiscoFormList extends TPage
 
         }
 
-        $dataclassificacao     ->setSize('38%');
-        $horaclassificacao     ->setSize('38%');
-        $pressaoarterial       ->setSize('38%');
-        $frequenciacardiaca    ->setSize('38%');
-        $frequenciarespiratoria->setSize('38%');
-        $temperatura           ->setSize('38%');
-        $spo2                  ->setSize('38%');
-        $htg                   ->setSize('38%');
-        $dor                   ->setSize('38%');
-        $observacoes           ->setSize('38%');
-        $queixaprincipal       ->setSize('38%');
+        $dataclassificacao     ->setSize("38%");
+        $horaclassificacao     ->setSize("38%");
+        $pressaoarterial       ->setSize("38%");
+        $frequenciacardiaca    ->setSize("38%");
+        $frequenciarespiratoria->setSize("38%");
+        $temperatura           ->setSize("38%");
+        $spo2                  ->setSize("38%");
+        $htg                   ->setSize("38%");
+        $dor                   ->setSize("38%");
+        $observacoes           ->setSize("38%");
+        $queixaprincipal       ->setSize("38%");
 
         $tipoclassificacaorisco_id->setDefaultOption( "..::SELECIONE::.." );
         $enfermeiro_id            ->setDefaultOption( "..::SELECIONE::.." );
@@ -88,38 +100,49 @@ class ClassificacaoRiscoFormList extends TPage
         $paciente_id      ->addValidation( $label01->getText(), new TRequiredValidator );
         $dataclassificacao->addValidation( $label01->getText(), new TRequiredValidator );
 
-        $this->form->addFields( [ new TLabel( "Nome do Paciente: {$redstar}" ) ], [ $paciente_id ]);
+        $this->form->addFields( [ new TLabel( "Nome do Paciente: {$redstar}" ) ], [ $paciente_nome ]);
         $this->form->addFields( [ new TLabel( "Data da Avaliação: {$redstar}" ) ], [ $dataclassificacao ] );
-        $this->form->addFields( [ new TLabel( 'Hora da Avaliação:' ) ], [ $horaclassificacao ] );
-        $this->form->addFields( [ new TLabel( 'Pressão Arterial:' ) ], [ $pressaoarterial ] );
-        $this->form->addFields( [ new TLabel( 'Frequência Cardíaca:' ) ], [ $frequenciacardiaca ] );
-        $this->form->addFields( [ new TLabel( 'Frequência Respiratória:' ) ], [ $frequenciarespiratoria ] );
-        $this->form->addFields( [ new TLabel( 'Temperatura:' ) ], [ $temperatura ] );
-        $this->form->addFields( [ new TLabel( 'SPO2:' ) ], [ $spo2 ] );
-        $this->form->addFields( [ new TLabel( 'HTG:' ) ], [ $htg ] );
-        $this->form->addFields( [ new TLabel( 'DOR:' ) ], [ $dor ] );
-        $this->form->addFields( [ new TLabel( 'Observações:' ) ], [ $observacoes ] );
-        $this->form->addFields( [ new TLabel( 'Queixa Principal:' ) ], [ $queixaprincipal ] );
+        $this->form->addFields( [ new TLabel( "Hora da Avaliação:" ) ], [ $horaclassificacao ] );
+        $this->form->addFields( [ new TLabel( "Pressão Arterial:" ) ], [ $pressaoarterial ] );
+        $this->form->addFields( [ new TLabel( "Frequência Cardíaca:" ) ], [ $frequenciacardiaca ] );
+        $this->form->addFields( [ new TLabel( "Frequência Respiratória:" ) ], [ $frequenciarespiratoria ] );
+        $this->form->addFields( [ new TLabel( "Temperatura:" ) ], [ $temperatura ] );
+        $this->form->addFields( [ new TLabel( "SPO2:" ) ], [ $spo2 ] );
+        $this->form->addFields( [ new TLabel( "HTG:" ) ], [ $htg ] );
+        $this->form->addFields( [ new TLabel( "Escala de dor:" ) ], [ $dor ] );
+        $this->form->addFields( [ new TLabel( "Queixa Principal:" ) ], [ $queixaprincipal ] );
+        $this->form->addFields( [ new TLabel( "Observações:" ) ], [ $observacoes ] );
+        $this->form->addFields( [ new TLabel( "Classificação: {$redstar}" ) ], [ $tipoclassificacaorisco_id ] );
+        $this->form->addFields( [ $id, $paciente_id, $bau_id, $enfermeiro_id ] );
 
-        // TODO continuar a edição a partir daqui
         $onSave = new TAction( [ $this, "onSave" ] );
         $onSave->setParameter( "fk", $fk );
+        $onSave->setParameter( "did", $did );
+
+        $onReload = new TAction( [ "BauFormList", "onReload" ] );
+        $onReload->setParameter( "fk", $did );
 
         $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
-        $this->form->addAction( "Voltar para a listagem", new TAction( [ "PacienteList", "onReload" ] ), "fa:table blue" );
+        $this->form->addAction( "Voltar para B.A.U.", $onReload, "fa:table blue" );
 
         $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
         $this->datagrid->datatable = "true";
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
 
-        $column_paciente_nome = new TDataGridColumn( "paciente_nome", "Nome", "left" );
-        $column_dataentrada = new TDataGridColumn( "dataentrada", "Dia", "left" );
-        $column_horaentrada = new TDataGridColumn( "horaentrada", "Hora", "center" );
+        $column_paciente_nome               = new TDataGridColumn( "paciente_nome", "Nome Paciente", "left" );
+        $column_dataclassificacao           = new TDataGridColumn( "dataclassificacao", "Data Classificação", "left" );
+        $column_horaclassificacao           = new TDataGridColumn( "horaclassificacao", "Hora Classificação", "left" );
+        $column_queixaprincipal             = new TDataGridColumn( "queixaprincipal", "Queixa Principal", "left" );
+        $column_tipoclassificacaorisco_nome = new TDataGridColumn( "tipoclassificacaorisco_nome", "Tipo Classificacao Risco", "left" );
+        $column_enfermeiro_nome             = new TDataGridColumn( "enfermeiro_nome", "Enfermeiro", "left" );
 
         $this->datagrid->addColumn( $column_paciente_nome );
-        $this->datagrid->addColumn( $column_dataentrada );
-        $this->datagrid->addColumn( $column_horaentrada );
+        $this->datagrid->addColumn( $column_dataclassificacao );
+        $this->datagrid->addColumn( $column_horaclassificacao );
+        $this->datagrid->addColumn( $column_queixaprincipal );
+        $this->datagrid->addColumn( $column_tipoclassificacaorisco );
+        $this->datagrid->addColumn( $column_enfermeiro_nome );
 
         $action_edit = new CustomDataGridAction( [ $this, "onEdit" ] );
         $action_edit->setButtonClass( "btn btn-default" );
@@ -136,13 +159,6 @@ class ClassificacaoRiscoFormList extends TPage
         $action_del->setField( "id" );
         $action_del->setParameter( "fk", $fk );
         $this->datagrid->addAction( $action_del );
-
-        $action_avaliacao = new CustomDataGridAction( [ "ClassificacaoRiscoFormList", "onReload" ] );
-        $action_avaliacao->setButtonClass( "btn btn-default" );
-        $action_avaliacao->setLabel( "Avaliação" );
-        $action_avaliacao->setImage( "fa:stethoscope green fa-lg" );
-        $action_avaliacao->setField( "id" );
-        $this->datagrid->addAction( $action_avaliacao );
 
         $this->datagrid->createModel();
 
@@ -161,7 +177,7 @@ class ClassificacaoRiscoFormList extends TPage
 
     public function onSave( $param = null )
     {
-        $object = $this->form->getData( "BauRecord" );
+        $object = $this->form->getData( "ClassificacaoRiscoRecord" );
 
         try {
 
@@ -169,14 +185,11 @@ class ClassificacaoRiscoFormList extends TPage
 
             TTransaction::open( "database" );
 
-            unset( $object->alta );
-            unset( $object->obito );
-
             $object->store();
 
             TTransaction::close();
 
-            $action = new TAction( [ "BauFormList", "onReload" ] );
+            $action = new TAction( [ "ClassificacaoRiscoFormList", "onReload" ] );
             $action->setParameter( "fk", $param[ "fk" ] );
 
             new TMessage( "info", "Registro salvo com sucesso!", $action );
@@ -187,18 +200,12 @@ class ClassificacaoRiscoFormList extends TPage
 
             $this->form->setData( $object );
 
-            foreach ( $this->changeFields as $field ) {
-                self::onChangeAction([
-                    "_field_name" => $field,
-                    $field => $object->$field
-                ]);
-            }
-
             new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
 
         }
     }
 
+/*
     public function onEdit( $param = null )
     {
         try {
@@ -368,117 +375,6 @@ class ClassificacaoRiscoFormList extends TPage
         }
     }
 
-    public static function onChangeAction( $param = null )
-    {
-        $object = new StdClass;
-
-        $fieldName = $param[ "_field_name" ];
-
-        switch ( $fieldName ) {
-
-            case "internamentolocal":
-
-                if( $param[ $fieldName ] == "S" ) {
-                    TQuickForm::showField( "form_list_bau", "datainternamento" );
-                } else {
-                    $object->datainternamento = "";
-                    TQuickForm::sendData( "form_list_bau", $object );
-                    TQuickForm::hideField( "form_list_bau", "datainternamento" );
-                }
-
-                break;
-
-            case "remocao":
-
-                if( $param[ $fieldName ] == "S" ) {
-                    TQuickForm::showField( "form_list_bau", "dataremocao" );
-                    TQuickForm::showField( "form_list_bau", "localremocao_id" );
-                } else {
-                    $object->dataremocao = "";
-                    $object->localremocao_id = "..::SELECIONE::..";
-                    TQuickForm::sendData( "form_list_bau", $object );
-                    TQuickForm::hideField( "form_list_bau", "dataremocao" );
-                    TQuickForm::hideField( "form_list_bau", "localremocao_id" );
-                }
-
-                break;
-
-            case "transferencia":
-
-                if( $param[ $fieldName ] == "S" ) {
-                    TQuickForm::showField( "form_list_bau", "datatransferencia" );
-                    TQuickForm::showField( "form_list_bau", "localtransferencia_id" );
-                } else {
-                    $object->datatransferencia = "";
-                    $object->localtransferencia_id = "..::SELECIONE::..";
-                    TQuickForm::sendData( "form_list_bau", $object );
-                    TQuickForm::hideField( "form_list_bau", "datatransferencia" );
-                    TQuickForm::hideField( "form_list_bau", "localtransferencia_id" );
-                }
-
-                break;
-
-            case "alta":
-
-                if( $param[ $fieldName ] == "S" ) {
-
-                    TQuickForm::showField( "form_list_bau", "medicoalta_id" );
-                    TQuickForm::showField( "form_list_bau", "horaaltahospitalar" );
-                    TQuickForm::showField( "form_list_bau", "dataaltahospitalar" );
-                    TQuickForm::showField( "form_list_bau", "tipoaltahospitalar_id" );
-
-                } else {
-
-                    $object->medicoalta_id = "";
-                    $object->horaaltahospitalar = "";
-                    $object->dataaltahospitalar = "";
-                    $object->tipoaltahospitalar_id = "";
-
-                    TQuickForm::sendData( "form_list_bau", $object );
-                    TQuickForm::hideField( "form_list_bau", "medicoalta_id" );
-                    TQuickForm::hideField( "form_list_bau", "horaaltahospitalar" );
-                    TQuickForm::hideField( "form_list_bau", "dataaltahospitalar" );
-                    TQuickForm::hideField( "form_list_bau", "tipoaltahospitalar_id" );
-
-                }
-
-                break;
-
-            case "obito":
-
-                if( $param[ $fieldName ] == "S" ) {
-
-                    TQuickForm::showField( "form_list_bau", "dataobito" );
-                    TQuickForm::showField( "form_list_bau", "horaobito" );
-                    TQuickForm::showField( "form_list_bau", "declaracaoobitodata" );
-                    TQuickForm::showField( "form_list_bau", "declaracaoobitohora" );
-                    TQuickForm::showField( "form_list_bau", "destinoobito_id" );
-                    TQuickForm::showField( "form_list_bau", "declaracaoobitomedico_id" );
-
-                } else {
-
-                    $object->dataobito = "";
-                    $object->horaobito = "";
-                    $object->declaracaoobitodata = "";
-                    $object->declaracaoobitohora = "";
-                    $object->destinoobito_id = "";
-                    $object->declaracaoobitomedico_id = "";
-
-                    TQuickForm::sendData( "form_list_bau", $object );
-                    TQuickForm::hideField( "form_list_bau", "dataobito" );
-                    TQuickForm::hideField( "form_list_bau", "horaobito" );
-                    TQuickForm::hideField( "form_list_bau", "declaracaoobitodata" );
-                    TQuickForm::hideField( "form_list_bau", "declaracaoobitohora" );
-                    TQuickForm::hideField( "form_list_bau", "destinoobito_id" );
-                    TQuickForm::hideField( "form_list_bau", "declaracaoobitomedico_id" );
-
-                }
-
-                break;
-
-        }
-    }
-
     protected $form;
     protected $datagrid;
     protected $pageNavigation;
@@ -488,62 +384,6 @@ class ClassificacaoRiscoFormList extends TPage
 
     public function __construct()
     {
-
-        //---- Create Fields. ----
-        $this->form->addFields( [ new TLabel( "Paciente: $redstar"       ) ], [ $paciente_id            ]);
-        $this->form->addFields( [ new TLabel( "Data Classificação: $redstar"      ) ], [ $dataclassificacao      ] );
-        $this->form->addFields( [ new TLabel( 'Hora Classificação:'      ) ], [ $horaclassificacao      ] );
-        $this->form->addFields( [ new TLabel( 'Pressão Arterial:'        ) ], [ $pressaoarterial        ] );
-        $this->form->addFields( [ new TLabel( 'Frequência Cardíaca:'     ) ], [ $frequenciacardiaca     ] );
-        $this->form->addFields( [ new TLabel( 'Frequência Respiratória:' ) ], [ $frequenciarespiratoria ] );
-        $this->form->addFields( [ new TLabel( 'Temperatura:'             ) ], [ $temperatura            ] );
-        $this->form->addFields( [ new TLabel( 'SPO2:'                    ) ], [ $spo2                   ] );
-        $this->form->addFields( [ new TLabel( 'HTG:'                     ) ], [ $htg                    ] );
-        $this->form->addFields( [ new TLabel( 'DOR:'                     ) ], [ $dor                    ] );
-        $this->form->addFields( [ new TLabel( 'Observação:'              ) ], [ $observacoes            ] );
-        $this->form->addFields( [ new TLabel( 'Queixa Principal:'        ) ], [ $queixaprincipal        ] );
-
-        //$this->form->addFields( [ new TLabel( 'BAU:'                     ) ], [ $bau_id                    ] );
-        //$this->form->addFields( [ new TLabel( 'Classificação de Risco:'                     ) ], [ $tipoclassificacaorisco_id ] );
-        //$this->form->addFields( [ new TLabel( ':'                     ) ], [ $enfermeiro_id             ] );
-
-        $this->form->addFields([new TLabel('<font color=red><b>* Campos Obrigatórios </b></font>'), []] );
-
-        //---- Buttons ----
-        $this->form->addAction('Buscar', new TAction( [$this, 'onSearch'] ), 'fa:search'    );
-        $this->form->addAction('Salvar', new TAction( [$this, 'onSave'  ] ), 'fa:save'      );
-        $this->form->addAction('Limpar', new TAction( [$this, 'onClear' ] ), 'fa:eraser red');
-
-        //---- Create DataGrid ----
-        $this->datagrid = new BootstrapDatagridWrapper( new TDataGrid() );
-        $this->datagrid->datatable = "true";
-        $this->datagrid->style = "width: 100%";
-        $this->datagrid->setHeight( 320 );
-
-        $column_paciente                = new TDataGridColumn("paciente_id", "Nome Paciente", "left");
-        $column_queixaprincipal         = new TDataGridColumn("queixaprincipal", "Queixa Principal", "left");
-        $column_dataclassificacao       = new TDataGridColumn("dataclassificacao", "Data Classificação", "left");
-        $column_horaclassificacao       = new TDataGridColumn("horaclassificacao", "Hora Classificação", "left");
-        //$column_tipoclassificacaorisco = new TDataGridColumn("tipoclassificacaorisco_id", "Tipo Classificacao Risco", "left");
-        //$column_bau                    = new TDataGridColumn("bau_id", "Bau", "left");
-        //$column_enfermeiro             = new TDataGridColumn("enfermeiro_id", "Enfermeiro", "left");
-
-        $this->datagrid->addColumn( $column_paciente );
-        $this->datagrid->addColumn( $column_queixaprincipal );
-        $this->datagrid->addColumn( $column_horaclassificacao );
-        $this->datagrid->addColumn( $column_dataclassificacao );
-        //$this->datagrid->addColumn( $column_tipoclassificacaorisco );
-        //$this->datagrid->addColumn( $column_bau );
-        //$this->datagrid->addColumn( $column_enfermeiro );
-
-        $order_paciente = new TAction( [ $this, "onReload" ] );
-        $order_paciente->setParameter( "order", "paciente_id" );
-        $column_paciente->setAction( $order_paciente );
-
-        $order_queixaprincipal = new TAction( [ $this, "onReload" ] );
-        $order_queixaprincipal->setParameter( "order", "queixaprincipal" );
-        $column_queixaprincipal->setAction( $order_queixaprincipal );
-
         $action_del = new TDataGridAction( [ $this, "onDelete" ] );
         $action_del->setButtonClass( "btn btn-default" );
         $action_del->setLabel( "Deletar" );
@@ -571,16 +411,16 @@ class ClassificacaoRiscoFormList extends TPage
     public function onSave()
     {
         try{
-            TTransaction::open('database');
-                $object = $this->form->getData('ClassificacaoRiscoRecord');
+            TTransaction::open("database");
+                $object = $this->form->getData("ClassificacaoRiscoRecord");
                 $object->store();
             TTransaction::close();
 
-            new TMessage( 'info', 'Registro salvo!');
+            new TMessage( "info", "Registro salvo!");
         }
 
         catch (Exception $se){
-            new TMessage('error', $se->getMessage());
+            new TMessage("error", $se->getMessage());
             TTransaction::rollback();
         }
     }
@@ -648,5 +488,5 @@ class ClassificacaoRiscoFormList extends TPage
     {
         $this->form->clear();
     }
-
+*/
 }
