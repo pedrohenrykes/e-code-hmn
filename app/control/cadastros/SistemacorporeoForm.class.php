@@ -21,6 +21,9 @@ class SistemaCorporeoForm extends TWindow
         $nomesistemacorporeo->setProperty("title", "Digite o nome do sistema");
         $nomesistemacorporeo->setSize("38%");
 
+        $label01 = new RequiredTextFormat( [ "Nome", "#F00", "bold" ] );
+        $nomesistemacorporeo->addValidation( $label01->getText(), new TRequiredValidator );
+
         $this->form->addFields( [ new TLabel( "Nome: {$redstar}" ) ], [ $nomesistemacorporeo ] );
         $this->form->addFields( [ $id ] );
 
