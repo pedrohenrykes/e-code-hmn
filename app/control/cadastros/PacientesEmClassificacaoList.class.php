@@ -1,6 +1,6 @@
 <?php
 
-class BauList extends TPage
+class PacientesEmClassificacaoList extends TPage
 {
     private $form;
     private $datagrid;
@@ -11,8 +11,8 @@ class BauList extends TPage
     {
         parent::__construct();
 
-        $this->form = new BootstrapFormBuilder( "list_bau" );
-        $this->form->setFormTitle( "Listagem de Cadastros de B.A.U." );
+        $this->form = new BootstrapFormBuilder( "list_pacientes_em_classificacao" );
+        $this->form->setFormTitle( "Listagem de Pacientes Em Classificação " );
         $this->form->class = "tform";
 
         $opcao = new TCombo( "opcao" );
@@ -24,40 +24,40 @@ class BauList extends TPage
         $opcao->setSize( "38%" );
         $dados->setSize( "38%" );
 
-        $opcao->addItems( [ "nome" => "Nome"] );
+        $opcao->addItems( [ "nomepaciente" => "Paciente" ] );
 
         $this->form->addFields( [ new TLabel( "Opção de busca:" ) ], [ $opcao ] );
         $this->form->addFields( [ new TLabel( "Dados à buscar:" )  ], [ $dados ] );
 
         $this->form->addAction( "Buscar", new TAction( [ $this, "onSearch" ] ), "fa:search" );
-        // $this->form->addAction( "Novo"  , new TAction( ["BauForm", "onEdit"] ), "bs:plus-sign green" );
 
-        $this->datagrid = new BootstrapDatagridWrapper( new TDataGrid() );
+        $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
         $this->datagrid->datatable = "true";
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
 
-        $column_paciente_nome = new TDataGridColumn( "paciente_nome", "Nome", "left" );
-        $column_dataentrada = new TDataGridColumn( "dataentrada", "Dia", "left" );
-        $column_horaentrada = new TDataGridColumn( "horaentrada", "Hora", "center" );
+        $column_paciente_nome   = new TDataGridColumn( "paciente_nome", "Paciente", "left" );
+        $column_dataentrada     = new TDataGridColumn( "dataentrada", "Data de Chegada", "left" );
+        $column_horaentrada     = new TDataGridColumn( "horaentrada", "Hora de Chegada", "left" );
+        $column_queixaprincipal = new TDataGridColumn( "queixaprincipal", "Queixa Principal", "left" );
 
         $this->datagrid->addColumn( $column_paciente_nome );
         $this->datagrid->addColumn( $column_dataentrada );
         $this->datagrid->addColumn( $column_horaentrada );
+        $this->datagrid->addColumn( $column_queixaprincipal );
 
-        // $action_edit = new TDataGridAction( [ "BauForm", "onEdit" ] );
-        // $action_edit->setButtonClass( "btn btn-default" );
-        // $action_edit->setLabel( "Editar" );
-        // $action_edit->setImage( "fa:pencil-square-o blue fa-lg" );
-        // $action_edit->setField( "id" );
-        // $this->datagrid->addAction( $action_edit );
+        $action_avaliacao = new CustomDataGridAction( [ "ClassificacaoRiscoFormList", "onReload" ] );
+        $action_avaliacao->setButtonClass( "btn btn-default" );
+        $action_avaliacao->setLabel( "Avaliação" );
+        $action_avaliacao->setImage( "fa:stethoscope green fa-lg" );
+        $action_avaliacao->setField( "id" );
+        $action_avaliacao->setFk( "id" );
+        $action_avaliacao->setDid( "paciente_id" );
 
-        // $action_del = new TDataGridAction( [ $this, "onDelete" ] );
-        // $action_del->setButtonClass( "btn btn-default" );
-        // $action_del->setLabel( "Deletar" );
-        // $action_del->setImage( "fa:trash-o red fa-lg" );
-        // $action_del->setField( "id" );
-        // $this->datagrid->addAction( $action_del );
+        $action_group = new TDataGridActionGroup('Opções', 'bs:th');
+        $action_group->addAction( $action_avaliacao );
+
+        $this->datagrid->addActionGroup( $action_group );
 
         $this->datagrid->createModel();
 
@@ -101,29 +101,11 @@ class BauList extends TPage
 
                 foreach ( $objects as $object ) {
 
-                    $dataobito           = new DateTime( $object->dataobito );
-                    $horaobito           = new DateTime( $object->horaobito );
-                    $dataentrada         = new DateTime( $object->dataentrada );
-                    $horaentrada         = new DateTime( $object->horaentrada );
-                    $dataremocao         = new DateTime( $object->dataremocao );
-                    $datainternamento    = new DateTime( $object->datainternamento );
-                    $datatransferencia   = new DateTime( $object->datatransferencia );
-                    $dataaltahospitalar  = new DateTime( $object->dataaltahospitalar );
-                    $horaaltahospitalar  = new DateTime( $object->horaaltahospitalar );
-                    $declaracaoobitodata = new DateTime( $object->declaracaoobitodata );
-                    $declaracaoobitohora = new DateTime( $object->declaracaoobitohora );
+                    $dataentrada = new DateTime( $object->dataentrada );
+                    $horaentrada = new DateTime( $object->horaentrada );
 
-                    $object->dataobito           = $dataobito->format("d/m/Y");
-                    $object->horaobito           = $horaobito->format("H:i");
-                    $object->dataentrada         = $dataentrada->format("d/m/Y");
-                    $object->horaentrada         = $horaentrada->format("H:i");
-                    $object->dataremocao         = $dataremocao->format("d/m/Y");
-                    $object->datainternamento    = $datainternamento->format("d/m/Y");
-                    $object->datatransferencia   = $datatransferencia->format("d/m/Y");
-                    $object->dataaltahospitalar  = $dataaltahospitalar->format("d/m/Y");
-                    $object->horaaltahospitalar  = $horaaltahospitalar->format("H:i");
-                    $object->declaracaoobitodata = $declaracaoobitodata->format("d/m/Y");
-                    $object->declaracaoobitohora = $declaracaoobitohora->format("H:i");
+                    $object->dataentrada = $dataentrada->format("d/m/Y");
+                    $object->horaentrada = $horaentrada->format("H:i");
 
                     $this->datagrid->addItem( $object );
                 }
@@ -160,7 +142,7 @@ class BauList extends TPage
 
                 TTransaction::open( "database" );
 
-                $repository = new TRepository( "BauRecord" );
+                $repository = new TRepository( "PacienteRecord" );
 
                 if ( empty( $param[ "order" ] ) ) {
                     $param[ "order" ] = "id";
@@ -176,19 +158,10 @@ class BauList extends TPage
                 switch( $data->opcao ) {
 
                     case "nomepaciente":
-                        $criteria->add( new TFilter( $data->opcao, "LIKE", "%" . $data->dados . "%" ) );
-                        break;
 
-                    case "numerocpf":
                         $criteria->add( new TFilter( $data->opcao, "LIKE", $data->dados . "%" ) );
-                        break;
 
-                    default:
-                        if ( is_numeric( $data->dados ) ) {
-                            $criteria->add( new TFilter( $data->opcao, "=", $data->dados ) );
-                        } else {
-                            new TMessage( "erro", "Para a opção selecionada, informe apenas valores numéricos." );
-                        }
+                        break;
 
                 }
 
@@ -232,42 +205,6 @@ class BauList extends TPage
             TTransaction::rollback();
 
             $this->form->setData( $data );
-
-            new TMessage( "erro", $ex->getMessage() );
-        }
-    }
-
-    public function onDelete( $param = NULL )
-    {
-        if( isset( $param[ "key" ] ) ) {
-
-            $action1 = new TAction( [ $this, "Delete" ] );
-            $action2 = new TAction( [ $this, "onReload" ] );
-
-            $action1->setParameter( "key", $param[ "key" ] );
-
-            new TQuestion( "Deseja realmente apagar o registro?", $action1, $action2 );
-        }
-    }
-
-    function Delete( $param = NULL )
-    {
-        try {
-
-            TTransaction::open( "database" );
-
-            $object = new BauRecord( $param[ "key" ] );
-            $object->delete();
-
-            TTransaction::close();
-
-            $this->onReload();
-
-            new TMessage( "info", "O Registro foi apagado com sucesso!" );
-
-        } catch ( Exception $ex ) {
-
-            TTransaction::rollback();
 
             new TMessage( "erro", $ex->getMessage() );
         }

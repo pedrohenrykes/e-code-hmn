@@ -69,20 +69,22 @@ class ClassificacaoRiscoFormList extends TPage
 
         }
 
-        $dataclassificacao     ->setSize("38%");
-        $horaclassificacao     ->setSize("38%");
-        $pressaoarterial       ->setSize("38%");
-        $frequenciacardiaca    ->setSize("38%");
-        $frequenciarespiratoria->setSize("38%");
-        $temperatura           ->setSize("38%");
-        $spo2                  ->setSize("38%");
-        $htg                   ->setSize("38%");
-        $dor                   ->setSize("38%");
-        $observacoes           ->setSize("38%");
-        $queixaprincipal       ->setSize("38%");
+        $dataclassificacao        ->setSize("38%");
+        $horaclassificacao        ->setSize("38%");
+        $paciente_nome            ->setSize("38%");
+        $pressaoarterial          ->setSize("38%");
+        $frequenciacardiaca       ->setSize("38%");
+        $frequenciarespiratoria   ->setSize("38%");
+        $temperatura              ->setSize("38%");
+        $spo2                     ->setSize("38%");
+        $htg                      ->setSize("38%");
+        $dor                      ->setSize("38%");
+        $observacoes              ->setSize("38%");
+        $queixaprincipal          ->setSize("38%");
+        $tipoclassificacaorisco_id->setSize("38%");
 
+        $dor                      ->setDefaultOption( "..::SELECIONE::.." );
         $tipoclassificacaorisco_id->setDefaultOption( "..::SELECIONE::.." );
-        $enfermeiro_id            ->setDefaultOption( "..::SELECIONE::.." );
 
         $dataclassificacao->setMask( "dd/mm/yyyy" );
         $dataclassificacao->setDatabaseMask("yyyy-mm-dd");
@@ -100,7 +102,7 @@ class ClassificacaoRiscoFormList extends TPage
         $paciente_id      ->addValidation( $label01->getText(), new TRequiredValidator );
         $dataclassificacao->addValidation( $label01->getText(), new TRequiredValidator );
 
-        $this->form->addFields( [ new TLabel( "Nome do Paciente: {$redstar}" ) ], [ $paciente_nome ]);
+        $this->form->addFields( [ new TLabel( "Paciente: {$redstar}" ) ], [ $paciente_nome ]);
         $this->form->addFields( [ new TLabel( "Data da Avaliação: {$redstar}" ) ], [ $dataclassificacao ] );
         $this->form->addFields( [ new TLabel( "Hora da Avaliação:" ) ], [ $horaclassificacao ] );
         $this->form->addFields( [ new TLabel( "Pressão Arterial:" ) ], [ $pressaoarterial ] );
@@ -109,7 +111,7 @@ class ClassificacaoRiscoFormList extends TPage
         $this->form->addFields( [ new TLabel( "Temperatura:" ) ], [ $temperatura ] );
         $this->form->addFields( [ new TLabel( "SPO2:" ) ], [ $spo2 ] );
         $this->form->addFields( [ new TLabel( "HTG:" ) ], [ $htg ] );
-        $this->form->addFields( [ new TLabel( "Escala de dor:" ) ], [ $dor ] );
+        $this->form->addFields( [ new TLabel( "Escala de Dor:" ) ], [ $dor ] );
         $this->form->addFields( [ new TLabel( "Queixa Principal:" ) ], [ $queixaprincipal ] );
         $this->form->addFields( [ new TLabel( "Observações:" ) ], [ $observacoes ] );
         $this->form->addFields( [ new TLabel( "Classificação: {$redstar}" ) ], [ $tipoclassificacaorisco_id ] );
@@ -130,18 +132,18 @@ class ClassificacaoRiscoFormList extends TPage
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
 
-        $column_paciente_nome               = new TDataGridColumn( "paciente_nome", "Nome Paciente", "left" );
-        $column_dataclassificacao           = new TDataGridColumn( "dataclassificacao", "Data Classificação", "left" );
-        $column_horaclassificacao           = new TDataGridColumn( "horaclassificacao", "Hora Classificação", "left" );
+        $column_paciente_nome               = new TDataGridColumn( "paciente_nome", "Paciente", "left" );
+        $column_dataclassificacao           = new TDataGridColumn( "dataclassificacao", "Data da Avaliação", "left" );
+        $column_horaclassificacao           = new TDataGridColumn( "horaclassificacao", "Hora da Avaliação", "left" );
         $column_queixaprincipal             = new TDataGridColumn( "queixaprincipal", "Queixa Principal", "left" );
-        $column_tipoclassificacaorisco_nome = new TDataGridColumn( "tipoclassificacaorisco_nome", "Tipo Classificacao Risco", "left" );
+        $column_tipoclassificacaorisco_nome = new TDataGridColumn( "tipoclassificacaorisco_nome", "Classificação", "left" );
         $column_enfermeiro_nome             = new TDataGridColumn( "enfermeiro_nome", "Enfermeiro", "left" );
 
         $this->datagrid->addColumn( $column_paciente_nome );
         $this->datagrid->addColumn( $column_dataclassificacao );
         $this->datagrid->addColumn( $column_horaclassificacao );
         $this->datagrid->addColumn( $column_queixaprincipal );
-        $this->datagrid->addColumn( $column_tipoclassificacaorisco );
+        $this->datagrid->addColumn( $column_tipoclassificacaorisco_nome );
         $this->datagrid->addColumn( $column_enfermeiro_nome );
 
         $action_edit = new CustomDataGridAction( [ $this, "onEdit" ] );
@@ -150,6 +152,7 @@ class ClassificacaoRiscoFormList extends TPage
         $action_edit->setImage( "fa:pencil-square-o blue fa-lg" );
         $action_edit->setField( "id" );
         $action_edit->setParameter( "fk", $fk );
+        $action_edit->setParameter( "did", $did );
         $this->datagrid->addAction( $action_edit );
 
         $action_del = new CustomDataGridAction( [ $this, "onDelete" ] );
@@ -158,6 +161,7 @@ class ClassificacaoRiscoFormList extends TPage
         $action_del->setImage( "fa:trash-o red fa-lg" );
         $action_del->setField( "id" );
         $action_del->setParameter( "fk", $fk );
+        $action_del->setParameter( "did", $did );
         $this->datagrid->addAction( $action_del );
 
         $this->datagrid->createModel();
@@ -205,7 +209,6 @@ class ClassificacaoRiscoFormList extends TPage
         }
     }
 
-/*
     public function onEdit( $param = null )
     {
         try {
@@ -214,31 +217,13 @@ class ClassificacaoRiscoFormList extends TPage
 
                 TTransaction::open( "database" );
 
-                $object = new BauRecord( $param[ "key" ] );
+                $object = new ClassificacaoRiscoRecord( $param[ "key" ] );
 
-                $dataobito           = new DateTime( $object->dataobito );
-                $horaobito           = new DateTime( $object->horaobito );
-                $dataentrada         = new DateTime( $object->dataentrada );
-                $horaentrada         = new DateTime( $object->horaentrada );
-                $dataremocao         = new DateTime( $object->dataremocao );
-                $datainternamento    = new DateTime( $object->datainternamento );
-                $datatransferencia   = new DateTime( $object->datatransferencia );
-                $dataaltahospitalar  = new DateTime( $object->dataaltahospitalar );
-                $horaaltahospitalar  = new DateTime( $object->horaaltahospitalar );
-                $declaracaoobitodata = new DateTime( $object->declaracaoobitodata );
-                $declaracaoobitohora = new DateTime( $object->declaracaoobitohora );
+                $dataclassificacao = new DateTime( $object->dataclassificacao );
+                $horaclassificacao = new DateTime( $object->horaclassificacao );
 
-                $object->dataobito           = $dataobito->format("d/m/Y");
-                $object->horaobito           = $horaobito->format("H:i");
-                $object->dataentrada         = $dataentrada->format("d/m/Y");
-                $object->horaentrada         = $horaentrada->format("H:i");
-                $object->dataremocao         = $dataremocao->format("d/m/Y");
-                $object->datainternamento    = $datainternamento->format("d/m/Y");
-                $object->datatransferencia   = $datatransferencia->format("d/m/Y");
-                $object->dataaltahospitalar  = $dataaltahospitalar->format("d/m/Y");
-                $object->horaaltahospitalar  = $horaaltahospitalar->format("H:i");
-                $object->declaracaoobitodata = $declaracaoobitodata->format("d/m/Y");
-                $object->declaracaoobitohora = $declaracaoobitohora->format("H:i");
+                $object->dataclassificacao = $dataclassificacao->format("d/m/Y");
+                $object->horaclassificacao = $horaclassificacao->format("H:i");
 
                 $this->onReload( $param );
 
@@ -246,13 +231,6 @@ class ClassificacaoRiscoFormList extends TPage
 
                 TTransaction::close();
 
-            }
-
-            foreach ( $this->changeFields as $field ) {
-                self::onChangeAction([
-                    "_field_name" => $field,
-                    $field => ( isset( $param[ "key" ] ) ? $object->$field : "N" )
-                ]);
             }
 
         } catch ( Exception $ex ) {
@@ -270,7 +248,8 @@ class ClassificacaoRiscoFormList extends TPage
 
             $param = [
                 "key" => $param[ "key" ],
-                "fk"  => $param[ "fk" ]
+                "fk"  => $param[ "fk" ],
+                "did"  => $param[ "did" ]
             ];
 
             $action1 = new TAction( [ $this, "Delete" ] );
@@ -289,7 +268,7 @@ class ClassificacaoRiscoFormList extends TPage
 
             TTransaction::open( "database" );
 
-            $object = new BauRecord( $param[ "key" ] );
+            $object = new ClassificacaoRiscoRecord( $param[ "key" ] );
 
             $object->delete();
 
@@ -314,10 +293,10 @@ class ClassificacaoRiscoFormList extends TPage
 
             TTransaction::open( "database" );
 
-            $repository = new TRepository( "BauRecord" );
+            $repository = new TRepository( "ClassificacaoRiscoRecord" );
 
             $properties = [
-                "order" => "dataentrada",
+                "order" => "dataclassificacao",
                 "direction" => "asc"
             ];
 
@@ -326,7 +305,8 @@ class ClassificacaoRiscoFormList extends TPage
             $criteria = new TCriteria();
             $criteria->setProperties( $properties );
             $criteria->setProperty( "limit", $limit );
-            $criteria->add( new TFilter( "paciente_id", "=", $param[ "fk" ] ) );
+            $criteria->add( new TFilter( "bau_id", "=", $param[ "fk" ] ) );
+            $criteria->add( new TFilter( "paciente_id", "=", $param[ "did" ] ) );
 
             $objects = $repository->load( $criteria, FALSE );
 
@@ -336,11 +316,11 @@ class ClassificacaoRiscoFormList extends TPage
 
                 foreach ( $objects as $object ) {
 
-                    $dataentrada         = new DateTime( $object->dataentrada );
-                    $horaentrada         = new DateTime( $object->horaentrada );
+                    $dataclassificacao = new DateTime( $object->dataclassificacao );
+                    $horaclassificacao = new DateTime( $object->horaclassificacao );
 
-                    $object->dataentrada         = $dataentrada->format("d/m/Y");
-                    $object->horaentrada         = $horaentrada->format("H:i");
+                    $object->dataclassificacao = $dataclassificacao->format("d/m/Y");
+                    $object->horaclassificacao = $horaclassificacao->format("H:i");
 
                     $this->datagrid->addItem( $object );
 
@@ -360,13 +340,6 @@ class ClassificacaoRiscoFormList extends TPage
 
             $this->loaded = true;
 
-            foreach ( $this->changeFields as $field ) {
-                self::onChangeAction([
-                    "_field_name" => $field,
-                    $field => "N"
-                ]);
-            }
-
         } catch ( Exception $ex ) {
 
             TTransaction::rollback();
@@ -375,118 +348,8 @@ class ClassificacaoRiscoFormList extends TPage
         }
     }
 
-    protected $form;
-    protected $datagrid;
-    protected $pageNavigation;
-    protected $formgrid;
-    protected $deleteButton;
-    protected $transformCallback;
-
-    public function __construct()
-    {
-        $action_del = new TDataGridAction( [ $this, "onDelete" ] );
-        $action_del->setButtonClass( "btn btn-default" );
-        $action_del->setLabel( "Deletar" );
-        $action_del->setImage( "fa:trash-o red fa-lg" );
-        $action_del->setField( "id" );
-
-        $this->datagrid->addAction( $action_del );
-
-        $this->datagrid->createModel();
-
-        $this->pageNavigation = new TPageNavigation();
-        $this->pageNavigation->setAction( new TAction( [ $this, "onReload" ] ) );
-        $this->pageNavigation->setWidth( $this->datagrid->getWidth() );
-
-        $container = new TVBox();
-        $container->style = "width: 90%";
-        //$container->add( new TXMLBreadCrumb( "menu.xml", __CLASS__ ) );
-        $container->add( $this->form );
-        $container->add( TPanelGroup::pack( NULL, $this->datagrid ) );
-        $container->add( $this->pageNavigation );
-
-        parent::add( $container );
-    }
-
-    public function onSave()
-    {
-        try{
-            TTransaction::open("database");
-                $object = $this->form->getData("ClassificacaoRiscoRecord");
-                $object->store();
-            TTransaction::close();
-
-            new TMessage( "info", "Registro salvo!");
-        }
-
-        catch (Exception $se){
-            new TMessage("error", $se->getMessage());
-            TTransaction::rollback();
-        }
-    }
-
-    public function onSearch()
-    {
-        $data = $this->form->getData();
-        try
-        {
-            if( !empty( $data->opcao ) && !empty( $data->dados ) )
-            {
-                TTransaction::open( "database" );
-                $repository = new TRepository( "ClassificacaoRiscoRecord" );
-                if ( empty( $param[ "order" ] ) )
-                {
-                    $param[ "order" ] = "id";
-                    $param[ "direction" ] = "asc";
-                }
-                $limit = 10;
-                $criteria = new TCriteria();
-                $criteria->setProperties( $param );
-                $criteria->setProperty( "limit", $limit );
-                if( $data->opcao == "nome" && ( is_numeric( $data->dados ) ) )
-                {
-                    $criteria->add( new TFilter( $data->opcao, "LIKE", "%" . $data->dados . "%" ) );
-                }
-                else
-                {
-                    // new TMessage( "error", "O valor informado não é valido para um " . strtoupper( $data->opcao ) . "." );
-                }
-                $objects = $repository->load( $criteria, FALSE );
-                $this->datagrid->clear();
-                if ( $objects )
-                {
-                    foreach ( $objects as $object )
-                    {
-                        $this->datagrid->addItem( $object );
-                    }
-                }
-                $criteria->resetProperties();
-                $count = $repository->count( $criteria );
-                $this->pageNavigation->setCount( $count );
-                $this->pageNavigation->setProperties( $param );
-                $this->pageNavigation->setLimit( $limit );
-                TTransaction::close();
-                $this->form->setData( $data );
-                $this->loaded = true;
-            }
-            else
-            {
-                $this->onReload();
-                $this->form->setData( $data );
-                // new TMessage( "error", "Selecione uma opção e informe os dados da busca corretamente!" );
-            }
-        }
-        catch ( Exception $ex )
-        {
-            TTransaction::rollback();
-            $this->form->setData( $data );
-            new TMessage( "error", $ex->getMessage() );
-        }
-    }
-
-    public function onClear($param)
+    public function onClear()
     {
         $this->form->clear();
     }
-*/
 }

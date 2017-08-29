@@ -8,7 +8,7 @@ class ClassificacaoRiscoRecord extends TRecord
 
     private $paciente;
     private $tipoclassificacaorisco;
-    private $enfermeiro
+    private $enfermeiro;
 
     public function get_paciente_nome()
     {

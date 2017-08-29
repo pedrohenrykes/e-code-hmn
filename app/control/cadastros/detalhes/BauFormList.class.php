@@ -283,7 +283,11 @@ class BauFormList extends TPage
         $action_avaliacao->setField( "id" );
         $action_avaliacao->setFk( "id" );
         $action_avaliacao->setDid( "paciente_id" );
-        $this->datagrid->addAction( $action_avaliacao );
+
+        $action_group = new TDataGridActionGroup('Opções', 'bs:th');
+        $action_group->addAction( $action_avaliacao );
+
+        $this->datagrid->addActionGroup( $action_group );
 
         $this->datagrid->createModel();
 
@@ -470,11 +474,11 @@ class BauFormList extends TPage
 
                 foreach ( $objects as $object ) {
 
-                    $dataentrada         = new DateTime( $object->dataentrada );
-                    $horaentrada         = new DateTime( $object->horaentrada );
+                    $dataentrada = new DateTime( $object->dataentrada );
+                    $horaentrada = new DateTime( $object->horaentrada );
 
-                    $object->dataentrada         = $dataentrada->format("d/m/Y");
-                    $object->horaentrada         = $horaentrada->format("H:i");
+                    $object->dataentrada = $dataentrada->format("d/m/Y");
+                    $object->horaentrada = $horaentrada->format("H:i");
 
                     $this->datagrid->addItem( $object );
 

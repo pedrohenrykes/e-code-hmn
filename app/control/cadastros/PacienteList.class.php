@@ -66,7 +66,7 @@ class PacienteList extends TPage
         $action_bau = new CustomDataGridAction( [ "BauFormList", "onReload" ] );
         $action_bau->setButtonClass( "btn btn-default" );
         $action_bau->setLabel( "B.A.U." );
-        $action_bau->setImage( "fa:address-card-o green fa-lg" );
+        $action_bau->setImage( "fa:clipboard green fa-lg" );
         $action_bau->setField( "id" );
         $action_bau->setFk( "id" );
 
