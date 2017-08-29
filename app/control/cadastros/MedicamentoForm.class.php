@@ -27,6 +27,12 @@ class MedicamentoForm extends TWindow
 
         $nomemedicamento->setSize("38%");
         $principioativo_id->setSize("38%");
+        
+        $label01 = new RequiredTextFormat( [ "Nome do Medicamento ", "#F00", "bold" ] );
+        $label02 = new RequiredTextFormat( [ "Principio ativo ", "#F00", "bold" ] );
+
+        $nomemedicamento->addValidation( $label01->getText(), new TRequiredValidator );
+        $principioativo_id->addValidation( $label02->getText(), new TRequiredValidator );
 
         $this->form->addFields([new TLabel("Nome do Medicamento: $redstar")], [$nomemedicamento]);
         $this->form->addFields([new TLabel("Nome do Princípio Ativo: $redstar")], [$principioativo_id]);
