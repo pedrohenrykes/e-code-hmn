@@ -23,7 +23,7 @@ class ClassificacaoRiscoFormList extends TPage
         $enfermeiro_id             = new THidden( "enfermeiro_id" ); // Deve ser capturado a partir da sessão
         $dataclassificacao         = new TDate( "dataclassificacao" );
         $horaclassificacao         = new TDateTime( "horaclassificacao" );
-        $paciente_nome             = new TEntry( "paciente_nome" );
+        $paciente_nome             = new TEntry( "paciente_name" );
         $pressaoarterial           = new TEntry( "pressaoarterial" );
         $frequenciacardiaca        = new TEntry( "frequenciacardiaca" );
         $frequenciarespiratoria    = new TEntry( "frequenciarespiratoria" );
@@ -102,7 +102,7 @@ class ClassificacaoRiscoFormList extends TPage
         $paciente_id      ->addValidation( $label01->getText(), new TRequiredValidator );
         $dataclassificacao->addValidation( $label01->getText(), new TRequiredValidator );
 
-        $this->form->addFields( [ new TLabel( "Paciente: {$redstar}" ) ], [ $paciente_nome ]);
+        $this->form->addFields( [ new TLabel( "Paciente: {$redstar}" ) ], [ $paciente_nome ] );
         $this->form->addFields( [ new TLabel( "Data da Avaliação: {$redstar}" ) ], [ $dataclassificacao ] );
         $this->form->addFields( [ new TLabel( "Hora da Avaliação:" ) ], [ $horaclassificacao ] );
         $this->form->addFields( [ new TLabel( "Pressão Arterial:" ) ], [ $pressaoarterial ] );
@@ -189,12 +189,16 @@ class ClassificacaoRiscoFormList extends TPage
 
             TTransaction::open( "database" );
 
+            unset( $object->paciente_name );
+
+            $object->bau_id = $param[ "fk" ];
+
             $object->store();
 
             TTransaction::close();
 
             $action = new TAction( [ "ClassificacaoRiscoFormList", "onReload" ] );
-            $action->setParameter( "fk", $param[ "fk" ] );
+            $action->setParameters( $param );
 
             new TMessage( "info", "Registro salvo com sucesso!", $action );
 
