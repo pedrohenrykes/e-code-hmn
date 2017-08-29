@@ -11,7 +11,7 @@ class PacienteList extends TPage
     {
         parent::__construct();
 
-        $this->form = new BootstrapFormBuilder( "form_list_paciente" );
+        $this->form = new BootstrapFormBuilder( "list_paciente" );
         $this->form->setFormTitle( "Listagem de Cadastros de Pacientes" );
         $this->form->class = "tform";
 

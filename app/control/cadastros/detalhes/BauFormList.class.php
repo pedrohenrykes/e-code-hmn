@@ -138,26 +138,27 @@ class BauFormList extends TPage
         $obito            ->setValue( "N" );
         $convenio_id      ->setValue( "5" );
 
-        $dataentrada        ->setMask( "dd/mm/yyyy" );
-        $dataentrada        ->setDatabaseMask("yyyy-mm-dd");
-        $datainternamento   ->setMask( "dd/mm/yyyy" );
-        $datainternamento   ->setDatabaseMask("yyyy-mm-dd");
-        $dataremocao        ->setMask( "dd/mm/yyyy" );
-        $dataremocao        ->setDatabaseMask("yyyy-mm-dd");
-        $datatransferencia  ->setMask( "dd/mm/yyyy" );
-        $datatransferencia  ->setDatabaseMask("yyyy-mm-dd");
-        $datatransporte     ->setMask( "dd/mm/yyyy" );
-        $datatransporte     ->setDatabaseMask("yyyy-mm-dd");
-        $dataaltahospitalar ->setMask( "dd/mm/yyyy" );
-        $dataaltahospitalar ->setDatabaseMask("yyyy-mm-dd");
-        $dataobito          ->setMask( "dd/mm/yyyy" );
-        $dataobito          ->setDatabaseMask("yyyy-mm-dd");
-        $declaracaoobitodata->setMask( "dd/mm/yyyy" );
-        $declaracaoobitodata->setDatabaseMask("yyyy-mm-dd");
         $horaentrada        ->setMask( "hh:ii" );
         $horaaltahospitalar ->setMask( "hh:ii" );
         $horaobito          ->setMask( "hh:ii" );
         $declaracaoobitohora->setMask( "hh:ii" );
+        $dataentrada        ->setMask( "dd/mm/yyyy" );
+        $datainternamento   ->setMask( "dd/mm/yyyy" );
+        $dataremocao        ->setMask( "dd/mm/yyyy" );
+        $datatransferencia  ->setMask( "dd/mm/yyyy" );
+        $datatransporte     ->setMask( "dd/mm/yyyy" );
+        $dataaltahospitalar ->setMask( "dd/mm/yyyy" );
+        $dataobito          ->setMask( "dd/mm/yyyy" );
+        $declaracaoobitodata->setMask( "dd/mm/yyyy" );
+
+        $dataentrada        ->setDatabaseMask("yyyy-mm-dd");
+        $datainternamento   ->setDatabaseMask("yyyy-mm-dd");
+        $dataremocao        ->setDatabaseMask("yyyy-mm-dd");
+        $datatransferencia  ->setDatabaseMask("yyyy-mm-dd");
+        $datatransporte     ->setDatabaseMask("yyyy-mm-dd");
+        $dataaltahospitalar ->setDatabaseMask("yyyy-mm-dd");
+        $dataobito          ->setDatabaseMask("yyyy-mm-dd");
+        $declaracaoobitodata->setDatabaseMask("yyyy-mm-dd");
 
         $dataentrada->setValue( date( "d/m/Y" ) );
         $horaentrada->setValue( date( "H:i" ) );
@@ -185,54 +186,36 @@ class BauFormList extends TPage
         $this->form->addFields( [ new TLabel( "Queixa Principal:" ) ], [ $queixaprincipal ] );
         $this->form->addFields( [ $id, $paciente_id ] );
 
-        $page2 = new TLabel( "Estado Geral", "#7D78B6", 12, "bi" );
+        $page2 = new TLabel( "Encaminhamento", "#7D78B6", 12, "bi" );
         $page2->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
-        $this->form->appendPage( "Avaliação" );
-        $this->form->addContent( [ $page2 ] );
-        // TODO rever a questão de relacionamento com a tabela de classificação de risco
-
-        $page3 = new TLabel( "Encaminhamento", "#7D78B6", 12, "bi" );
-        $page3->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
         $this->form->appendPage( "Destinação" );
-        $this->form->addContent( [ $page3 ] );
+        $this->form->addContent( [ $page2 ] );
         $this->form->addFields( [ new TLabel( "Internamento: {$redstar}" ) ], [ $internamentolocal ]);
         $this->form->addFields( [ new TLabel( "Data de Internamento: {$redstar}" ) ], [ $datainternamento ] );
-
-        // $page4 = new TLabel( "Remoção", "#7D78B6", 12, "bi" );
-        // $page4->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
-        // $this->form->addContent( [ $page4 ] );
         $this->form->addFields( [ new TLabel( "Remoção: {$redstar}") ], [ $remocao ] );
         $this->form->addFields( [ new TLabel( "Data de Remoção: {$redstar}") ], [ $dataremocao ] );
         $this->form->addFields( [ new TLabel( "Local de Remoção: {$redstar}") ], [ $localremocao_id ] );
-
-        // $page5 = new TLabel( "Transferência", "#7D78B6", 12, "bi");
-        // $page5->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
-        // $this->form->addContent( [ $page5 ] );
         $this->form->addFields( [ new TLabel( "Transferência: {$redstar}") ], [ $transferencia ] );
         $this->form->addFields( [ new TLabel( "Data de Transferência: {$redstar}" ) ], [ $datatransferencia ] );
         $this->form->addFields( [ new TLabel( "Local de Transferência:" ) ], [ $localtransferencia_id ] );
+        $this->form->addFields( [ new TLabel( "Destino do Transporte:" ) ], [ $transportedestino_id ] );
+        $this->form->addFields( [ new TLabel( "Informações do Transporte:" ) ], [ $especificartransporte ] );
+        $this->form->addFields( [ new TLabel( "Data do Transporte:" ) ], [ $datatransporte ] );
 
-        // $page6 = new TLabel( "Transporte", "#7D78B6", 12, "bi");
-        // $page6->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
-        // $this->form->addContent( [ $page6 ] );
-        // $this->form->addFields( [ new TLabel( "Destino do Transporte:" ) ], [ $transportedestino_id ] );
-        // $this->form->addFields( [ new TLabel( "Informações do Transporte:" ) ], [ $especificartransporte ] );
-        // $this->form->addFields( [ new TLabel( "Data do Transporte:" ) ], [ $datatransporte ] );
-
-        $page7 = new TLabel( "Alta Hospitalar", "#7D78B6", 12, "bi");
-        $page7->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
+        $page3 = new TLabel( "Alta Hospitalar", "#7D78B6", 12, "bi");
+        $page3->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
         $this->form->appendPage( "Alta" );
-        $this->form->addContent( [ $page7 ] );
+        $this->form->addContent( [ $page3 ] );
         $this->form->addFields( [ new TLabel( "Alta:" ) ], [ $alta ] );
         $this->form->addFields( [ new TLabel( "Tipo de Alta:" ) ], [ $tipoaltahospitalar_id ] );
         $this->form->addFields( [ new TLabel( "Data da Alta:" ) ], [ $dataaltahospitalar ] );
         $this->form->addFields( [ new TLabel( "Hora da Alta:" ) ], [ $horaaltahospitalar ] );
         $this->form->addFields( [ new TLabel( "Médico Responsável:" ) ], [ $medicoalta_id ] );
 
-        $page8 = new TLabel( "Declaração de Óbito", "#7D78B6", 12, "bi");
-        $page8->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
+        $page4 = new TLabel( "Declaração de Óbito", "#7D78B6", 12, "bi");
+        $page4->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
         $this->form->appendPage( "Óbito" );
-        $this->form->addContent( [ $page8 ] );
+        $this->form->addContent( [ $page4 ] );
         $this->form->addFields( [ new TLabel( "Óbito:" ) ], [ $obito ] );
         $this->form->addFields( [ new TLabel( "Data do Óbito:" ) ], [ $dataobito ] );
         $this->form->addFields( [ new TLabel( "Hora do Óbito:" ) ], [ $horaobito ] );
@@ -252,13 +235,15 @@ class BauFormList extends TPage
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
 
-        $column_paciente_nome = new TDataGridColumn( "paciente_nome", "Nome", "left" );
-        $column_dataentrada = new TDataGridColumn( "dataentrada", "Dia", "left" );
-        $column_horaentrada = new TDataGridColumn( "horaentrada", "Hora", "center" );
+        $column_paciente_nome   = new TDataGridColumn( "paciente_nome", "Paciente", "left" );
+        $column_dataentrada     = new TDataGridColumn( "dataentrada", "Data de Chegada", "left" );
+        $column_horaentrada     = new TDataGridColumn( "horaentrada", "Hora de Chegada", "left" );
+        $column_queixaprincipal = new TDataGridColumn( "queixaprincipal", "Queixa Principal", "left" );
 
         $this->datagrid->addColumn( $column_paciente_nome );
         $this->datagrid->addColumn( $column_dataentrada );
         $this->datagrid->addColumn( $column_horaentrada );
+        $this->datagrid->addColumn( $column_queixaprincipal );
 
         $action_edit = new CustomDataGridAction( [ $this, "onEdit" ] );
         $action_edit->setButtonClass( "btn btn-default" );
@@ -524,11 +509,16 @@ class BauFormList extends TPage
             case "internamentolocal":
 
                 if( $param[ $fieldName ] == "S" ) {
+
                     TQuickForm::showField( "form_list_bau", "datainternamento" );
+
                 } else {
+
                     $object->datainternamento = "";
+
                     TQuickForm::sendData( "form_list_bau", $object );
                     TQuickForm::hideField( "form_list_bau", "datainternamento" );
+
                 }
 
                 break;
@@ -536,14 +526,19 @@ class BauFormList extends TPage
             case "remocao":
 
                 if( $param[ $fieldName ] == "S" ) {
+
                     TQuickForm::showField( "form_list_bau", "dataremocao" );
                     TQuickForm::showField( "form_list_bau", "localremocao_id" );
+
                 } else {
+
                     $object->dataremocao = "";
-                    $object->localremocao_id = "..::SELECIONE::..";
+                    $object->localremocao_id = "";
+
                     TQuickForm::sendData( "form_list_bau", $object );
                     TQuickForm::hideField( "form_list_bau", "dataremocao" );
                     TQuickForm::hideField( "form_list_bau", "localremocao_id" );
+
                 }
 
                 break;
@@ -551,14 +546,28 @@ class BauFormList extends TPage
             case "transferencia":
 
                 if( $param[ $fieldName ] == "S" ) {
+
                     TQuickForm::showField( "form_list_bau", "datatransferencia" );
                     TQuickForm::showField( "form_list_bau", "localtransferencia_id" );
+                    TQuickForm::showField( "form_list_bau", "transportedestino_id" );
+                    TQuickForm::showField( "form_list_bau", "especificartransporte" );
+                    TQuickForm::showField( "form_list_bau", "datatransporte" );
+
                 } else {
+
                     $object->datatransferencia = "";
-                    $object->localtransferencia_id = "..::SELECIONE::..";
+                    $object->localtransferencia_id = "";
+                    $object->transportedestino_id = "";
+                    $object->especificartransporte = "";
+                    $object->datatransporte = "";
+
                     TQuickForm::sendData( "form_list_bau", $object );
                     TQuickForm::hideField( "form_list_bau", "datatransferencia" );
                     TQuickForm::hideField( "form_list_bau", "localtransferencia_id" );
+                    TQuickForm::hideField( "form_list_bau", "transportedestino_id" );
+                    TQuickForm::hideField( "form_list_bau", "especificartransporte" );
+                    TQuickForm::hideField( "form_list_bau", "datatransporte" );
+
                 }
 
                 break;
