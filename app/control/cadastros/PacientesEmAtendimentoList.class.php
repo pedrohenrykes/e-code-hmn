@@ -134,6 +134,7 @@ class PacientesEmAtendimentoList extends TPage
         }
     }
 
+    
     public function onSearch()
     {
         $data = $this->form->getData();
@@ -143,21 +144,24 @@ class PacientesEmAtendimentoList extends TPage
             if( !empty( $data->opcao ) && !empty( $data->dados ) ) {
 
                 TTransaction::open( "database" );
+                $repository = new TRepository( "VwPacienteBauRecord" );
 
-                $repository = new TRepository( "PacienteRecord" );
-
-                if ( empty( $param[ "order" ] ) ) {
-                    $param[ "order" ] = "id";
-                    $param[ "direction" ] = "asc";
-                }
+                //if ( empty( $param[ "order" ] ) ) {
+                    $param[ "order" ] = "dataentrada";
+                    $param[ "direction" ] = "desc";
+                //}
 
                 $limit = 10;
 
                 $criteria = new TCriteria();
                 $criteria->setProperties( $param );
                 $criteria->setProperty( "limit", $limit );
+                
+                //$criteria = new TCriteria();
+                //$criteria->add( new TFilter( $data->opcao, "LIKE", $data->dados . "%" ) );
+                        $criteria->add( new TFilter( $data->opcao, "LIKE", $data->dados . "%" ) );
 
-                switch( $data->opcao ) {
+                /*switch( $data->opcao ) {
 
                     case "nomepaciente":
 
@@ -165,7 +169,9 @@ class PacientesEmAtendimentoList extends TPage
 
                         break;
 
-                }
+
+                }*/
+                
 
                 $objects = $repository->load( $criteria, FALSE );
 
@@ -180,7 +186,6 @@ class PacientesEmAtendimentoList extends TPage
                 }
 
                 $criteria->resetProperties();
-
                 $count = $repository->count( $criteria );
 
                 $this->pageNavigation->setCount( $count );
@@ -188,17 +193,13 @@ class PacientesEmAtendimentoList extends TPage
                 $this->pageNavigation->setLimit( $limit );
 
                 TTransaction::close();
-
                 $this->form->setData( $data );
-
                 $this->loaded = true;
 
             } else {
 
                 $this->onReload();
-
                 $this->form->setData( $data );
-
                 new TMessage( "erro", "Selecione uma opção e informe os dados à buscar corretamente!" );
             }
 
@@ -211,11 +212,12 @@ class PacientesEmAtendimentoList extends TPage
             new TMessage( "erro", $ex->getMessage() );
         }
     }
+    
 
-    public function show()
-    {
+    public function show(){
+
         $this->onReload();
-
         parent::show();
+
     }
 }
