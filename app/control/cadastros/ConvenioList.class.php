@@ -24,7 +24,7 @@ class ConvenioList extends TPage
         $opcao->setSize( "38%" );
         $dados->setSize( "38%" );
 
-        $opcao->addItems( [ "nome" => "Convênio", "numeroconselho" => "Conselho" ] );
+        $opcao->addItems( [ "nome" => "Convênio" ] );
 
         $this->form->addFields( [ new TLabel( "Opção de busca:" ) ], [ $opcao ] );
         $this->form->addFields( [ new TLabel( "Dados à buscar:" )  ], [ $dados ] );
@@ -37,7 +37,7 @@ class ConvenioList extends TPage
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
 
-        $column_nomeconvenio = new TDataGridColumn( "nome", "Convenio", "left" );
+        $column_nomeconvenio = new TDataGridColumn( "nome", "Convênio", "left" );
 
         $this->datagrid->addColumn( $column_nomeconvenio );
 
