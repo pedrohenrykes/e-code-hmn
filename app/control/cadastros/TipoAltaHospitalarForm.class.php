@@ -14,7 +14,7 @@ class TipoAltaHospitalarForm extends TWindow
         
         $redstar = '<font color="red"><b>*</b></font>';
 
-        $this->form = new BootstrapFormBuilder('form_tipoa_lta_hospitalar');
+        $this->form = new BootstrapFormBuilder('form_tipo_alta_hospitalar');
         $this->form->setFormTitle( "($redstar) campos obrigatórios" );
         $this->form->class = "tform";
 
@@ -42,7 +42,7 @@ class TipoAltaHospitalarForm extends TWindow
         $container->style = "width: 100%";
         $container->add( $this->form );
 
-        parent::add( $container );
+        parent::add( $container);
 
     }
 
