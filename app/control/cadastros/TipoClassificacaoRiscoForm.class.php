@@ -18,11 +18,15 @@ class TipoClassificacaoRiscoForm extends TWindow
 
         $id                         = new THidden( "id" );
         $ordem                      = new TEntry("ordem");
-        $situacao                   = new TEntry("situacao");
+        $situacao                   = new TCombo("situacao");
         $nometipoclassificacaorisco = new TEntry( "nometipoclassificacaorisco" );
         $cortipoclassificacaorisco  = new TEntry( "cortipoclassificacaorisco" );
         $tempoparaatendimento       = new TEntry("tempoparaatendimento");
         $tempoparaatendimento->setProperty('type', 'time');
+        
+        $situacao->addItems(["ATIVO" => "ATIVO", "INATIVO" => "INATIVO"]);
+        
+        $situacao->setDefaultOption( "..::SELECIONE::.." );
 
         $ordem->setProperty("title", "O campo e obrigatorio");
         $situacao->setProperty("title", "O campo e obrigatorio");
