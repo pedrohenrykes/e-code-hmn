@@ -20,11 +20,8 @@ class TipoProfissionalForm extends TWindow
         $nometipoprofissional = new TEntry("nometipoprofissional");
 
         $nometipoprofissional->setProperty("title", "O campo e obrigatorio");
-
         $nometipoprofissional->setSize("38%");
-
-        $label01 = new RequiredTextFormat( [ "Nome", "#F00", "bold" ] );
-        $nometipoprofissional->addValidation( $label01->getText(), new TRequiredValidator );
+        $nometipoprofissional->addValidation( TextFormat::set( "Nome" ), new TRequiredValidator );
 
         $this->form->addFields([new TLabel("Nome Tipo Profissional: $redstar")], [$nometipoprofissional]);
         $this->form->addFields( [ $id ] );

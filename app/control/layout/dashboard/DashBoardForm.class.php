@@ -51,17 +51,11 @@ class DashBoardForm extends TWindow
         $page->setSize( "38%" );
         $action->setSize( "38%" );
 
-        $label01 = new RequiredTextFormat( [ "View", "#F00", "bold" ] );
-        $label02 = new RequiredTextFormat( [ "Indicador", "#F00", "bold" ] );
-        $label03 = new RequiredTextFormat( [ "Título", "#F00", "bold" ] );
-        $label04 = new RequiredTextFormat( [ "Icone", "#F00", "bold" ] );
-        $label05 = new RequiredTextFormat( [ "Cor", "#F00", "bold" ] );
-
-        $dataview->addValidation( $label01->getText(), new TRequiredValidator );
-        $quantifier->addValidation( $label02->getText(), new TRequiredValidator );
-        $title->addValidation( $label03->getText(), new TRequiredValidator );
-        $icon->addValidation( $label04->getText(), new TRequiredValidator );
-        $color->addValidation( $label05->getText(), new TRequiredValidator );
+        $dataview->addValidation( TextFormat::set( "View" ), new TRequiredValidator );
+        $quantifier->addValidation( TextFormat::set( "Indicador" ), new TRequiredValidator );
+        $title->addValidation( TextFormat::set( "Título" ), new TRequiredValidator );
+        $icon->addValidation( TextFormat::set( "Icone" ), new TRequiredValidator );
+        $color->addValidation( TextFormat::set( "Cor" ), new TRequiredValidator );
 
         $this->form->addFields( [ new TLabel( "View: $redstar" ) ], [ $dataview ] );
         $this->form->addFields( [ new TLabel( "Indicador: $redstar" ) ], [ $quantifier ] );

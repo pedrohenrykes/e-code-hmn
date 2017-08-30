@@ -20,7 +20,7 @@ class ProfissionalForm extends TWindow
         $nomeprofissional    = new TEntry( "nomeprofissional" );
         $numeroconselho      = new TEntry( "numeroconselho" );
         $tipoprofissional_id = new TDBCombo( "tipoprofissional_id ", "database", "TipoProfissionalRecord", "id", "nometipoprofissional", "nometipoprofissional" );
-       
+
         //$nomeprofissional->forceUpperCase();
         //$numeroconselho->setMask( "A!" );
 
@@ -32,12 +32,8 @@ class ProfissionalForm extends TWindow
         $numeroconselho->setSize("38%");
         $tipoprofissional_id->setSize("38%");
 
-        $label01 = new RequiredTextFormat( [ "Nome do Profissional", "#F00", "bold" ] );
-        $label02 = new RequiredTextFormat( [ "Numero do Conselho", "#F00", "bold" ] );
-        $label03 = new RequiredTextFormat( [ "Tipo de profissional", "#F00", "bold" ] );
-
-        $nomeprofissional->addValidation( $label01->getText(), new TRequiredValidator );
-        $numeroconselho->addValidation( $label02->getText(), new TRequiredValidator );
+        $nomeprofissional->addValidation( TextFormat::set( "Nome do Profissional" ), new TRequiredValidator );
+        $numeroconselho->addValidation( TextFormat::set( "Numero do Conselho" ), new TRequiredValidator );
 
         $this->form->addFields([new TLabel("Nome do Profissional: $redstar")], [$nomeprofissional]);
         $this->form->addFields([new TLabel("Numero do Conselho: $redstar")], [$numeroconselho]);

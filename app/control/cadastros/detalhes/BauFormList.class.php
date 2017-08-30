@@ -168,11 +168,8 @@ class BauFormList extends TPage
         $responsavel->forceUpperCase();
         $responsavel->setProperty( "title", "Caso o paciente seja menor de idade." );
 
-        $label01 = new RequiredTextFormat( [ "Nome do Paciente", "#F00", "bold" ] );
-        $label02 = new RequiredTextFormat( [ "Sexo", "#F00", "bold" ] );
-
-        $convenio_id->addValidation( $label01->getText(), new TRequiredValidator );
-        $paciente_id->addValidation( $label01->getText(), new TRequiredValidator );
+        $convenio_id->addValidation( TextFormat::set( "Nome do Paciente" ), new TRequiredValidator );
+        $paciente_id->addValidation( TextFormat::set( "Sexo" ), new TRequiredValidator );
 
         $page1 = new TLabel( "Paciente", "#7D78B6", 12, "bi");
         $page1->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";

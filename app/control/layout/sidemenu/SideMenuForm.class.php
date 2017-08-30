@@ -48,12 +48,9 @@ class SideMenuForm extends TWindow
         $sequence->setSize( "38%" );
         $action_class->setSize( "38%" );
         $menu_id->setSize( "38%" );
-
-        $label01 = new RequiredTextFormat( [ "Tipo", "#F00", "bold" ] );
-        $label02 = new RequiredTextFormat( [ "Nome", "#F00", "bold" ] );
-
-        $menu_type->addValidation( $label01->getText(), new TRequiredValidator );
-        $name->addValidation( $label02->getText(), new TRequiredValidator );
+        
+        $menu_type->addValidation( TextFormat::set( "Tipo" ), new TRequiredValidator );
+        $name->addValidation( TextFormat::set( "Nome" ), new TRequiredValidator );
 
         $this->form->addFields( [ new TLabel( "Tipo: $redstar") ], [ $menu_type ] );
         $this->form->addFields( [ new TLabel( "Nome: $redstar") ], [ $name ] );

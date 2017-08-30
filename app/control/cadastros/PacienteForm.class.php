@@ -97,17 +97,11 @@ class PacienteForm extends TPage
         $nomemae->forceUpperCase();
         $nomepai->forceUpperCase();
 
-        $label01 = new RequiredTextFormat( [ "Nome do Paciente", "#F00", "bold" ] );
-        $label02 = new RequiredTextFormat( [ "Sexo", "#F00", "bold" ] );
-        $label03 = new RequiredTextFormat( [ "Data de Nascimento", "#F00", "bold" ] );
-        $label04 = new RequiredTextFormat( [ "Nome da Mãe", "#F00", "bold" ] );
-        $label05 = new RequiredTextFormat( [ "Cartão SUS", "#F00", "bold" ] );
-
-        $nomepaciente->addValidation( $label01->getText(), new TRequiredValidator );
-        $sexo->addValidation( $label02->getText(), new TRequiredValidator );
-        $datanascimento->addValidation( $label03->getText(), new TRequiredValidator );
-        $nomemae->addValidation( $label04->getText(), new TRequiredValidator );
-        $numerosus->addValidation( $label05->getText(), new TRequiredValidator );
+        $nomepaciente->addValidation( TextFormat::set( "Nome do Paciente" ), new TRequiredValidator );
+        $sexo->addValidation( TextFormat::set( "Sexo" ), new TRequiredValidator );
+        $datanascimento->addValidation( TextFormat::set( "Data de Nascimento" ), new TRequiredValidator );
+        $nomemae->addValidation( TextFormat::set( "Nome da Mãe" ), new TRequiredValidator );
+        $numerosus->addValidation( TextFormat::set( "Cartão SUS" ), new TRequiredValidator );
 
         $page1 = new TLabel( "Identificação", '#7D78B6', 12, 'bi');
         $page1->style='text-align:left;border-bottom:1px solid #c0c0c0;width:100%';

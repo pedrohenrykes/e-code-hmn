@@ -96,11 +96,8 @@ class ClassificacaoRiscoFormList extends TPage
         $paciente_nome->setEditable( false );
         $paciente_nome->forceUpperCase();
 
-        $label01 = new RequiredTextFormat( [ "Nome do Paciente", "#F00", "bold" ] );
-        $label02 = new RequiredTextFormat( [ "Data da Avaliação", "#F00", "bold" ] );
-
-        $paciente_id      ->addValidation( $label01->getText(), new TRequiredValidator );
-        $dataclassificacao->addValidation( $label01->getText(), new TRequiredValidator );
+        $paciente_id      ->addValidation( TextFormat::set( "Nome do Paciente" ), new TRequiredValidator );
+        $dataclassificacao->addValidation( TextFormat::set( "Data da Avaliação" ), new TRequiredValidator );
 
         $this->form->addFields( [ new TLabel( "Paciente: {$redstar}" ) ], [ $paciente_nome ] );
         $this->form->addFields( [ new TLabel( "Data da Avaliação: {$redstar}" ) ], [ $dataclassificacao ] );

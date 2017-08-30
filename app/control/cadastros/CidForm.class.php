@@ -29,9 +29,6 @@ class CidForm extends TWindow
         $codigocid->setSize("38%");
         $nomecid->setSize("38%");
 
-        // $label01 = new RequiredTextFormat( [ "Código", "#F00", "bold" ] );
-        // $label02 = new RequiredTextFormat( [ "Nome", "#F00", "bold" ] );
-
         $codigocid->addValidation( TextFormat::set( "Código" ), new TRequiredValidator );
         $nomecid->addValidation( TextFormat::set( "Nome" ), new TRequiredValidator );
 

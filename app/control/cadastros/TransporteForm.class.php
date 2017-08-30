@@ -27,12 +27,9 @@ class TransporteForm extends TWindow
 
         $situacao->addItems( [ "ATIVO" => "ATIVO", "INATIVO" => "INATIVO" ] );
         $situacao->setDefaultOption( "..::SELECIONE::.." );
-		
-        $label01 = new RequiredTextFormat( [ "Nome", "#F00", "bold" ] );
-        $nometransporte->addValidation( $label01->getText(), new TRequiredValidator );
 
-        $label02 = new RequiredTextFormat( [ "Situação", "#F00", "bold" ] );
-        $situacao->addValidation( $label02->getText(), new TRequiredValidator );
+        $nometransporte->addValidation( TextFormat::set( "Nome" ), new TRequiredValidator );
+        $situacao->addValidation( TextFormat::set( "Situação" ), new TRequiredValidator );
 
         $this->form->addFields([new TLabel("Nome Transporte: $redstar")], [$nometransporte]);
         $this->form->addFields([new TLabel("Situação: $redstar")], [$situacao]);

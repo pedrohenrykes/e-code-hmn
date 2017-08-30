@@ -18,17 +18,13 @@ class TipoEstadoGeralForm extends TWindow
 
         $id = new THidden( "id" );
         $nomeestadogeral = new TEntry( "nomeestadogeral" );
-       
+
         //$nomeprofissional->forceUpperCase();
         //$numeroconselho->setMask( "A!" );
 
         $nomeestadogeral->setProperty("title", "O campo e obrigatorio");
-        
         $nomeestadogeral->setSize("38%");
-
-        $label01 = new RequiredTextFormat( [ "Nome do Estado Geral", "#F00", "bold" ] );
-
-        $nomeestadogeral->addValidation( $label01->getText(), new TRequiredValidator );
+        $nomeestadogeral->addValidation( TextFormat::set( "Nome do Estado Geral" ), new TRequiredValidator );
 
         $this->form->addFields([new TLabel("Nome do Estado Geral: $redstar")], [$nomeestadogeral]);
         $this->form->addFields( [ $id ] );

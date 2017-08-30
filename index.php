@@ -40,7 +40,7 @@ echo PageDetails::set( $content );
 
 if ( TSession::getValue( "logged" ) OR $public ) {
 
-    if ($class) {
+    if ( $class ) {
 
         $method = isset( $_REQUEST[ "method" ] ) ? $_REQUEST[ "method" ] : NULL;
         AdiantiCoreApplication::loadPage( $class, $method, $_REQUEST );

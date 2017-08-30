@@ -18,17 +18,13 @@ class ConvenioForm extends TWindow
 
         $id        = new THidden( "id" );
         $nomeconvenio = new TEntry( "nome" );
-       
+
         //$nomeconvenio->forceUpperCase();
         //$numeroconselho->setMask( "A!" );
 
         $nomeconvenio->setProperty("title", "O campo e obrigatorio");
-
         $nomeconvenio->setSize("38%");
-
-        $label01 = new RequiredTextFormat( [ "Nome do Convênio", "#F00", "bold" ] );
-
-        $nomeconvenio->addValidation( $label01->getText(), new TRequiredValidator );
+        $nomeconvenio->addValidation( TextFormat::set( "Nome do Convênio" ), new TRequiredValidator );
 
         $this->form->addFields([new TLabel("Nome do Convenio: $redstar")], [$nomeconvenio]);
         $this->form->addFields( [ $id ] );

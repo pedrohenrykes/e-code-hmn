@@ -18,18 +18,14 @@ class PrincipioAtivoForm extends TWindow
 
         $id                  = new THidden( "id" );
         $nomeprincipioativo    = new TEntry( "nomeprincipioativo" );
-       
+
         //$nomeprofissional->forceUpperCase();
         //$numeroconselho->setMask( "A!" );
 
         $nomeprincipioativo->setProperty("title", "O campo e obrigatorio");
-      
         $nomeprincipioativo->setSize("38%");
+        $nomeprincipioativo->addValidation( TextFormat::set( "Nome do Princípio Ativo" ), new TRequiredValidator );
 
-        $label01 = new RequiredTextFormat( [ "Nome do Princípio Ativo", "#F00", "bold" ] );
-
-        $nomeprincipioativo->addValidation( $label01->getText(), new TRequiredValidator );
-        
         $this->form->addFields([new TLabel("Nome do Princípio Ativo: $redstar")], [$nomeprincipioativo]);
         $this->form->addFields( [ $id ] );
 

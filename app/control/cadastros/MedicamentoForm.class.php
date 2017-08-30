@@ -11,7 +11,7 @@ class MedicamentoForm extends TWindow
         parent::__construct();
         parent::setTitle( "Cadastro de Medicamentos" );
         parent::setSize( 0.600, 0.800 );
-        
+
         $redstar = '<font color="red"><b>*</b></font>';
 
         $this->form = new BootstrapFormBuilder('form_medicamento');
@@ -21,23 +21,20 @@ class MedicamentoForm extends TWindow
         $id = new THidden('id');
         $nomemedicamento = new TEntry('nomemedicamento');
         $principioativo_id = new TDBCombo("principioativo_id", "database", "PrincipioAtivoRecord", "id", "nomeprincipioativo", "nomeprincipioativo" );
-        
+
         $nomemedicamento->setProperty("title", "O campo e obrigatorio");
         $principioativo_id ->setProperty("title", "O campo e obrigatorio");
 
         $nomemedicamento->setSize("38%");
         $principioativo_id->setSize("38%");
         
-        $label01 = new RequiredTextFormat( [ "Nome do Medicamento ", "#F00", "bold" ] );
-        $label02 = new RequiredTextFormat( [ "Principio ativo ", "#F00", "bold" ] );
-
-        $nomemedicamento->addValidation( $label01->getText(), new TRequiredValidator );
-        $principioativo_id->addValidation( $label02->getText(), new TRequiredValidator );
+        $nomemedicamento->addValidation( TextFormat::set( "Nome do Medicamento" ), new TRequiredValidator );
+        $principioativo_id->addValidation( TextFormat::set( "Principio ativo" ), new TRequiredValidator );
 
         $this->form->addFields([new TLabel("Nome do Medicamento: $redstar")], [$nomemedicamento]);
         $this->form->addFields([new TLabel("Nome do Princípio Ativo: $redstar")], [$principioativo_id]);
 
-        
+
         $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );
         $this->form->addAction( "Voltar para a listagem", new TAction( [ "MedicamentoList", "onReload" ] ), "fa:table blue" );
 
@@ -60,12 +57,12 @@ class MedicamentoForm extends TWindow
                 $object = $this->form->getData('MedicamentoRecord');
                 $object->store();
             TTransaction::close();
-            
+
             $action = new TAction( [ "MedicamentoList", "onReload" ] );
             new TMessage("info", "Registro salvo com sucesso!", $action);
-            
+
         } catch (Exception $ex) {
-            
+
             TTransaction::rollback();
             new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
         }
@@ -96,7 +93,6 @@ class MedicamentoForm extends TWindow
         }
 
     }
-    
+
 
 }
-

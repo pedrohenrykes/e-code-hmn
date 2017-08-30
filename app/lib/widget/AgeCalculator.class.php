@@ -1,13 +1,15 @@
 <?php
 
-class Age
+class AgeCalculator
 {
-    public static function calculate( $value = NULL )
+    private function __construct(){}
+
+    public static function calculate( $birth = NULL )
     {
-        if( ( !empty( $value ) ) && ( strlen( $value ) == 10 ) )
-        {
-            $dateBegin = explode( '/', $value );
-            $dateEnd   = explode( '/', date( 'd/m/Y' ) );
+        if( ( !empty( $birth ) ) && ( strlen( $birth ) == 10 ) ) {
+
+            $dateBegin = explode( "/", $birth );
+            $dateEnd   = explode( "/", date( "d/m/Y" ) );
 
             $timeBegin = mktime( 0, 0, 0, $dateBegin[ 1 ], $dateBegin[ 0 ], $dateBegin[ 2 ] );
             $timeEnd   = mktime( 0, 0, 0, $dateEnd[ 1 ],   $dateEnd[ 0 ],   $dateEnd[ 2 ] );
@@ -17,10 +19,11 @@ class Age
             $days = ( int ) floor( $seconds / ( 60 * 60 * 24 ) );
 
             return ( int ) ( $days / 365.25 );
-        }
-        else
-        {
+
+        } else {
+
             return 0;
+
         }
     }
 }
