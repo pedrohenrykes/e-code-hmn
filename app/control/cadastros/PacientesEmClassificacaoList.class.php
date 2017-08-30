@@ -92,6 +92,7 @@ class PacientesEmClassificacaoList extends TPage
             $criteria = new TCriteria();
             $criteria->setProperties( $properties );
             $criteria->setProperty( "limit", $limit );
+            $criteria->add( new TFilter( "situacao", "=", "ABERTO") );
 
             $objects = $repository->load( $criteria, FALSE );
 
