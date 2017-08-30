@@ -38,7 +38,7 @@ class MedicamentoList extends TPage
         $this->datagrid->setHeight( 320 );
 
         $column_nomemedicamento = new TDataGridColumn( "nomemedicamento", "Medicamento", "left" );
-        $column_principioativo_id = new TDataGridColumn( "principioativo", "Princípio Ativo", "left" );
+        $column_principioativo_id = new TDataGridColumn( "principioativo_nome", "Princípio Ativo", "left" );
 
         $this->datagrid->addColumn( $column_nomemedicamento );
         $this->datagrid->addColumn( $column_principioativo_id );
@@ -150,7 +150,23 @@ class MedicamentoList extends TPage
                     case "nomemedicamento":
                         $criteria->add( new TFilter( $data->opcao, "LIKE", "%" . $data->dados . "%" ) );
                         break;
-
+                        
+                    case "principioativo_id":
+                            $repostiry2 = new TRepository('PrincipioAtivoRecord');
+                            $criteria2 = new TCriteria();
+                            $criteria2->add( new TFilter('nomeprincipioativo', "LIKE", $data->dados. "%" ) );
+                            $ids = [];
+                           
+                            $objects2 = $repostiry2->load( $criteria2, FALSE );
+                            if ( $objects2 ) {
+                                foreach ( $objects2 as $object1 ) {
+                                    $ids[] = $object1->id;   
+                                }
+                                  $criteria->add( new TFilter( 'principioativo_id', "IN", $ids ));
+                            } else {
+                              new TMessage( "info", "Não há dados cadastrados!" );
+                            }
+                            break;
                     default:
                         $criteria->add( new TFilter( $data->opcao, "LIKE", $data->dados . "%" ) );
                         break;

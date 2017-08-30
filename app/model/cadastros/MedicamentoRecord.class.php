@@ -7,7 +7,8 @@ class MedicamentoRecord extends TRecord {
     const IDPOLICY =  'serial';
     
     private $principioativo;
-    public function get_principioativo()
+    
+    public function get_principioativo_nome()
     {
     	  if ( empty( $this->principioativo ) ) 
           {
@@ -15,6 +16,8 @@ class MedicamentoRecord extends TRecord {
          }
         return $this->principioativo->nomeprincipioativo;
     }
+    
+    
 
 }
 
