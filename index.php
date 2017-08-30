@@ -1,5 +1,9 @@
 <?php
 
+// ini_set ( 'display_errors', 1 );
+// ini_set ( 'display_startup_erros', 1 );
+// error_reporting ( E_ALL );
+
 require_once "init.php";
 
 $theme  = $ini[ "general" ][ "theme" ];
@@ -32,7 +36,7 @@ $js       = TPage::getLoadedJS();
 
 $content  = str_replace( "{HEAD}", $css.$js, $content );
 
-echo PageDetails::putting( $content );
+echo PageDetails::set( $content );
 
 if ( TSession::getValue( "logged" ) OR $public ) {
 

@@ -2,7 +2,9 @@
 
 class PageDetails
 {
-    public static function putting( $html = NULL)
+    private function __construct(){}
+
+    public static function set( $html = null )
     {
         $smallimage = new TImage("app/images/default/logo_small.png");
         $largeimage = new TImage("app/images/default/logo_large.png");
