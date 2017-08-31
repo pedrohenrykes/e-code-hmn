@@ -37,7 +37,7 @@ class ClassificacaoRiscoFormList extends TPage
         $observacoes               = new TText( "observacoes" );
         $queixaprincipal           = new TText( "queixaprincipal" );
         $dor                       = new TCombo( "dor" );
-        
+
         $tipoclassificacaorisco_id = new TDBCombo(
             "tipoclassificacaorisco_id",
             "database", "TipoClassificacaoRiscoRecord",
@@ -65,18 +65,24 @@ class ClassificacaoRiscoFormList extends TPage
 
             TTransaction::open( "database" );
 
+            $bau = new BauRecord( $fk );
             $paciente = new PacienteRecord( $did );
 
-            if( isset( $paciente ) ){
+            if( isset( $bau ) && isset( $paciente ) ) {
+
+                $bau_id->setValue( $bau->id );
                 $paciente_id->setValue( $paciente->id );
                 $paciente_nome->setValue( $paciente->nomepaciente );
+
             }
 
             TTransaction::close();
 
         } catch ( Exception $ex ) {
 
-            new TMessage( "error", "Não foi possível carregar os dados do paciente.<br><br>" . $ex->getMessage() );
+            $action = new TAction( [ "PacientesEmClassificacaoList", "onReload" ] );
+
+            new TMessage( "error", "Ocorreu um erro ao carregar as dependência do formulário.", $action );
 
         }
 
@@ -125,24 +131,23 @@ class ClassificacaoRiscoFormList extends TPage
         $this->form->addFields( [ new TLabel( "Temperatura:" ) ], [ $temperatura ] );
         $this->form->addFields( [ new TLabel( "SPO2:" ) ], [ $spo2 ] );
         $this->form->addFields( [ new TLabel( "HTG:" ) ], [ $htg ] );
-        
+
         $page2 = new TLabel( "Histórico Patológico", "#7D78B6", 12, "bi");
         $page2->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
         $this->form->appendPage( "Histórico Patológico" );
         $this->form->addContent( [ $page2 ] );
-        
-        $add_button1  = TButton::create( "add1", [ $this,"onAddProgram" ], "Adicionar", 'fa:plus green');
-        $add_button2  = TButton::create( "add2", [ $this,"onAddProgram" ], "Adicionar", 'fa:plus green');
-        $add_button3  = TButton::create( "add3", [ $this,"onAddProgram" ], "Adicionar", 'fa:plus green');
-        $this->form->addFields( [ $add_button1, $add_button2, $add_button3 ] );
+
+        $add_button1 = TButton::create( "add1", [ $this,"onAddItem" ], "Adicionar", 'fa:plus green');
+        $add_button2 = TButton::create( "add2", [ $this,"onAddItem" ], "Adicionar", 'fa:plus green');
+        $add_button3 = TButton::create( "add3", [ $this,"onAddItem" ], "Adicionar", 'fa:plus green');
 
         // TODO concluir os frames
-        
         /*--- frame de comorbidades ---*/
         $frame1 = new TFrame;
         $frame1->setLegend( "Comorbidades" );
         $frame1->style .= ';margin:0px;width:95%';
         $this->form->addContent( [ $frame1 ] );
+        $this->form->addField( $add_button1 );
         $this->framegrid1 = new TQuickGrid();
         $this->framegrid1->setHeight(200);
         $this->framegrid1->makeScrollable();
@@ -152,14 +157,14 @@ class ClassificacaoRiscoFormList extends TPage
         $this->framegrid1->addQuickColumn( '', 'delete', 'center', '5%');
         $this->framegrid1->addQuickColumn( "Patologia", 'name', 'left', '85%');
         $this->framegrid1->createModel();
-        $hbox = new THBox;
-        $hbox->add($add_button1);
-        $hbox->style = 'margin: 4px';
-        $vbox = new TVBox;
-        $vbox->style='width:100%';
-        $vbox->add( $hbox );
-        $vbox->add( $this->framegrid1 ); 
-        $frame1->add($vbox);
+        $hbox1 = new THBox;
+        $hbox1->add( $add_button1 );
+        $hbox1->style = 'margin: 4px';
+        $vbox1 = new TVBox;
+        $vbox1->style='width:100%';
+        $vbox1->add( $hbox1 );
+        $vbox1->add( $this->framegrid1 );
+        $frame1->add( $vbox1 );
         /*--------------------------------------*/
 
         /*--- frame de uso de medicacoes ---*/
@@ -167,6 +172,7 @@ class ClassificacaoRiscoFormList extends TPage
         $frame2->setLegend( "Uso de Medicações" );
         $frame2->style .= ';margin:0px;width:95%';
         $this->form->addContent( [ $frame2 ] );
+        $this->form->addField( $add_button2 );
         $this->framegrid2 = new TQuickGrid();
         $this->framegrid2->setHeight(200);
         $this->framegrid2->makeScrollable();
@@ -176,14 +182,14 @@ class ClassificacaoRiscoFormList extends TPage
         $this->framegrid2->addQuickColumn( '', 'delete', 'center', '5%');
         $this->framegrid2->addQuickColumn( "Principio Ativo", 'name', 'left', '85%');
         $this->framegrid2->createModel();
-        $hbox = new THBox;
-        $hbox->add($add_button2);
-        $hbox->style = 'margin: 4px';
-        $vbox = new TVBox;
-        $vbox->style='width:100%';
-        $vbox->add( $hbox );
-        $vbox->add( $this->framegrid2 ); 
-        $frame2->add($vbox);
+        $hbox2 = new THBox;
+        $hbox2->add( $add_button2 );
+        $hbox2->style = 'margin: 4px';
+        $vbox2 = new TVBox;
+        $vbox2->style='width:100%';
+        $vbox2->add( $hbox2 );
+        $vbox2->add( $this->framegrid2 );
+        $frame2->add( $vbox2 );
         /*--------------------------------------*/
 
         /*--- frame de alergia medicamentosa ---*/
@@ -191,6 +197,7 @@ class ClassificacaoRiscoFormList extends TPage
         $frame3->setLegend( "Alergia Medicamentosa" );
         $frame3->style .= ';margin:0px;width:95%';
         $this->form->addContent( [ $frame3 ] );
+        $this->form->addField( $add_button3 );
         $this->framegrid3 = new TQuickGrid();
         $this->framegrid3->setHeight(200);
         $this->framegrid3->makeScrollable();
@@ -200,14 +207,14 @@ class ClassificacaoRiscoFormList extends TPage
         $this->framegrid3->addQuickColumn( '', 'delete', 'center', '5%');
         $this->framegrid3->addQuickColumn( "Principio Ativo", 'name', 'left', '85%');
         $this->framegrid3->createModel();
-        $hbox = new THBox;
-        $hbox->add($add_button3);
-        $hbox->style = 'margin: 4px';
-        $vbox = new TVBox;
-        $vbox->style='width:100%';
-        $vbox->add( $hbox );
-        $vbox->add( $this->framegrid3 ); 
-        $frame3->add($vbox);
+        $hbox3 = new THBox;
+        $hbox3->add( $add_button3 );
+        $hbox3->style = 'margin: 4px';
+        $vbox3 = new TVBox;
+        $vbox3->style='width:100%';
+        $vbox3->add( $hbox3 );
+        $vbox3->add( $this->framegrid3 );
+        $frame3->add( $vbox3 );
         /*--------------------------------------*/
 
         $page3 = new TLabel( "Estado Geral", "#7D78B6", 12, "bi");
@@ -477,56 +484,13 @@ class ClassificacaoRiscoFormList extends TPage
         }
     }
 
-    public static function onAddProgram( $param = null )
+    public static function onAddItem( $param = null )
     {
-        /*
-        try
-        {
-            $id = $param['program_id'];
-            $comorbidade_list = TSession::getValue('program_list');
 
-            if (!empty($id) AND empty($comorbidade_list[$id]))
-            {
-                TTransaction::open('database');
-                $comorbidade = SystemProgram::find($id);
-                $comorbidade_list[$id] = $comorbidade->toArray();
-                TSession::setValue('program_list', $comorbidade_list);
-                TTransaction::close();
 
-                $i = new TElement('i');
-                $i->{'class'} = 'fa fa-trash red';
-                $btn = new TElement('a');
-                $btn->{'onclick'} = "__adianti_ajax_exec(\'class=SystemGroupForm&method=deleteProgram&id=$id\');$(this).closest(\'tr\').remove();";
-                $btn->{'class'} = 'btn btn-default btn-sm';
-                $btn->add($i);
-
-                $tr = new TTableRow;
-                $tr->{'class'} = 'tdatagrid_row_odd';
-                $tr->{'style'} = 'width: 100%;display: inline-table;';
-                $cell = $tr->addCell( $btn );
-                $cell->{'style'}='text-align:center';
-                $cell->{'class'}='tdatagrid_cell';
-                $cell->{'width'} = '5%';
-                $cell = $tr->addCell( $comorbidade->id );
-                $cell->{'class'}='tdatagrid_cell';
-                $cell->{'width'} = '10%';
-                $cell = $tr->addCell( $comorbidade->name );
-                $cell->{'class'}='tdatagrid_cell';
-                $cell->{'width'} = '85%';
-
-                TScript::create("tdatagrid_add_serialized_row('program_list', '$tr');");
-
-                $data = new stdClass;
-                $data->program_id = '';
-                $data->program_name = '';
-                TForm::sendData('form_System_group', $data);
-            }
-        }
-        catch (Exception $e)
-        {
-            new TMessage('error', $e->getMessage());
-        }
-        */
+        $window = TWindow::create( "Adição de Comorbidado", 0.600, 0.800 );
+        $window->add(  );
+        $window->show();
     }
 
     public function onClear()
