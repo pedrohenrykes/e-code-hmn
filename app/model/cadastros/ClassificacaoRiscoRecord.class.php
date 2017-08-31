@@ -36,4 +36,13 @@ class ClassificacaoRiscoRecord extends TRecord
 
         return $this->paciente->nomeprofissional;
     }
+
+    public function getComorbidades()
+    {
+        $comorbidades = [];
+
+        $repository = new TRepository( "BauComorbidades" );
+
+        // TODO concluir metodo
+    }
 }
