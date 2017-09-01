@@ -14,8 +14,8 @@ class PacienteEncaminhamentoDetalhe extends TPage
 
         $redstar = '<font color="red"><b>*</b></font>';
 
-        $this->form = new BootstrapFormBuilder( "detalhe_paciente_encaminhamento_detalhe" );
-        $this->form->setFormTitle( "Detalhe de Encaminhamento de Paciente" );
+        $this->form = new BootstrapFormBuilder( "detalhe_paciente_encaminhamento" );
+        $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 
         $id                       = new THidden("id");
@@ -32,26 +32,32 @@ class PacienteEncaminhamentoDetalhe extends TPage
         $transportedestino_id     = new TCombo("transportedestino_id");
         $especificartransporte    = new TEntry("especificartransporte");
         $datatransporte           = new TDate("datatransporte");
-        $convenio_id              = new TDBCombo( "convenio_id", "database", "ConvenioRecord", "id", "nome", "nome");
         
+        $fk = filter_input( INPUT_GET, "fk" );
         $did = filter_input( INPUT_GET, "did" );
 
         try {
 
             TTransaction::open( "database" );
 
+            $bau = new BauRecord( $fk );
             $paciente = new PacienteRecord( $did );
 
-            if( isset( $paciente ) ){
+            if( isset( $bau ) && isset( $paciente ) ) {
+
+                $id->setValue( $bau->id );
                 $paciente_id->setValue( $paciente->id );
                 $paciente_nome->setValue( $paciente->nomepaciente );
+
             }
 
             TTransaction::close();
 
         } catch ( Exception $ex ) {
 
-            new TMessage( "error", "Não foi possível carregar os dados do paciente.<br><br>" . $ex->getMessage() );
+            $action = new TAction( [ "PacientesEncaminhamentoList", "onReload" ] );
+
+            new TMessage( "error", "Ocorreu um erro ao carregar as dependência do formulário.", $action );
 
         }
 
@@ -68,7 +74,6 @@ class PacienteEncaminhamentoDetalhe extends TPage
         $transportedestino_id    ->setSize( "38%" );
         $especificartransporte   ->setSize( "38%" );
         $datatransporte          ->setSize( "38%" );
-        $convenio_id             ->setSize( "38%" );
 
         $internamentolocal       ->setDefaultOption( "..::SELECIONE::.." );
         $remocao                 ->setDefaultOption( "..::SELECIONE::.." );
@@ -76,7 +81,6 @@ class PacienteEncaminhamentoDetalhe extends TPage
         $transferencia           ->setDefaultOption( "..::SELECIONE::.." );
         $localtransferencia_id   ->setDefaultOption( "..::SELECIONE::.." );
         $transportedestino_id    ->setDefaultOption( "..::SELECIONE::.." );
-        $convenio_id             ->setDefaultOption( "..::SELECIONE::.." );
         
         $internamentolocal->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
         $remocao          ->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
@@ -89,7 +93,6 @@ class PacienteEncaminhamentoDetalhe extends TPage
         $internamentolocal->setValue( "N" );
         $remocao          ->setValue( "N" );
         $transferencia    ->setValue( "N" );
-        $convenio_id      ->setValue( "5" );
 
         $datainternamento   ->setMask( "dd/mm/yyyy" );
         $dataremocao        ->setMask( "dd/mm/yyyy" );
@@ -101,13 +104,11 @@ class PacienteEncaminhamentoDetalhe extends TPage
         $datatransferencia  ->setDatabaseMask("yyyy-mm-dd");
         $datatransporte     ->setDatabaseMask("yyyy-mm-dd");
         
-        $this->changeFields = [ "internamentolocal", "remocao", "transferencia", "alta", "obito" ];
+        $this->changeFields = [ "internamentolocal", "remocao", "transferencia" ];
         
         $paciente_nome->setEditable( false );
         
-        $convenio_id->addValidation( TextFormat::set( "Nome do Paciente" ), new TRequiredValidator );
         $paciente_id->addValidation( TextFormat::set( "Sexo" ), new TRequiredValidator );
-
 
         $this->form->addFields( [ new TLabel( "Paciente:" ) ], [ $paciente_nome ]);
         $this->form->addFields( [ new TLabel( "Internamento: {$redstar}" ) ], [ $internamentolocal ]);
@@ -121,7 +122,6 @@ class PacienteEncaminhamentoDetalhe extends TPage
         $this->form->addFields( [ new TLabel( "Destino do Transporte:" ) ], [ $transportedestino_id ] );
         $this->form->addFields( [ new TLabel( "Informações do Transporte:" ) ], [ $especificartransporte ] );
         $this->form->addFields( [ new TLabel( "Data do Transporte:" ) ], [ $datatransporte ] );
-        $this->form->addFields( [ new TLabel("({$redstar}) campos obrigatórios") ]);
         $this->form->addFields([ $paciente_id, $id ]);
 
         $onSave = new TAction( [ $this, "onSave" ] );
@@ -137,24 +137,13 @@ class PacienteEncaminhamentoDetalhe extends TPage
         parent::add( $container );
     }
     
-        public function onReload( $param = null )
+    public function onReload( $param = null )
     {
-        try {
-
-            $this->loaded = true;
-
-            foreach ( $this->changeFields as $field ) {
-                self::onChangeAction([
-                    "_field_name" => $field,
-                    $field => "N"
-                ]);
-            }
-
-        } catch ( Exception $ex ) {
-
-            TTransaction::rollback();
-
-            new TMessage( "error", $ex->getMessage() );
+        foreach ( $this->changeFields as $field ) {
+            self::onChangeAction([
+                "_field_name" => $field,
+                $field => "N"
+            ]);
         }
     }
 
@@ -165,15 +154,18 @@ class PacienteEncaminhamentoDetalhe extends TPage
         try {
 
             $this->form->validate();
-
+            
+            unset($object->paciente_nome);
+            
             TTransaction::open( "database" );
+            
+            $object->situacao = 'ENCAMINHADO';
 
             $object->store();
 
             TTransaction::close();
 
             $action = new TAction( [ "PacientesEncaminhamentoList", "onReload" ] );
-            $action->setParameter( "did", $param[ "did" ] );
 
             new TMessage( "info", "Registro salvo com sucesso!", $action );
 
@@ -202,16 +194,53 @@ class PacienteEncaminhamentoDetalhe extends TPage
         $fieldName = $param[ "_field_name" ];
 
         switch ( $fieldName ) {
+                
+            case "internamentolocal":
+
+                if( $param[ $fieldName ] == "S" ) {
+
+                    TQuickForm::showField( "detalhe_paciente_encaminhamento", "datainternamento" );
+
+                } else {
+
+                    $object->datainternamento = "";
+
+                    TQuickForm::sendData( "detalhe_paciente_encaminhamento", $object );
+                    TQuickForm::hideField( "detalhe_paciente_encaminhamento", "datainternamento" );
+
+                }
+
+                break;
+
+            case "remocao":
+
+                if( $param[ $fieldName ] == "S" ) {
+
+                    TQuickForm::showField( "detalhe_paciente_encaminhamento", "dataremocao" );
+                    TQuickForm::showField( "detalhe_paciente_encaminhamento", "localremocao_id" );
+
+                } else {
+
+                    $object->dataremocao = "";
+                    $object->localremocao_id = "";
+
+                    TQuickForm::sendData( "detalhe_paciente_encaminhamento", $object );
+                    TQuickForm::hideField( "detalhe_paciente_encaminhamento", "dataremocao" );
+                    TQuickForm::hideField( "detalhe_paciente_encaminhamento", "localremocao_id" );
+
+                }
+
+                break;
 
             case "transferencia":
 
                 if( $param[ $fieldName ] == "S" ) {
 
-                    TQuickForm::showField( "detalhe_paciente_encaminhamento_detalhe", "datatransferencia" );
-                    TQuickForm::showField( "detalhe_paciente_encaminhamento_detalhe", "localtransferencia_id" );
-                    TQuickForm::showField( "detalhe_paciente_encaminhamento_detalhe", "transportedestino_id" );
-                    TQuickForm::showField( "detalhe_paciente_encaminhamento_detalhe", "especificartransporte" );
-                    TQuickForm::showField( "detalhe_paciente_encaminhamento_detalhe", "datatransporte" );
+                    TQuickForm::showField( "detalhe_paciente_encaminhamento", "datatransferencia" );
+                    TQuickForm::showField( "detalhe_paciente_encaminhamento", "localtransferencia_id" );
+                    TQuickForm::showField( "detalhe_paciente_encaminhamento", "transportedestino_id" );
+                    TQuickForm::showField( "detalhe_paciente_encaminhamento", "especificartransporte" );
+                    TQuickForm::showField( "detalhe_paciente_encaminhamento", "datatransporte" );
 
                 } else {
 
@@ -221,12 +250,12 @@ class PacienteEncaminhamentoDetalhe extends TPage
                     $object->especificartransporte = "";
                     $object->datatransporte = "";
 
-                    TQuickForm::sendData( "detalhe_paciente_encaminhamento_detalhe", $object );
-                    TQuickForm::hideField( "detalhe_paciente_encaminhamento_detalhe", "datatransferencia" );
-                    TQuickForm::hideField( "detalhe_paciente_encaminhamento_detalhe", "localtransferencia_id" );
-                    TQuickForm::hideField( "detalhe_paciente_encaminhamento_detalhe", "transportedestino_id" );
-                    TQuickForm::hideField( "detalhe_paciente_encaminhamento_detalhe", "especificartransporte" );
-                    TQuickForm::hideField( "detalhe_paciente_encaminhamento_detalhe", "datatransporte" );
+                    TQuickForm::sendData( "detalhe_paciente_encaminhamento", $object );
+                    TQuickForm::hideField( "detalhe_paciente_encaminhamento", "datatransferencia" );
+                    TQuickForm::hideField( "detalhe_paciente_encaminhamento", "localtransferencia_id" );
+                    TQuickForm::hideField( "detalhe_paciente_encaminhamento", "transportedestino_id" );
+                    TQuickForm::hideField( "detalhe_paciente_encaminhamento", "especificartransporte" );
+                    TQuickForm::hideField( "detalhe_paciente_encaminhamento", "datatransporte" );
 
                 }
 
