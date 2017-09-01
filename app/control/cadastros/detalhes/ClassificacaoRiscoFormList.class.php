@@ -471,7 +471,7 @@ class ClassificacaoRiscoFormList extends TPage
         }
     }
 
-    public function frameGridsAddItems( $param = null )
+    public function frameGridAddItems( $param = null )
     {   
         $object = new BauRecord( $param[ "fk" ] );
         

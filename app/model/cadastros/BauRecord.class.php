@@ -20,10 +20,14 @@ class BauRecord extends TRecord
     public function getComorbidades()
     {
         $repository = new TRepository( "BauComorbidades" );
+        
+        $properties = [
+            "order" => "id",
+            "direction" => "desc"
+        ];
 
         $criteria = new TCriteria();
         $criteria->setProperties( $properties );
-        $criteria->setProperty( "limit", $limit );
         $criteria->add( new TFilter( "bau_id", "=", $this->id ) );
 
         $objects = $repository->load( $criteria, FALSE );
@@ -35,9 +39,13 @@ class BauRecord extends TRecord
     {
         $repository = new TRepository( "BauUsoMedicacoes" );
 
+        $properties = [
+            "order" => "id",
+            "direction" => "desc"
+        ];
+        
         $criteria = new TCriteria();
         $criteria->setProperties( $properties );
-        $criteria->setProperty( "limit", $limit );
         $criteria->add( new TFilter( "bau_id", "=", $this->id ) );
 
         $objects = $repository->load( $criteria, FALSE );
@@ -48,10 +56,14 @@ class BauRecord extends TRecord
     public function getAlergias()
     {
         $repository = new TRepository( "BauAlergiaMedicamentosa" );
+        
+        $properties = [
+            "order" => "id",
+            "direction" => "desc"
+        ];
 
         $criteria = new TCriteria();
         $criteria->setProperties( $properties );
-        $criteria->setProperty( "limit", $limit );
         $criteria->add( new TFilter( "bau_id", "=", $this->id ) );
 
         $objects = $repository->load( $criteria, FALSE );
