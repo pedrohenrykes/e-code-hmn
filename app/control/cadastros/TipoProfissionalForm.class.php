@@ -27,7 +27,6 @@ class TipoProfissionalForm extends TWindow
         $this->form->addFields( [ $id ] );
 
         $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );
-        $this->form->addAction( "Voltar para a listagem", new TAction( [ "TipoProfissionalList", "onReload" ] ), "fa:table blue" );
 
         $container = new TVBox();
         $container->style = "width: 100%";
