@@ -97,7 +97,7 @@ class LoginForm extends TPage
                 TSession::setValue('usergroupids', $user->getSystemUserGroupIds());
                 TSession::setValue('username', $user->name);
                 TSession::setValue('frontpage', '');
-                TSession::setValue('programs',$programs);
+                TSession::setValue('programs', $programs);
                 // TSession::setValue('medico_id',$user->medico_id);
 
                 if (!empty($user->unit))
@@ -114,8 +114,8 @@ class LoginForm extends TPage
                 }
                 else
                 {
-                    AdiantiCoreApplication::gotoPage('EmptyPage'); // reload
-                    TSession::setValue('frontpage', 'EmptyPage');
+                    AdiantiCoreApplication::gotoPage('DashBoardCreate'); // reload
+                    TSession::setValue('frontpage', 'DashBoardCreate');
                 }
             }
             TTransaction::close();
@@ -147,7 +147,7 @@ class LoginForm extends TPage
                 }
                 else
                 {
-                    TApplication::gotoPage('EmptyPage'); // reload
+                    TApplication::gotoPage('DashBoardCreate'); // reload
                 }
             }
             TTransaction::close();
