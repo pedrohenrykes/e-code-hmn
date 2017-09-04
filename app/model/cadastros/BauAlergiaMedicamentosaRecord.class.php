@@ -1,6 +1,6 @@
 <?php
 
-class BauAlergiaMedicamentosa extends TRecord
+class BauAlergiaMedicamentosaRecord extends TRecord
 {
     const TABLENAME  = "baualergiamedicamentosa";
     const PRIMARYKEY = "id";
