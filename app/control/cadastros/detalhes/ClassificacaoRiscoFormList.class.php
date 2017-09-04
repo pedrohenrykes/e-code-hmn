@@ -141,10 +141,23 @@ class ClassificacaoRiscoFormList extends TPage
         $frame1 = new TFrame;
         $frame1->setLegend( "Comorbidades" );
         $frame1->style .= ';margin:0px;width:95%';
-        $add_button1 = TButton::create( 
-            "add1", [ $this,"onAddItem1" ], "Adicionar", "fa:plus green"
+        $cid_id = new THidden( "cid_id" );
+        $search_button1 = new TDBSeekButton(
+            "cid_codigo", "database", "form_list_classificacao_risco",
+            "CidRecord", "codigocid", "cid_id", "cid_codigo"
         );
+        $add_button1 = TButton::create(
+            "add1", [ $this,"onError" ], null, null
+        );
+        $onAddItem1 = new TAction( [ $this, "onAddItem1" ] );
+        $onAddItem1->setParameter( "fk", $fk );
+        $onAddItem1->setParameter( "did", $did );
+        $add_button1->setAction( $onAddItem1 );
+        $add_button1->setLabel( "Adicionar" );
+        $add_button1->setImage( "fa:plus green" );
         $this->form->addContent( [ $frame1 ] );
+        $this->form->addField( $cid_id );
+        $this->form->addField( $search_button1 );
         $this->form->addField( $add_button1 );
         $this->framegrid1 = new TQuickGrid();
         $this->framegrid1->setHeight(200);
@@ -152,10 +165,15 @@ class ClassificacaoRiscoFormList extends TPage
         $this->framegrid1->style='width: 100%';
         $this->framegrid1->id = 'framegrid1';
         $this->framegrid1->disableDefaultClick();
-        $this->framegrid1->addQuickColumn( '', 'delete', 'center', '5%');
-        $this->framegrid1->addQuickColumn( "Patologia", 'cid_id', 'left', '85%');
+        $remove_action1 = new TDataGridAction( [ $this, "onReload" ] );
+        $remove_action1->setParameter( "fk", $fk );
+        $remove_action1->setParameter( "did", $did );
+        $this->framegrid1->addQuickAction( "Remover", $remove_action1, "id", "fa:trash red", "20%" );
+        $this->framegrid1->addQuickColumn( "Código CID", 'cid_codigo', 'left', '20%');
+        $this->framegrid1->addQuickColumn( "Patologia", 'cid_nome', 'left', '100%');
         $this->framegrid1->createModel();
         $hbox1 = new THBox;
+        $hbox1->add( $search_button1 );
         $hbox1->add( $add_button1 );
         $hbox1->style = 'margin: 4px';
         $vbox1 = new TVBox;
@@ -164,12 +182,12 @@ class ClassificacaoRiscoFormList extends TPage
         $vbox1->add( $this->framegrid1 );
         $frame1->add( $vbox1 );
         /*--------------------------------------*/
-        
+
         /*--- frame de uso de medicacoes ---*/
         $frame2 = new TFrame;
         $frame2->setLegend( "Uso de Medicações" );
         $frame2->style .= ';margin:0px;width:95%';
-        $add_button2 = TButton::create( 
+        $add_button2 = TButton::create(
             "add2", [ $this,"onAddItem2" ], "Adicionar", "fa:plus green"
         );
         $this->form->addContent( [ $frame2 ] );
@@ -192,12 +210,12 @@ class ClassificacaoRiscoFormList extends TPage
         $vbox2->add( $this->framegrid2 );
         $frame2->add( $vbox2 );
         /*--------------------------------------*/
-        
+
         /*--- frame de alergia medicamentosa ---*/
         $frame3 = new TFrame;
         $frame3->setLegend( "Alergia Medicamentosa" );
         $frame3->style .= ';margin:0px;width:95%';
-        $add_button3 = TButton::create( 
+        $add_button3 = TButton::create(
             "add3", [ $this,"onAddItem3" ], "Adicionar", "fa:plus green"
         );
         $this->form->addContent( [ $frame3 ] );
@@ -306,8 +324,6 @@ class ClassificacaoRiscoFormList extends TPage
 
             unset( $object->paciente_name );
 
-            $object->bau_id = $param[ "fk" ];
-
             $object->store();
 
             TTransaction::close();
@@ -347,7 +363,7 @@ class ClassificacaoRiscoFormList extends TPage
                 $this->onReload( $param );
 
                 $this->form->setData( $object );
-                
+
                 $this->frameGridAddItems( $param );
 
                 TTransaction::close();
@@ -472,9 +488,9 @@ class ClassificacaoRiscoFormList extends TPage
     }
 
     public function frameGridAddItems( $param = null )
-    {   
+    {
         $object = new BauRecord( $param[ "fk" ] );
-        
+
         if ( isset( $object ) ) {
 
             $this->framegrid1->clear();
@@ -484,7 +500,7 @@ class ClassificacaoRiscoFormList extends TPage
             foreach ( $object->getComorbidades() as $comorbidade ) {
                 $this->framegrid1->addItem( $comorbidade );
             }
-    
+
             foreach ( $object->getMedicacoes() as $medicacao ) {
                 $this->framegrid2->addItem( $medicacao );
             }
@@ -498,8 +514,65 @@ class ClassificacaoRiscoFormList extends TPage
 
     public function onAddItem1( $param = null )
     {
-        $window = TWindow::create( "Comorbidades", 0.600, 0.800 );
-        $window->show();
+        try {
+
+            $id = $param['cid_id'];
+            $item_list = TSession::getValue('cid_list');
+
+            if ( !empty( $id ) AND empty( $item_list[ $id ] ) ) {
+
+                TTransaction::open('database');
+
+                $item = CidRecord::find($id);
+                $item_list[$id] = $item->toArray();
+                TSession::setValue('cid_list', $item_list);
+
+                TTransaction::close();
+
+                $i = new TElement('i');
+                $i->{'class'} = 'fa fa-trash red';
+                $btn = new TElement('a');
+                $btn->{'onclick'} = "__adianti_ajax_exec(\'class=ClassificacaoRiscoFormList&method=deleteProgram&id=$id\');$(this).closest(\'tr\').remove();";
+                $btn->{'class'} = 'btn btn-default btn-sm';
+                $btn->add($i);
+
+                $tr = new TTableRow;
+                $tr->{'class'} = 'tdatagrid_row_odd';
+                $tr->{'style'} = 'width: 100%;display: inline-table;';
+                $cell = $tr->addCell( $btn );
+                $cell->{'style'}='text-align:center';
+                $cell->{'class'}='tdatagrid_cell';
+                $cell->{'width'} = '20%';
+                $cell = $tr->addCell( $item->cid_codigo );
+                $cell->{'class'}='tdatagrid_cell';
+                $cell->{'width'} = '20%';
+                $cell = $tr->addCell( $item->cid_nome );
+                $cell->{'class'}='tdatagrid_cell';
+                $cell->{'width'} = '100%';
+
+                TScript::create("tdatagrid_add_serialized_row('cid_list', '$tr');");
+
+                $data = new stdClass;
+                $data->cid_id = '';
+                $data->cid_codigo = '';
+                TForm::sendData('form_list_classificacao_risco', $data);
+
+                // TODO concluir alterações
+            }
+        }
+        catch (Exception $e)
+        {
+            new TMessage('error', $e->getMessage());
+        }
+    }
+
+    public static function removeItem( $param = null )
+    {
+        $cids = TSession::getValue( "cid_list" );
+
+        unset( $cids[ $param[ "id" ] ] );
+
+        TSession::setValue( "cid_list", $cids );
     }
 
     public function onAddItem2( $param = null )
@@ -514,8 +587,10 @@ class ClassificacaoRiscoFormList extends TPage
         $window->show();
     }
 
-    public function onClear()
+    public function onError()
     {
-        $this->form->clear();
+        $action = new TAction( [ "PacientesEmClassificacaoList", "onReload" ] );
+
+        new TMessage( "error", "Uma instabilidade momentâneo no sistema impediu a ação, tente novamente mais tarde.", $action );
     }
 }

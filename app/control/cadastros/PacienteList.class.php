@@ -12,7 +12,7 @@ class PacienteList extends TPage
         parent::__construct();
 
         $this->form = new BootstrapFormBuilder( "list_paciente" );
-        $this->form->setFormTitle( "Listagem de Cadastros de Pacientes" );
+        $this->form->setFormTitle( "Listagem de Registros de Pacientes" );
         $this->form->class = "tform";
 
         $opcao = new TCombo( "opcao" );
@@ -24,7 +24,12 @@ class PacienteList extends TPage
         $opcao->setSize( "38%" );
         $dados->setSize( "38%" );
 
-        $opcao->addItems( [ "nomepaciente" => "Nome", "numerosus" => "Cartão SUS", "numerorg" => "RG", "numerocpf" => "CPF" ] );
+        $opcao->addItems([
+            "nomepaciente" => "Nome",
+            "numerosus" => "Cartão SUS",
+            "numerorg" => "RG",
+            "numerocpf" => "CPF"
+        ]);
 
         $this->form->addFields( [ new TLabel( "Opção de busca:" ) ], [ $opcao ] );
         $this->form->addFields( [ new TLabel( "Dados à buscar:" )  ], [ $dados ] );
@@ -90,7 +95,7 @@ class PacienteList extends TPage
         parent::add( $container );
     }
 
-    public function onReload( $param = NULL )
+    public function onReload()
     {
         try {
 
@@ -98,15 +103,15 @@ class PacienteList extends TPage
 
             $repository = new TRepository( "PacienteRecord" );
 
-            if ( empty( $param[ "order" ] ) ) {
-                $param[ "order" ] = "nomepaciente";
-                $param[ "direction" ] = "asc";
-            }
+            $properties = [
+                "order" => "nomepaciente",
+                "direction" => "asc"
+            ];
 
             $limit = 10;
 
             $criteria = new TCriteria();
-            $criteria->setProperties( $param );
+            $criteria->setProperties( $properties );
             $criteria->setProperty( "limit", $limit );
 
             $objects = $repository->load( $criteria, FALSE );
@@ -124,7 +129,7 @@ class PacienteList extends TPage
             $count = $repository->count( $criteria );
 
             $this->pageNavigation->setCount( $count );
-            $this->pageNavigation->setProperties( $param );
+            $this->pageNavigation->setProperties( $properties );
             $this->pageNavigation->setLimit( $limit );
 
             TTransaction::close();
@@ -151,15 +156,15 @@ class PacienteList extends TPage
 
                 $repository = new TRepository( "PacienteRecord" );
 
-                if ( empty( $param[ "order" ] ) ) {
-                    $param[ "order" ] = "id";
-                    $param[ "direction" ] = "asc";
-                }
+                $properties = [
+                    "order" => "nomepaciente",
+                    "direction" => "asc"
+                ];
 
                 $limit = 10;
 
                 $criteria = new TCriteria();
-                $criteria->setProperties( $param );
+                $criteria->setProperties( $properties );
                 $criteria->setProperty( "limit", $limit );
 
                 switch( $data->opcao ) {
@@ -198,7 +203,7 @@ class PacienteList extends TPage
                 $count = $repository->count( $criteria );
 
                 $this->pageNavigation->setCount( $count );
-                $this->pageNavigation->setProperties( $param );
+                $this->pageNavigation->setProperties( $properties );
                 $this->pageNavigation->setLimit( $limit );
 
                 TTransaction::close();
