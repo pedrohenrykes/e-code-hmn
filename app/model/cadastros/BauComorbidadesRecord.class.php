@@ -6,24 +6,24 @@ class BauComorbidadesRecord extends TRecord
     const PRIMARYKEY = "id";
     const IDPOLICY   = "serial";
 
-    private $cidname;
-    private $cidcode;
+    private $cidNome;
+    private $cidCodigo;
 
     public function get_cid_nome()
     {
-        if ( empty( $this->cidname ) ) {
-            $this->cidname = new CidRecord( $this->cid_id );
+        if ( empty( $this->cidNome ) ) {
+            $this->cidNome = new CidRecord( $this->cid_id );
         }
 
-        return $this->cidname->nomecid;
+        return $this->cidNome->nomecid;
     }
 
     public function get_cid_codigo()
     {
-        if ( empty( $this->cidcode ) ) {
-            $this->cidcode = new CidRecord( $this->cid_id );
+        if ( empty( $this->cidCodigo ) ) {
+            $this->cidCodigo = new CidRecord( $this->cid_id );
         }
 
-        return $this->cidcode->codigocid;
+        return $this->cidCodigo->codigocid;
     }
 }
