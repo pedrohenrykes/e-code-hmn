@@ -154,7 +154,7 @@ class ClassificacaoRiscoFormList extends TPage
         $add_button1 = TButton::create(
             "add1", [ $this,"onError" ], null, null
         );
-        $onAddItem1 = new TAction( [ $this, "addFrameGridItems" ] );
+        $onAddItem1 = new TAction( [ $this, "onSaveFrames" ] );
         $onAddItem1->setParameter( "fk", $fk );
         $onAddItem1->setParameter( "did", $did );
         $add_button1->setAction( $onAddItem1 );
@@ -192,7 +192,7 @@ class ClassificacaoRiscoFormList extends TPage
         $frame2->setLegend( "Uso de Medicações" );
         $frame2->style .= ';margin:0px;width:95%';
         $add_button2 = TButton::create(
-            "add2", [ $this,"onAddItem2" ], "Adicionar", "fa:plus green"
+            "add2", [ $this,"onSaveFrames" ], "Adicionar", "fa:plus green"
         );
         $this->form->addContent( [ $frame2 ] );
         $this->form->addField( $add_button2 );
@@ -220,7 +220,7 @@ class ClassificacaoRiscoFormList extends TPage
         $frame3->setLegend( "Alergia Medicamentosa" );
         $frame3->style .= ';margin:0px;width:95%';
         $add_button3 = TButton::create(
-            "add3", [ $this,"onAddItem3" ], "Adicionar", "fa:plus green"
+            "add3", [ $this,"onSaveFrames" ], "Adicionar", "fa:plus green"
         );
         $this->form->addContent( [ $frame3 ] );
         $this->form->addField( $add_button3 );
@@ -368,7 +368,7 @@ class ClassificacaoRiscoFormList extends TPage
 
                 $this->form->setData( $object );
 
-                $this->reloadFrameGrids( $param );
+                $this->onReloadFrames( $param );
 
                 TTransaction::close();
 
@@ -477,7 +477,7 @@ class ClassificacaoRiscoFormList extends TPage
             $this->pageNavigation->setProperties( $properties );
             $this->pageNavigation->setLimit( $limit );
 
-            $this->reloadFrameGrids( $param );
+            $this->onReloadFrames( $param );
 
             TTransaction::close();
 
@@ -491,7 +491,70 @@ class ClassificacaoRiscoFormList extends TPage
         }
     }
 
-    public function reloadFrameGrids( $param = null )
+    public static function onSaveFrames( $param = null )
+    {
+        $object = $this->form->getData( "BauComorbidadesRecord" );
+
+        try {
+
+            TTransaction::open( "database" );
+
+            unset( $object->paciente_name );
+            unset( $object->id );
+            unset( $object->paciente_id );
+            unset( $object->bau_id );
+            unset( $object->enfermeiro_id );
+            unset( $object->dataclassificacao );
+            unset( $object->horaclassificacao );
+            unset( $object->paciente_name );
+            unset( $object->pressaoarterial );
+            unset( $object->frequenciacardiaca );
+            unset( $object->frequenciarespiratoria );
+            unset( $object->temperatura );
+            unset( $object->spo2 );
+            unset( $object->htg );
+            unset( $object->observacoes );
+            unset( $object->queixaprincipal );
+            unset( $object->dor );
+            unset( $object->cid_id );
+            unset( $object->medicamento_id );
+            unset( $object->principioativo_id );
+            unset( $object->tipoclassificacaorisco_id );
+            unset( $object->tipoestadogeral_id );
+
+            var_dump($object);
+            exit;
+
+            $object->store();
+
+            TTransaction::close();
+
+            $action = new TAction( [ "ClassificacaoRiscoFormList", "onReload" ] );
+            $action->setParameters( $param );
+
+            new TMessage( "info", "Registro salvo com sucesso!", $action );
+
+        } catch ( Exception $ex ) {
+
+            TTransaction::rollback();
+
+            $this->form->setData( $object );
+
+            new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
+
+        }
+    }
+
+    public static function onDeleteFrames( $param = null )
+    {
+        $cids = TSession::getValue( "cid_list" );
+
+        unset( $cids[ $param[ "id" ] ] );
+
+        TSession::setValue( "cid_list", $cids );
+    }
+
+    public function onReloadFrames( $param = null )
     {
         try {
 
@@ -500,32 +563,9 @@ class ClassificacaoRiscoFormList extends TPage
             $object = new PacienteRecord( $param[ "did" ] );
 
             if ( isset( $object ) ) {
-
-                $data = [];
                 foreach ( $object->getComorbidades() as $comorbidade ) {
-
-                    $data[ $comorbidade->id ] = $comorbidade->toArray();
-
-                    $item = new stdClass;
-                    $item->id         = $comorbidade->id;
-                    $item->cid_nome   = $comorbidade->cid_nome;
-                    $item->cid_codigo = $comorbidade->cid_codigo;
-
-                    $i = new TElement('i');
-                    $i->{'class'} = 'fa fa-trash red';
-                    $btn = new TElement('a');
-                    $btn->{'onclick'} = "__adianti_ajax_exec('class=ClassificacaoRiscoFormList&method=removeItem&id={$comorbidade->id}');$(this).closest('tr').remove();";
-                    $btn->{'class'} = 'btn btn-default btn-sm';
-                    $btn->add($i);
-
-                    $item->delete = $btn;
-                    $tr = $this->framegrid1->addItem($item);
-                    $tr->{'style'} = 'width:100%;display:inline-table;';
-
+                    $this->framegrid1->addItem($comorbidade);
                 }
-
-                TSession::setValue( "cid_list", $data );
-
             }
 
             TTransaction::close();
@@ -535,85 +575,6 @@ class ClassificacaoRiscoFormList extends TPage
             new TMessage( "error", $ex->getMessage() );
 
         }
-    }
-
-    public static function addFrameGridItems( $param = null )
-    {
-        try {
-
-            $id       = $param["cid_id"];
-            $cid_list = TSession::getValue('cid_list');
-
-            print_r($id);
-            echo "<br><br>";
-            print_r($cid_list);
-            echo "<br><br>";
-
-            if ( !empty( $id ) AND empty( $cid_list[ $id ] ) ) {
-
-                // TODO Continuar alterações a partir daqui
-                TTransaction::open('database');
-                $cid = CidRecord::find($id);
-                $cid_list[$id] = $cid->toArray();
-                TSession::setValue('cid_list', $cid_list);
-                TTransaction::close();
-
-                $i = new TElement('i');
-                $i->{'class'} = 'fa fa-trash red';
-                $btn = new TElement('a');
-                $btn->{'onclick'} = "__adianti_ajax_exec('class=ClassificacaoRiscoFormList&method=removeItem&id={$id}');$(this).closest('tr').remove();";
-                $btn->{'class'} = 'btn btn-default btn-sm';
-                $btn->add($i);
-
-                $tr = new TTableRow;
-                $tr->{'class'} = 'tdatagrid_row_odd';
-                $tr->{'style'} = 'width:100%;display:inline-table;';
-                $cell = $tr->addCell( $btn );
-                $cell->{'style'}='text-align:center';
-                $cell->{'class'}='tdatagrid_cell';
-                $cell->{'width'} = '20%';
-                $cell = $tr->addCell( $cid->codigocid );
-                $cell->{'class'}='tdatagrid_cell';
-                $cell->{'width'} = '20%';
-                $cell = $tr->addCell( $cid->nomecid );
-                $cell->{'class'}='tdatagrid_cell';
-                $cell->{'width'} = '100%';
-
-                TScript::create("tdatagrid_add_serialized_row('cid_list', '$tr');");
-
-                $data = new stdClass;
-                $data->cid_id = '';
-                $data->cid_codigo = '';
-                TForm::sendData('form_list_classificacao_risco', $data);
-
-            }
-
-        } catch (Exception $e) {
-
-            new TMessage('error', $e->getMessage());
-
-        }
-    }
-
-    public static function removeItem( $param = null )
-    {
-        $cids = TSession::getValue( "cid_list" );
-
-        unset( $cids[ $param[ "id" ] ] );
-
-        TSession::setValue( "cid_list", $cids );
-    }
-
-    public function onAddItem2( $param = null )
-    {
-        $window = TWindow::create( "Uso de Medicações", 0.600, 0.800 );
-        $window->show();
-    }
-
-    public function onAddItem3( $param = null )
-    {
-        $window = TWindow::create( "Alergia Medicamentosa", 0.600, 0.800 );
-        $window->show();
     }
 
     public function onError()
