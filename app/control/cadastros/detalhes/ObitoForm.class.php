@@ -81,12 +81,12 @@ class ObitoForm extends TPage
         $paciente_id->addValidation( TextFormat::set( "Sexo" ), new TRequiredValidator );
 
         $this->form->addFields( [ new TLabel( "Nome do Paciente:" ) ], [ $paciente_nome ] );        
-        $this->form->addFields( [ new TLabel( "Data do Óbito:" ) ], [ $dataobito ] );
-        $this->form->addFields( [ new TLabel( "Hora do Óbito:" ) ], [ $horaobito ] );
-        $this->form->addFields( [ new TLabel( "Data da Declaração:" ) ], [ $declaracaoobitodata ] );
-        $this->form->addFields( [ new TLabel( "Hora da Declaração:" ) ], [ $declaracaoobitohora ] );
-        $this->form->addFields( [ new TLabel( "Destino do Corpo:" ) ], [ $destinoobito_id ] );
-        $this->form->addFields( [ new TLabel( "Medico Responsável:" ) ], [ $declaracaoobitomedico_id ] );
+        $this->form->addFields( [ new TLabel( "Data do Óbito: {$redstar}" ) ], [ $dataobito ] );
+        $this->form->addFields( [ new TLabel( "Hora do Óbito:{$redstar}" ) ], [ $horaobito ] );
+        $this->form->addFields( [ new TLabel( "Data da Declaração:{$redstar}" ) ], [ $declaracaoobitodata ] );
+        $this->form->addFields( [ new TLabel( "Hora da Declaração:{$redstar}" ) ], [ $declaracaoobitohora ] );
+        $this->form->addFields( [ new TLabel( "Destino do Corpo:{$redstar}" ) ], [ $destinoobito_id ] );
+        $this->form->addFields( [ new TLabel( "Medico Responsável:{$redstar}" ) ], [ $declaracaoobitomedico_id ] );
        
 
         $onSave = new TAction( [ $this, "onSave" ] );
