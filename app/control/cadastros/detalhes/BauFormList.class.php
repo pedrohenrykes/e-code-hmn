@@ -171,7 +171,7 @@ class BauFormList extends TPage
         $convenio_id->addValidation( TextFormat::set( "Nome do Paciente" ), new TRequiredValidator );
         $paciente_id->addValidation( TextFormat::set( "Sexo" ), new TRequiredValidator );
 
-        $page1 = new TLabel( "Paciente", "#7D78B6", 12, "bi");
+        $page1 = new TLabel( "Identificação", "#7D78B6", 12, "bi");
         $page1->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
         $this->form->appendPage( "Identificação" );
         $this->form->addContent( [ $page1 ] );
@@ -183,9 +183,22 @@ class BauFormList extends TPage
         $this->form->addFields( [ new TLabel( "Queixa Principal:" ) ], [ $queixaprincipal ] );
         $this->form->addFields( [ $id, $paciente_id ] );
 
+        if ( filter_input( INPUT_GET, "method" ) == "onEdit" ) {
+
+            $page1 = new TLabel( "Avaliação", "#7D78B6", 12, "bi");
+            $page1->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
+            $this->form->appendPage( "Avaliação" );
+            $this->form->addContent( [ $page1 ] );
+            $this->form->addFields([
+                new TLabel( "Em desenvolvimento..." ),
+                new TLabel( "Change the world, do it for love! :)" )
+            ]);
+
+        }
+
         $page2 = new TLabel( "Encaminhamento", "#7D78B6", 12, "bi" );
         $page2->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
-        $this->form->appendPage( "Destinação" );
+        $this->form->appendPage( "Encaminhamento" );
         $this->form->addContent( [ $page2 ] );
         $this->form->addFields( [ new TLabel( "Internamento: {$redstar}" ) ], [ $internamentolocal ]);
         $this->form->addFields( [ new TLabel( "Data de Internamento: {$redstar}" ) ], [ $datainternamento ] );
@@ -201,7 +214,7 @@ class BauFormList extends TPage
 
         $page3 = new TLabel( "Alta Hospitalar", "#7D78B6", 12, "bi");
         $page3->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
-        $this->form->appendPage( "Alta" );
+        $this->form->appendPage( "Alta Hospitalar" );
         $this->form->addContent( [ $page3 ] );
         $this->form->addFields( [ new TLabel( "Alta:" ) ], [ $alta ] );
         $this->form->addFields( [ new TLabel( "Tipo de Alta:" ) ], [ $tipoaltahospitalar_id ] );
@@ -211,7 +224,7 @@ class BauFormList extends TPage
 
         $page4 = new TLabel( "Declaração de Óbito", "#7D78B6", 12, "bi");
         $page4->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
-        $this->form->appendPage( "Óbito" );
+        $this->form->appendPage( "Declaração de Óbito" );
         $this->form->addContent( [ $page4 ] );
         $this->form->addFields( [ new TLabel( "Óbito:" ) ], [ $obito ] );
         $this->form->addFields( [ new TLabel( "Data do Óbito:" ) ], [ $dataobito ] );

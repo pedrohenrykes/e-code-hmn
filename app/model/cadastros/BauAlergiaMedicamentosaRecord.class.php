@@ -1,10 +1,10 @@
 <?php
 
-class MedicamentoRecord extends TRecord {
-
-    const TABLENAME = 'medicamento';
-    const PRIMARYKEY = 'id';
-    const IDPOLICY =  'serial';
+class BauAlergiaMedicamentosaRecord extends TRecord
+{
+    const TABLENAME  = "baualergiamedicamentosa";
+    const PRIMARYKEY = "id";
+    const IDPOLICY   = "serial";
 
     private $principioativo;
 
