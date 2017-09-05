@@ -39,14 +39,14 @@ class TipoClassificacaoRiscoList extends TPage
         
         $column_ordem    = new TDataGridColumn( "ordem", "Ordem", "left" );
         $column_situacao = new TDataGridColumn( "situacao", "Situação", "left" );
-        $column_nometipoclassificacaorisco = new TDataGridColumn( "nometipoclassificacaorisco", "Classificação de Risco", "center" );
-        $column_cortipoclassificacaorisco  = new TDataGridColumn( "nomecor", "Cor Classificação de Risco", "center" );
+        $column_nometipoclassificacaorisco = new TDataGridColumn( "nometipoclassificacaorisco", "Cor Classificação de Risco", "center" );
+        //$column_cortipoclassificacaorisco  = new TDataGridColumn( "nomecor", "Cor Classificação de Risco", "center" );
         $column_tempoparaatendimento       = new TDataGridColumn( "tempoparaatendimento", "Tempo Para Atendimento", "center" );
 
         $this->datagrid->addColumn( $column_ordem );
         $this->datagrid->addColumn( $column_situacao );
         $this->datagrid->addColumn( $column_nometipoclassificacaorisco );
-        $this->datagrid->addColumn( $column_cortipoclassificacaorisco );
+        //$this->datagrid->addColumn( $column_cortipoclassificacaorisco );
         $this->datagrid->addColumn( $column_tempoparaatendimento );
 
         $action_edit = new TDataGridAction( [ "TipoClassificacaoRiscoForm", "onEdit" ] );
