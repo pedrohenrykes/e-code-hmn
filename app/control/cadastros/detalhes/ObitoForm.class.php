@@ -3,9 +3,6 @@
 class ObitoForm extends TPage
 {
     private $form;
-    private $pageNavigation;
-    private $loaded;
-    private $changeFields;
 
     public function __construct()
     {
@@ -19,13 +16,11 @@ class ObitoForm extends TPage
 
         $id                       = new THidden("id");
         $paciente_id              = new THidden( "paciente_id" );
-        $bau_id                   = new THidden( "bau_id" );        
         $paciente_nome            = new TEntry( "paciente_nome" );
         $dataobito                = new TDate("dataobito");
         $declaracaoobitodata      = new TDate("declaracaoobitodata");
         $horaobito                = new TDateTime("horaobito");
         $declaracaoobitohora      = new TDateTime("declaracaoobitohora");
-        $medicoalta_id            = new TCombo("medicoalta_id");
         $destinoobito_id          = new TCombo("destinoobito_id");
         $declaracaoobitomedico_id = new TCombo("declaracaoobitomedico_id");
 
@@ -41,7 +36,7 @@ class ObitoForm extends TPage
 
             if( isset( $bau ) && isset( $paciente ) ) {
 
-                $bau_id->setValue( $bau->id );
+                $id->setValue( $bau->id );
                 $paciente_id->setValue( $paciente->id );
                 $paciente_nome->setValue( $paciente->nomepaciente );
 
@@ -63,37 +58,42 @@ class ObitoForm extends TPage
         $horaobito               ->setSize( "38%" );
         $declaracaoobitodata     ->setSize( "38%" );
         $declaracaoobitohora     ->setSize( "38%" );
-        $medicoalta_id           ->setSize( "38%" );
         $destinoobito_id         ->setSize( "38%" );
         $declaracaoobitomedico_id->setSize( "38%" );
-       
+
         $destinoobito_id         ->setDefaultOption( "..::SELECIONE::.." );
         $declaracaoobitomedico_id->setDefaultOption( "..::SELECIONE::.." );
-       
+
         $horaobito          ->setMask( "hh:ii" );
         $declaracaoobitohora->setMask( "hh:ii" );
         $dataobito          ->setMask( "dd/mm/yyyy" );
         $declaracaoobitodata->setMask( "dd/mm/yyyy" );
         $dataobito          ->setDatabaseMask("yyyy-mm-dd");
         $declaracaoobitodata->setDatabaseMask("yyyy-mm-dd");
-
         $paciente_nome->setEditable( false );
-        $paciente_id->addValidation( TextFormat::set( "Sexo" ), new TRequiredValidator );
 
-        $this->form->addFields( [ new TLabel( "Nome do Paciente:" ) ], [ $paciente_nome ] );        
-        $this->form->addFields( [ new TLabel( "Data do Óbito: {$redstar}" ) ], [ $dataobito ] );
+        $dataobito->addValidation( TextFormat::set( "Nome do Paciente" ), new TRequiredValidator );
+        $horaobito->addValidation( TextFormat::set( "Data do Óbito" ), new TRequiredValidator );
+        $declaracaoobitodata->addValidation( TextFormat::set( "Data da Declaração" ), new TRequiredValidator );
+        $declaracaoobitohora->addValidation( TextFormat::set( "Hora da Declaração" ), new TRequiredValidator );
+        // $destinoobito_id->addValidation( TextFormat::set( "Destino do Corpo" ), new TRequiredValidator );
+        // $declaracaoobitomedico_id->addValidation( TextFormat::set( "Medico Responsável" ), new TRequiredValidator );
+
+        $this->form->addFields( [ new TLabel( "Nome do Paciente:" ) ], [ $paciente_nome ] );
+        $this->form->addFields( [ new TLabel( "Data do Óbito:{$redstar}" ) ], [ $dataobito ] );
         $this->form->addFields( [ new TLabel( "Hora do Óbito:{$redstar}" ) ], [ $horaobito ] );
         $this->form->addFields( [ new TLabel( "Data da Declaração:{$redstar}" ) ], [ $declaracaoobitodata ] );
         $this->form->addFields( [ new TLabel( "Hora da Declaração:{$redstar}" ) ], [ $declaracaoobitohora ] );
         $this->form->addFields( [ new TLabel( "Destino do Corpo:{$redstar}" ) ], [ $destinoobito_id ] );
         $this->form->addFields( [ new TLabel( "Medico Responsável:{$redstar}" ) ], [ $declaracaoobitomedico_id ] );
-       
+        $this->form->addFields( [ $id, $paciente_id ] );
 
-        $onSave = new TAction( [ $this, "onSave" ] );
-        $onSave->setParameter( "did", $did );
+
+        $onSave   = new TAction( [ $this, "onSave" ] );
+        $onReload = new TAction( [ "PacientesDeclaracaoObitoList", "onReload" ] );
 
         $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
-        $this->form->addAction( "Voltar para Pacientes", new TAction( [ "PacientesDeclaracaoObitoList", "onReload" ] ), "fa:table blue" );
+        $this->form->addAction( "Voltar para Declaração de Óbito", $onReload, "fa:table blue" );
 
         $container = new TVBox();
         $container->style = "width: 90%";
@@ -104,37 +104,35 @@ class ObitoForm extends TPage
 
     public function onSave( $param = null )
     {
-        $object = $this->form->getData( "BauRecord" );
 
         try {
 
             $this->form->validate();
 
-            TTransaction::open( "database" );
-            
-            unset($object->paciente_nome);
-            
-            $object->situacao = 'OBITO';
+            $object = $this->form->getData( "BauRecord" );
 
+            TTransaction::open( "database" );
+
+            unset($object->paciente_nome);
+            $object->situacao = "OBITO";
             $object->store();
 
             TTransaction::close();
 
             $action = new TAction( [ "PacientesDeclaracaoObitoList", "onReload" ] );
-
             new TMessage( "info", "Registro salvo com sucesso!", $action );
 
         } catch ( Exception $ex ) {
 
             TTransaction::rollback();
 
-            $this->form->setData( $object );
+            // $this->form->setData( $object );
 
             new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
 
         }
     }
-    
+
     public function onReload(){}
-     
+
 }
