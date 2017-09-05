@@ -46,16 +46,37 @@ class PacientesEncaminhamentoList extends TPage
         $this->datagrid->addColumn( $column_horaentrada );
         $this->datagrid->addColumn( $column_queixaprincipal );
 
-        $action_avaliacao = new CustomDataGridAction( [ "PacienteEncaminhamentoDetalhe", "onReload" ] );
-        $action_avaliacao->setButtonClass( "btn btn-default" );
-        $action_avaliacao->setLabel( "Encaminhamento" );
-        $action_avaliacao->setImage( "fa:arrow-circle-right green fa-lg" );
-        $action_avaliacao->setField( "id" );
-        $action_avaliacao->setFk( "id" );
-        $action_avaliacao->setDid( "paciente_id" );
+        $action_internamento = new CustomDataGridAction( [ "PacienteEncaminhamentoDetalhe", "onReload" ] );
+        $action_internamento->setButtonClass( "btn btn-default" );
+        $action_internamento->setLabel( "Encaminhar para Internamento" );
+        $action_internamento->setImage( "fa:arrow-circle-right green fa-lg" );
+        $action_internamento->setField( "id" );
+        $action_internamento->setFk( "id" );
+        $action_internamento->setDid( "paciente_id" );
+        $action_internamento->setParameter( "mode", "internamento" );
+        
+        $action_remocao = new CustomDataGridAction( [ "PacienteEncaminhamentoDetalhe", "onReload" ] );
+        $action_remocao->setButtonClass( "btn btn-default" );
+        $action_remocao->setLabel( "Encaminhar para Remoção" );
+        $action_remocao->setImage( "fa:arrow-circle-right green fa-lg" );
+        $action_remocao->setField( "id" );
+        $action_remocao->setFk( "id" );
+        $action_remocao->setDid( "paciente_id" );
+        $action_remocao->setParameter( "mode", "remocao" );
+        
+        $action_transferencia = new CustomDataGridAction( [ "PacienteEncaminhamentoDetalhe", "onReload" ] );
+        $action_transferencia->setButtonClass( "btn btn-default" );
+        $action_transferencia->setLabel( "Encaminhar para Transferência" );
+        $action_transferencia->setImage( "fa:arrow-circle-right green fa-lg" );
+        $action_transferencia->setField( "id" );
+        $action_transferencia->setFk( "id" );
+        $action_transferencia->setDid( "paciente_id" );
+        $action_transferencia->setParameter( "mode", "transferencia" );
 
         $action_group = new TDataGridActionGroup('Opções', 'bs:th');
-        $action_group->addAction( $action_avaliacao );
+        $action_group->addAction( $action_internamento );
+        $action_group->addAction( $action_remocao );
+        $action_group->addAction( $action_transferencia );
 
         $this->datagrid->addActionGroup( $action_group );
 

@@ -21,12 +21,12 @@ class PacienteEncaminhamentoDetalhe extends TPage
         $id                       = new THidden("id");
         $paciente_id              = new THidden( "paciente_id" );
         $paciente_nome            = new TEntry( "paciente_nome" );
-        $internamentolocal        = new TCombo("internamentolocal");
+        //$internamentolocal        = new TCombo("internamentolocal");
         $datainternamento         = new TDate("datainternamento");
-        $remocao                  = new TCombo("remocao");
+        //$remocao                  = new TCombo("remocao");
         $dataremocao              = new TDate("dataremocao");
         $localremocao_id          = new TCombo("localremocao_id");
-        $transferencia            = new TCombo("transferencia");
+        //$transferencia            = new TCombo("transferencia");
         $datatransferencia        = new TDate("datatransferencia");
         $localtransferencia_id    = new TCombo("localtransferencia_id");
         $transportedestino_id     = new TCombo("transportedestino_id");
@@ -63,36 +63,36 @@ class PacienteEncaminhamentoDetalhe extends TPage
 
         $id                      ->setSize( "38%" );
         $paciente_nome           ->setSize( "38%" );
-        $internamentolocal       ->setSize( "38%" );
+        //$internamentolocal       ->setSize( "38%" );
         $datainternamento        ->setSize( "38%" );
-        $remocao                 ->setSize( "38%" );
+        //$remocao                 ->setSize( "38%" );
         $dataremocao             ->setSize( "38%" );
         $localremocao_id         ->setSize( "38%" );
-        $transferencia           ->setSize( "38%" );
+        //$transferencia           ->setSize( "38%" );
         $datatransferencia       ->setSize( "38%" );
         $localtransferencia_id   ->setSize( "38%" );
         $transportedestino_id    ->setSize( "38%" );
         $especificartransporte   ->setSize( "38%" );
         $datatransporte          ->setSize( "38%" );
 
-        $internamentolocal       ->setDefaultOption( "..::SELECIONE::.." );
-        $remocao                 ->setDefaultOption( "..::SELECIONE::.." );
+        //$internamentolocal       ->setDefaultOption( "..::SELECIONE::.." );
+        //$remocao                 ->setDefaultOption( "..::SELECIONE::.." );
         $localremocao_id         ->setDefaultOption( "..::SELECIONE::.." );
-        $transferencia           ->setDefaultOption( "..::SELECIONE::.." );
+        //$transferencia           ->setDefaultOption( "..::SELECIONE::.." );
         $localtransferencia_id   ->setDefaultOption( "..::SELECIONE::.." );
         $transportedestino_id    ->setDefaultOption( "..::SELECIONE::.." );
         
-        $internamentolocal->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
-        $remocao          ->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
-        $transferencia    ->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
+        //$internamentolocal->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
+        //$remocao          ->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
+        //$transferencia    ->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
         
-        $internamentolocal->addItems( [ "S" => "SIM", "N" => "NÃO" ] );
-        $remocao          ->addItems( [ "S" => "SIM", "N" => "NÃO" ] );
-        $transferencia    ->addItems( [ "S" => "SIM", "N" => "NÃO" ] );
+        //$internamentolocal->addItems( [ "S" => "SIM", "N" => "NÃO" ] );
+        //$remocao          ->addItems( [ "S" => "SIM", "N" => "NÃO" ] );
+        //$transferencia    ->addItems( [ "S" => "SIM", "N" => "NÃO" ] );
         
-        $internamentolocal->setValue( "N" );
-        $remocao          ->setValue( "N" );
-        $transferencia    ->setValue( "N" );
+        //$internamentolocal->setValue( "N" );
+        //$remocao          ->setValue( "N" );
+        //$transferencia    ->setValue( "N" );
 
         $datainternamento   ->setMask( "dd/mm/yyyy" );
         $dataremocao        ->setMask( "dd/mm/yyyy" );
@@ -104,24 +104,32 @@ class PacienteEncaminhamentoDetalhe extends TPage
         $datatransferencia  ->setDatabaseMask("yyyy-mm-dd");
         $datatransporte     ->setDatabaseMask("yyyy-mm-dd");
         
-        $this->changeFields = [ "internamentolocal", "remocao", "transferencia" ];
-        
         $paciente_nome->setEditable( false );
         
-        $paciente_id->addValidation( TextFormat::set( "Sexo" ), new TRequiredValidator );
+        $paciente_id->addValidation('Paciente ID', new TRequiredValidator );
 
         $this->form->addFields( [ new TLabel( "Paciente:" ) ], [ $paciente_nome ]);
-        $this->form->addFields( [ new TLabel( "Internamento: {$redstar}" ) ], [ $internamentolocal ]);
-        $this->form->addFields( [ new TLabel( "Data de Internamento: {$redstar}" ) ], [ $datainternamento ] );
-        $this->form->addFields( [ new TLabel( "Remoção: {$redstar}") ], [ $remocao ] );
-        $this->form->addFields( [ new TLabel( "Data de Remoção: {$redstar}") ], [ $dataremocao ] );
-        $this->form->addFields( [ new TLabel( "Local de Remoção: {$redstar}") ], [ $localremocao_id ] );
-        $this->form->addFields( [ new TLabel( "Transferência: {$redstar}") ], [ $transferencia ] );
-        $this->form->addFields( [ new TLabel( "Data de Transferência: {$redstar}" ) ], [ $datatransferencia ] );
-        $this->form->addFields( [ new TLabel( "Local de Transferência:" ) ], [ $localtransferencia_id ] );
-        $this->form->addFields( [ new TLabel( "Destino do Transporte:" ) ], [ $transportedestino_id ] );
-        $this->form->addFields( [ new TLabel( "Informações do Transporte:" ) ], [ $especificartransporte ] );
-        $this->form->addFields( [ new TLabel( "Data do Transporte:" ) ], [ $datatransporte ] );
+        switch($_GET['mode']) {
+            case 'internamento':
+                $this->form->addFields( [ new TLabel( "Data de Internamento: {$redstar}" ) ], [ $datainternamento ] );
+                $datainternamento->addValidation('Data de Internamento', new TRequiredValidator );
+                break;
+            case 'remocao':
+                $this->form->addFields( [ new TLabel( "Data de Remoção: {$redstar}") ], [ $dataremocao ] );
+                $this->form->addFields( [ new TLabel( "Local de Remoção: {$redstar}") ], [ $localremocao_id ] );
+                $dataremocao->addValidation('Data de Remoção', new TRequiredValidator );
+                $localremocao_id->addValidation('Local de Remoção', new TRequiredValidator );
+                break;
+            case 'transferencia':
+                $this->form->addFields( [ new TLabel( "Data de Transferência: {$redstar}" ) ], [ $datatransferencia ] );
+                $this->form->addFields( [ new TLabel( "Local de Transferência:" ) ], [ $localtransferencia_id ] );
+                $this->form->addFields( [ new TLabel( "Destino do Transporte:" ) ], [ $transportedestino_id ] );
+                $this->form->addFields( [ new TLabel( "Informações do Transporte:" ) ], [ $especificartransporte ] );
+                $this->form->addFields( [ new TLabel( "Data do Transporte:" ) ], [ $datatransporte ] );
+                $datatransferencia->addValidation('Data de Transferência', new TRequiredValidator );
+                break;
+        }
+        
         $this->form->addFields([ $paciente_id, $id ]);
 
         $onSave = new TAction( [ $this, "onSave" ] );
@@ -139,11 +147,10 @@ class PacienteEncaminhamentoDetalhe extends TPage
     
     public function onReload( $param = null )
     {
-        foreach ( $this->changeFields as $field ) {
-            self::onChangeAction([
-                "_field_name" => $field,
-                $field => "N"
-            ]);
+        if (!isset($_GET['mode'])) {
+            $action = new TAction( [ "PacientesEncaminhamentoList", "onReload" ] );
+
+            new TMessage( "error", "Algo não deu certo!", $action );
         }
     }
 
@@ -187,80 +194,4 @@ class PacienteEncaminhamentoDetalhe extends TPage
         }
     }
 
-    public static function onChangeAction( $param = null )
-    {
-        $object = new StdClass;
-
-        $fieldName = $param[ "_field_name" ];
-
-        switch ( $fieldName ) {
-                
-            case "internamentolocal":
-
-                if( $param[ $fieldName ] == "S" ) {
-
-                    TQuickForm::showField( "detalhe_paciente_encaminhamento", "datainternamento" );
-
-                } else {
-
-                    $object->datainternamento = "";
-
-                    TQuickForm::sendData( "detalhe_paciente_encaminhamento", $object );
-                    TQuickForm::hideField( "detalhe_paciente_encaminhamento", "datainternamento" );
-
-                }
-
-                break;
-
-            case "remocao":
-
-                if( $param[ $fieldName ] == "S" ) {
-
-                    TQuickForm::showField( "detalhe_paciente_encaminhamento", "dataremocao" );
-                    TQuickForm::showField( "detalhe_paciente_encaminhamento", "localremocao_id" );
-
-                } else {
-
-                    $object->dataremocao = "";
-                    $object->localremocao_id = "";
-
-                    TQuickForm::sendData( "detalhe_paciente_encaminhamento", $object );
-                    TQuickForm::hideField( "detalhe_paciente_encaminhamento", "dataremocao" );
-                    TQuickForm::hideField( "detalhe_paciente_encaminhamento", "localremocao_id" );
-
-                }
-
-                break;
-
-            case "transferencia":
-
-                if( $param[ $fieldName ] == "S" ) {
-
-                    TQuickForm::showField( "detalhe_paciente_encaminhamento", "datatransferencia" );
-                    TQuickForm::showField( "detalhe_paciente_encaminhamento", "localtransferencia_id" );
-                    TQuickForm::showField( "detalhe_paciente_encaminhamento", "transportedestino_id" );
-                    TQuickForm::showField( "detalhe_paciente_encaminhamento", "especificartransporte" );
-                    TQuickForm::showField( "detalhe_paciente_encaminhamento", "datatransporte" );
-
-                } else {
-
-                    $object->datatransferencia = "";
-                    $object->localtransferencia_id = "";
-                    $object->transportedestino_id = "";
-                    $object->especificartransporte = "";
-                    $object->datatransporte = "";
-
-                    TQuickForm::sendData( "detalhe_paciente_encaminhamento", $object );
-                    TQuickForm::hideField( "detalhe_paciente_encaminhamento", "datatransferencia" );
-                    TQuickForm::hideField( "detalhe_paciente_encaminhamento", "localtransferencia_id" );
-                    TQuickForm::hideField( "detalhe_paciente_encaminhamento", "transportedestino_id" );
-                    TQuickForm::hideField( "detalhe_paciente_encaminhamento", "especificartransporte" );
-                    TQuickForm::hideField( "detalhe_paciente_encaminhamento", "datatransporte" );
-
-                }
-
-                break;
-
-        }
-    }
 }
