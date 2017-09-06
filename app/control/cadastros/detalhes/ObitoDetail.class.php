@@ -1,6 +1,6 @@
 <?php
 
-class ObitoForm extends TPage
+class ObitoDetail extends TPage
 {
     private $form;
 
@@ -10,7 +10,7 @@ class ObitoForm extends TPage
 
         $redstar = '<font color="red"><b>*</b></font>';
 
-        $this->form = new BootstrapFormBuilder( "form_obito" );
+        $this->form = new BootstrapFormBuilder( "detail_obito" );
         $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 
@@ -93,7 +93,7 @@ class ObitoForm extends TPage
         $onReload = new TAction( [ "PacientesDeclaracaoObitoList", "onReload" ] );
 
         $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
-        $this->form->addAction( "Voltar para Declaração de Óbito", $onReload, "fa:table blue" );
+        $this->form->addAction( "Voltar", $onReload, "fa:table blue" );
 
         $container = new TVBox();
         $container->style = "width: 90%";

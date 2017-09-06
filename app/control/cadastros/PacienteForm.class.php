@@ -139,7 +139,7 @@ class PacienteForm extends TPage
         $this->form->addFields( [ new TLabel( "Tel. Comercial:" ) ], [ $telcomercial ] );
 
         $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );
-        $this->form->addAction( "Voltar para a listagem", new TAction( [ "PacienteList", "onReload" ] ), "fa:table blue" );
+        $this->form->addAction( "Voltar", new TAction( [ "PacienteList", "onReload" ] ), "fa:table blue" );
 
         $container = new TVBox();
         $container->style = "width: 90%";

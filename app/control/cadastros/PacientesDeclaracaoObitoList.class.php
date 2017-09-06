@@ -11,8 +11,8 @@ class PacientesDeclaracaoObitoList extends TPage
     {
         parent::__construct();
 
-        $this->form = new BootstrapFormBuilder( "list_pacientes_em_classificacao" );
-        $this->form->setFormTitle( "Listagem de Pacientes Em Classificação " );
+        $this->form = new BootstrapFormBuilder( "list_pacientes_declaracao_obito" );
+        $this->form->setFormTitle( "Declaração de Óbito" );
         $this->form->class = "tform";
 
         $opcao = new TCombo( "opcao" );
@@ -46,7 +46,7 @@ class PacientesDeclaracaoObitoList extends TPage
         $this->datagrid->addColumn( $column_horaentrada );
         $this->datagrid->addColumn( $column_queixaprincipal );
 
-        $action_obito = new CustomDataGridAction( [ "ObitoForm", "onReload" ] );
+        $action_obito = new CustomDataGridAction( [ "ObitoDetail", "onReload" ] );
         $action_obito->setButtonClass( "btn btn-default" );
         $action_obito->setLabel( "Óbito" );
         $action_obito->setImage( "fa:stethoscope green fa-lg" );

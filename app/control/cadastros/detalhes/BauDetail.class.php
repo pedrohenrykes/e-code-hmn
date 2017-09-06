@@ -1,6 +1,6 @@
 <?php
 
-class BauFormList extends TPage
+class BauDetail extends TPage
 {
     private $form;
     private $datagrid;
@@ -14,7 +14,7 @@ class BauFormList extends TPage
 
         $redstar = '<font color="red"><b>*</b></font>';
 
-        $this->form = new BootstrapFormBuilder( "form_list_bau" );
+        $this->form = new BootstrapFormBuilder( "detail_bau" );
         $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 
@@ -238,7 +238,7 @@ class BauFormList extends TPage
         $onSave->setParameter( "fk", $fk );
 
         $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
-        $this->form->addAction( "Voltar para Pacientes", new TAction( [ "PacienteList", "onReload" ] ), "fa:table blue" );
+        $this->form->addAction( "Voltar", new TAction( [ "PacienteList", "onReload" ] ), "fa:table blue" );
 
         $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
         $this->datagrid->datatable = "true";
@@ -271,7 +271,7 @@ class BauFormList extends TPage
         $action_del->setParameter( "fk", $fk );
         $this->datagrid->addAction( $action_del );
 
-        $action_avaliacao = new CustomDataGridAction( [ "ClassificacaoRiscoFormList", "onReload" ] );
+        $action_avaliacao = new CustomDataGridAction( [ "ClassificacaoRiscoDetail", "onReload" ] );
         $action_avaliacao->setButtonClass( "btn btn-default" );
         $action_avaliacao->setLabel( "Avaliação" );
         $action_avaliacao->setImage( "fa:stethoscope green fa-lg" );
@@ -316,7 +316,7 @@ class BauFormList extends TPage
 
             TTransaction::close();
 
-            $action = new TAction( [ "BauFormList", "onReload" ] );
+            $action = new TAction( [ "BauDetail", "onReload" ] );
             $action->setParameter( "fk", $param[ "fk" ] );
 
             new TMessage( "info", "Registro salvo com sucesso!", $action );
@@ -520,14 +520,14 @@ class BauFormList extends TPage
 
                 if( $param[ $fieldName ] == "S" ) {
 
-                    TQuickForm::showField( "form_list_bau", "datainternamento" );
+                    TQuickForm::showField( "detail_bau", "datainternamento" );
 
                 } else {
 
                     $object->datainternamento = "";
 
-                    TQuickForm::sendData( "form_list_bau", $object );
-                    TQuickForm::hideField( "form_list_bau", "datainternamento" );
+                    TQuickForm::sendData( "detail_bau", $object );
+                    TQuickForm::hideField( "detail_bau", "datainternamento" );
 
                 }
 
@@ -537,17 +537,17 @@ class BauFormList extends TPage
 
                 if( $param[ $fieldName ] == "S" ) {
 
-                    TQuickForm::showField( "form_list_bau", "dataremocao" );
-                    TQuickForm::showField( "form_list_bau", "localremocao_id" );
+                    TQuickForm::showField( "detail_bau", "dataremocao" );
+                    TQuickForm::showField( "detail_bau", "localremocao_id" );
 
                 } else {
 
                     $object->dataremocao = "";
                     $object->localremocao_id = "";
 
-                    TQuickForm::sendData( "form_list_bau", $object );
-                    TQuickForm::hideField( "form_list_bau", "dataremocao" );
-                    TQuickForm::hideField( "form_list_bau", "localremocao_id" );
+                    TQuickForm::sendData( "detail_bau", $object );
+                    TQuickForm::hideField( "detail_bau", "dataremocao" );
+                    TQuickForm::hideField( "detail_bau", "localremocao_id" );
 
                 }
 
@@ -557,11 +557,11 @@ class BauFormList extends TPage
 
                 if( $param[ $fieldName ] == "S" ) {
 
-                    TQuickForm::showField( "form_list_bau", "datatransferencia" );
-                    TQuickForm::showField( "form_list_bau", "localtransferencia_id" );
-                    TQuickForm::showField( "form_list_bau", "transportedestino_id" );
-                    TQuickForm::showField( "form_list_bau", "especificartransporte" );
-                    TQuickForm::showField( "form_list_bau", "datatransporte" );
+                    TQuickForm::showField( "detail_bau", "datatransferencia" );
+                    TQuickForm::showField( "detail_bau", "localtransferencia_id" );
+                    TQuickForm::showField( "detail_bau", "transportedestino_id" );
+                    TQuickForm::showField( "detail_bau", "especificartransporte" );
+                    TQuickForm::showField( "detail_bau", "datatransporte" );
 
                 } else {
 
@@ -571,12 +571,12 @@ class BauFormList extends TPage
                     $object->especificartransporte = "";
                     $object->datatransporte = "";
 
-                    TQuickForm::sendData( "form_list_bau", $object );
-                    TQuickForm::hideField( "form_list_bau", "datatransferencia" );
-                    TQuickForm::hideField( "form_list_bau", "localtransferencia_id" );
-                    TQuickForm::hideField( "form_list_bau", "transportedestino_id" );
-                    TQuickForm::hideField( "form_list_bau", "especificartransporte" );
-                    TQuickForm::hideField( "form_list_bau", "datatransporte" );
+                    TQuickForm::sendData( "detail_bau", $object );
+                    TQuickForm::hideField( "detail_bau", "datatransferencia" );
+                    TQuickForm::hideField( "detail_bau", "localtransferencia_id" );
+                    TQuickForm::hideField( "detail_bau", "transportedestino_id" );
+                    TQuickForm::hideField( "detail_bau", "especificartransporte" );
+                    TQuickForm::hideField( "detail_bau", "datatransporte" );
 
                 }
 
@@ -586,10 +586,10 @@ class BauFormList extends TPage
 
                 if( $param[ $fieldName ] == "S" ) {
 
-                    TQuickForm::showField( "form_list_bau", "medicoalta_id" );
-                    TQuickForm::showField( "form_list_bau", "horaaltahospitalar" );
-                    TQuickForm::showField( "form_list_bau", "dataaltahospitalar" );
-                    TQuickForm::showField( "form_list_bau", "tipoaltahospitalar_id" );
+                    TQuickForm::showField( "detail_bau", "medicoalta_id" );
+                    TQuickForm::showField( "detail_bau", "horaaltahospitalar" );
+                    TQuickForm::showField( "detail_bau", "dataaltahospitalar" );
+                    TQuickForm::showField( "detail_bau", "tipoaltahospitalar_id" );
 
                 } else {
 
@@ -598,11 +598,11 @@ class BauFormList extends TPage
                     $object->dataaltahospitalar = "";
                     $object->tipoaltahospitalar_id = "";
 
-                    TQuickForm::sendData( "form_list_bau", $object );
-                    TQuickForm::hideField( "form_list_bau", "medicoalta_id" );
-                    TQuickForm::hideField( "form_list_bau", "horaaltahospitalar" );
-                    TQuickForm::hideField( "form_list_bau", "dataaltahospitalar" );
-                    TQuickForm::hideField( "form_list_bau", "tipoaltahospitalar_id" );
+                    TQuickForm::sendData( "detail_bau", $object );
+                    TQuickForm::hideField( "detail_bau", "medicoalta_id" );
+                    TQuickForm::hideField( "detail_bau", "horaaltahospitalar" );
+                    TQuickForm::hideField( "detail_bau", "dataaltahospitalar" );
+                    TQuickForm::hideField( "detail_bau", "tipoaltahospitalar_id" );
 
                 }
 
@@ -612,12 +612,12 @@ class BauFormList extends TPage
 
                 if( $param[ $fieldName ] == "S" ) {
 
-                    TQuickForm::showField( "form_list_bau", "dataobito" );
-                    TQuickForm::showField( "form_list_bau", "horaobito" );
-                    TQuickForm::showField( "form_list_bau", "declaracaoobitodata" );
-                    TQuickForm::showField( "form_list_bau", "declaracaoobitohora" );
-                    TQuickForm::showField( "form_list_bau", "destinoobito_id" );
-                    TQuickForm::showField( "form_list_bau", "declaracaoobitomedico_id" );
+                    TQuickForm::showField( "detail_bau", "dataobito" );
+                    TQuickForm::showField( "detail_bau", "horaobito" );
+                    TQuickForm::showField( "detail_bau", "declaracaoobitodata" );
+                    TQuickForm::showField( "detail_bau", "declaracaoobitohora" );
+                    TQuickForm::showField( "detail_bau", "destinoobito_id" );
+                    TQuickForm::showField( "detail_bau", "declaracaoobitomedico_id" );
 
                 } else {
 
@@ -628,13 +628,13 @@ class BauFormList extends TPage
                     $object->destinoobito_id = "";
                     $object->declaracaoobitomedico_id = "";
 
-                    TQuickForm::sendData( "form_list_bau", $object );
-                    TQuickForm::hideField( "form_list_bau", "dataobito" );
-                    TQuickForm::hideField( "form_list_bau", "horaobito" );
-                    TQuickForm::hideField( "form_list_bau", "declaracaoobitodata" );
-                    TQuickForm::hideField( "form_list_bau", "declaracaoobitohora" );
-                    TQuickForm::hideField( "form_list_bau", "destinoobito_id" );
-                    TQuickForm::hideField( "form_list_bau", "declaracaoobitomedico_id" );
+                    TQuickForm::sendData( "detail_bau", $object );
+                    TQuickForm::hideField( "detail_bau", "dataobito" );
+                    TQuickForm::hideField( "detail_bau", "horaobito" );
+                    TQuickForm::hideField( "detail_bau", "declaracaoobitodata" );
+                    TQuickForm::hideField( "detail_bau", "declaracaoobitohora" );
+                    TQuickForm::hideField( "detail_bau", "destinoobito_id" );
+                    TQuickForm::hideField( "detail_bau", "declaracaoobitomedico_id" );
 
                 }
 

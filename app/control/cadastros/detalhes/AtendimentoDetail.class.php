@@ -1,6 +1,6 @@
 <?php
 
-class AtendimentoFormList extends TPage
+class AtendimentoDetail extends TPage
 {
     private $form;
     private $datagrid;
@@ -13,7 +13,7 @@ class AtendimentoFormList extends TPage
 
         $redstar = '<font color="red"><b>*</b></font>';
 
-        $this->form = new BootstrapFormBuilder( "form_list_classificacao_risco" );
+        $this->form = new BootstrapFormBuilder( "detail_atendimento" );
         $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 
@@ -118,11 +118,10 @@ class AtendimentoFormList extends TPage
         $onSave->setParameter( "fk", $fk );
         $onSave->setParameter( "did", $did );
 
-        $onReload = new TAction( [ "BauFormList", "onReload" ] );
-        $onReload->setParameter( "fk", $did );
+        $onReload = new TAction( [ "PacienteAtendimentoList", "onReload" ] );
 
         $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
-        $this->form->addAction( "Voltar para B.A.U.", $onReload, "fa:table blue" );
+        $this->form->addAction( "Voltar", $onReload, "fa:table blue" );
 
         $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
         $this->datagrid->datatable = "true";
@@ -178,11 +177,12 @@ class AtendimentoFormList extends TPage
 
     public function onSave( $param = null )
     {
-        $object = $this->form->getData( "ClassificacaoRiscoRecord" );
 
         try {
 
             $this->form->validate();
+
+            $object = $this->form->getData( "ClassificacaoRiscoRecord" );
 
             TTransaction::open( "database" );
 
@@ -194,7 +194,7 @@ class AtendimentoFormList extends TPage
 
             TTransaction::close();
 
-            $action = new TAction( [ "ClassificacaoRiscoFormList", "onReload" ] );
+            $action = new TAction( [ "ClassificacaoRiscoDetail", "onReload" ] );
             $action->setParameters( $param );
 
             new TMessage( "info", "Registro salvo com sucesso!", $action );
@@ -203,7 +203,7 @@ class AtendimentoFormList extends TPage
 
             TTransaction::rollback();
 
-            $this->form->setData( $object );
+            // $this->form->setData( $object );
 
             new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
 

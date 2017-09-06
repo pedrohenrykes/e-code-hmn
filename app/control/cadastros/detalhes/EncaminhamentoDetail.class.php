@@ -1,6 +1,6 @@
 <?php
 
-class PacienteEncaminhamentoDetalhe extends TPage
+class EncaminhamentoDetalhe extends TPage
 {
     private $form;
     private $datagrid;
@@ -14,7 +14,7 @@ class PacienteEncaminhamentoDetalhe extends TPage
 
         $redstar = '<font color="red"><b>*</b></font>';
 
-        $this->form = new BootstrapFormBuilder( "detalhe_paciente_encaminhamento" );
+        $this->form = new BootstrapFormBuilder( "detail_encaminhamento" );
         $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 
@@ -32,7 +32,7 @@ class PacienteEncaminhamentoDetalhe extends TPage
         $transportedestino_id     = new TCombo("transportedestino_id");
         $especificartransporte    = new TEntry("especificartransporte");
         $datatransporte           = new TDate("datatransporte");
-        
+
         $fk = filter_input( INPUT_GET, "fk" );
         $did = filter_input( INPUT_GET, "did" );
 
@@ -81,15 +81,15 @@ class PacienteEncaminhamentoDetalhe extends TPage
         //$transferencia           ->setDefaultOption( "..::SELECIONE::.." );
         $localtransferencia_id   ->setDefaultOption( "..::SELECIONE::.." );
         $transportedestino_id    ->setDefaultOption( "..::SELECIONE::.." );
-        
+
         //$internamentolocal->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
         //$remocao          ->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
         //$transferencia    ->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
-        
+
         //$internamentolocal->addItems( [ "S" => "SIM", "N" => "NÃO" ] );
         //$remocao          ->addItems( [ "S" => "SIM", "N" => "NÃO" ] );
         //$transferencia    ->addItems( [ "S" => "SIM", "N" => "NÃO" ] );
-        
+
         //$internamentolocal->setValue( "N" );
         //$remocao          ->setValue( "N" );
         //$transferencia    ->setValue( "N" );
@@ -98,14 +98,14 @@ class PacienteEncaminhamentoDetalhe extends TPage
         $dataremocao        ->setMask( "dd/mm/yyyy" );
         $datatransferencia  ->setMask( "dd/mm/yyyy" );
         $datatransporte     ->setMask( "dd/mm/yyyy" );
-        
+
         $datainternamento   ->setDatabaseMask("yyyy-mm-dd");
         $dataremocao        ->setDatabaseMask("yyyy-mm-dd");
         $datatransferencia  ->setDatabaseMask("yyyy-mm-dd");
         $datatransporte     ->setDatabaseMask("yyyy-mm-dd");
-        
+
         $paciente_nome->setEditable( false );
-        
+
         $paciente_id->addValidation('Paciente ID', new TRequiredValidator );
 
         $this->form->addFields( [ new TLabel( "Paciente:" ) ], [ $paciente_nome ]);
@@ -129,14 +129,14 @@ class PacienteEncaminhamentoDetalhe extends TPage
                 $datatransferencia->addValidation('Data de Transferência', new TRequiredValidator );
                 break;
         }
-        
+
         $this->form->addFields([ $paciente_id, $id ]);
 
         $onSave = new TAction( [ $this, "onSave" ] );
         $onSave->setParameter( "did", $did );
 
         $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
-        $this->form->addAction( "Voltar para Encaminhamentos", new TAction( [ "PacientesEncaminhamentoList", "onReload" ] ), "fa:table blue" );
+        $this->form->addAction( "Voltar", new TAction( [ "PacientesEncaminhamentoList", "onReload" ] ), "fa:table blue" );
 
         $container = new TVBox();
         $container->style = "width: 90%";
@@ -144,7 +144,7 @@ class PacienteEncaminhamentoDetalhe extends TPage
 
         parent::add( $container );
     }
-    
+
     public function onReload( $param = null )
     {
         if (!isset($_GET['mode'])) {
@@ -161,11 +161,11 @@ class PacienteEncaminhamentoDetalhe extends TPage
         try {
 
             $this->form->validate();
-            
+
             unset($object->paciente_nome);
-            
+
             TTransaction::open( "database" );
-            
+
             $object->situacao = 'ENCAMINHADO';
 
             $object->store();

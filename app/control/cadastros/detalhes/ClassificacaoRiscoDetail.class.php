@@ -1,6 +1,6 @@
 <?php
 
-class ClassificacaoRiscoFormList extends TPage
+class ClassificacaoRiscoDetail extends TPage
 {
     private $form;
     private $datagrid;
@@ -19,7 +19,7 @@ class ClassificacaoRiscoFormList extends TPage
 
         $redstar = '<font color="red"><b>*</b></font>';
 
-        $this->form = new BootstrapFormBuilder( "form_list_classificacao_risco" );
+        $this->form = new BootstrapFormBuilder( "detail_classificacao_risco" );
         $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 
@@ -83,7 +83,7 @@ class ClassificacaoRiscoFormList extends TPage
 
         } catch ( Exception $ex ) {
 
-            $action = new TAction( [ "PacientesEmClassificacaoList", "onReload" ] );
+            $action = new TAction( [ "PacientesClassificacaoRiscoList", "onReload" ] );
 
             new TMessage( "error", "Ocorreu um erro ao carregar as dependência do formulário.", $action );
 
@@ -133,7 +133,7 @@ class ClassificacaoRiscoFormList extends TPage
         $frame1->style .= ';margin:0px;width:95%';
         $cid_id     = new THidden( "cid_id" );
         $cid_codigo = new TDBSeekButton(
-            "cid_codigo", "database", "form_list_classificacao_risco",
+            "cid_codigo", "database", "detail_classificacao_risco",
             "CidRecord", "codigocid", "cid_id", "cid_codigo"
         );
         $add_button1 = TButton::create(
@@ -178,7 +178,7 @@ class ClassificacaoRiscoFormList extends TPage
         $frame2->style .= ';margin:0px;width:95%';
         $medicamento_id = new THidden( "medicamento_id" );
         $medicamento_nome = new TDBSeekButton(
-            "medicamento_nome", "database", "form_list_classificacao_risco",
+            "medicamento_nome", "database", "detail_classificacao_risco",
             "MedicamentoRecord", "nomemedicamento", "medicamento_id", "medicamento_nome"
         );
         $add_button2 = TButton::create(
@@ -222,7 +222,7 @@ class ClassificacaoRiscoFormList extends TPage
         $frame3->style .= ';margin:0px;width:95%';
         $principioativo_id = new THidden( "principioativo_id" );
         $principioativo_nome = new TDBSeekButton(
-            "principioativo_nome", "database", "form_list_classificacao_risco",
+            "principioativo_nome", "database", "detail_classificacao_risco",
             "PrincipioAtivoRecord", "nomeprincipioativo", "principioativo_id", "principioativo_nome"
         );
         $add_button3 = TButton::create(
@@ -289,11 +289,10 @@ class ClassificacaoRiscoFormList extends TPage
         $onSave->setParameter( "fk", $fk );
         $onSave->setParameter( "did", $did );
 
-        $onReload = new TAction( [ "BauFormList", "onReload" ] );
-        $onReload->setParameter( "fk", $did );
+        $onReload = new TAction( [ "PacientesClassificacaoRiscoList", "onReload" ] );
 
         $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
-        $this->form->addAction( "Voltar para B.A.U.", $onReload, "fa:table blue" );
+        $this->form->addAction( "Voltar", $onReload, "fa:table blue" );
 
         $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
         $this->datagrid->datatable = "true";
@@ -349,11 +348,12 @@ class ClassificacaoRiscoFormList extends TPage
 
     public function onSave( $param = null )
     {
-        $object = $this->form->getData( "ClassificacaoRiscoRecord" );
 
         try {
 
             $this->form->validate();
+
+            $object = $this->form->getData( "ClassificacaoRiscoRecord" );
 
             TTransaction::open( "database" );
 
@@ -363,7 +363,7 @@ class ClassificacaoRiscoFormList extends TPage
 
             TTransaction::close();
 
-            $action = new TAction( [ "ClassificacaoRiscoFormList", "onReload" ] );
+            $action = new TAction( [ "ClassificacaoRiscoDetail", "onReload" ] );
             $action->setParameters( $param );
 
             new TMessage( "info", "Registro salvo com sucesso!", $action );
@@ -372,7 +372,7 @@ class ClassificacaoRiscoFormList extends TPage
 
             TTransaction::rollback();
 
-            $this->form->setData( $object );
+            // $this->form->setData( $object );
 
             new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
 
@@ -589,7 +589,7 @@ class ClassificacaoRiscoFormList extends TPage
 
             TTransaction::close();
 
-            $action = new TAction( [ "ClassificacaoRiscoFormList", "onReloadFrames" ] );
+            $action = new TAction( [ "ClassificacaoRiscoDetail", "onReloadFrames" ] );
             $action->setParameters( $param );
 
             new TMessage( "info", "Registro salvo com sucesso!", $action );
@@ -644,7 +644,7 @@ class ClassificacaoRiscoFormList extends TPage
 
             TTransaction::close();
 
-            $action = new TAction( [ "ClassificacaoRiscoFormList", "onReloadFrames" ] );
+            $action = new TAction( [ "ClassificacaoRiscoDetail", "onReloadFrames" ] );
             $action->setParameters( $param );
 
             new TMessage( "info", "Registro salvo com sucesso!", $action );
@@ -684,7 +684,7 @@ class ClassificacaoRiscoFormList extends TPage
 
     public function onError()
     {
-        $action = new TAction( [ "PacientesEmClassificacaoList", "onReload" ] );
+        $action = new TAction( [ "PacientesClassificacaoRiscoList", "onReload" ] );
 
         new TMessage( "error", "Uma instabilidade momentâneo no sistema impediu a ação, tente novamente mais tarde.", $action );
     }

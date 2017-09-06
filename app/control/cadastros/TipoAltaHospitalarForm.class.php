@@ -11,7 +11,7 @@ class TipoAltaHospitalarForm extends TWindow
         parent::__construct();
         parent::setTitle( "Cadastro de Tipo Alta Hospitalar" );
         parent::setSize( 0.600, 0.800 );
-        
+
         $redstar = '<font color="red"><b>*</b></font>';
 
         $this->form = new BootstrapFormBuilder('form_tipo_alta_hospitalar');
@@ -21,11 +21,11 @@ class TipoAltaHospitalarForm extends TWindow
         $id                     = new THidden('id');
         $situacao               = new TCombo('situacao');
         $nometipoaltahospitalar = new TEntry('nometipoaltahospitalar');
-        
+
         $situacao->setDefaultOption('::..SELECIONE..::');
-        
+
         $situacao->addItems([ 'ATIVO'=>'ATIVO','INATIVO'=>'INATIVO']);
-        
+
         $nometipoaltahospitalar->setProperty("title", "O campo e obrigatorio");
         $situacao ->setProperty("title", "O campo e obrigatorio");
 
@@ -36,7 +36,7 @@ class TipoAltaHospitalarForm extends TWindow
         $this->form->addFields([new TLabel("Nome do Tipo Hospitalar: $redstar")], [$nometipoaltahospitalar]);
 
         $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );
-        //$this->form->addAction( "Voltar para a listagem", new TAction( [ "MedicamentoList", "onReload" ] ), "fa:table blue" );
+        //$this->form->addAction( "Voltar", new TAction( [ "MedicamentoList", "onReload" ] ), "fa:table blue" );
 
         $container = new TVBox();
         $container->style = "width: 100%";
@@ -57,12 +57,12 @@ class TipoAltaHospitalarForm extends TWindow
                 $object = $this->form->getData('TipoAltaHospitalarRecord');
                 $object->store();
             TTransaction::close();
-            
+
            // $action = new TAction( [ "MedicamentoList", "onReload" ] );
             new TMessage("info", "Registro salvo com sucesso!");
-            
+
         } catch (Exception $ex) {
-            
+
             TTransaction::rollback();
             new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
         }
@@ -93,7 +93,6 @@ class TipoAltaHospitalarForm extends TWindow
         }
 
     }
-    
+
 
 }
-

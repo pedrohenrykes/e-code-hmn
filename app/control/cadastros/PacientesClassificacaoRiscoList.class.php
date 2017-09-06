@@ -1,6 +1,6 @@
 <?php
 
-class PacientesEmClassificacaoList extends TPage
+class PacientesClassificacaoRiscoList extends TPage
 {
     private $form;
     private $datagrid;
@@ -11,8 +11,8 @@ class PacientesEmClassificacaoList extends TPage
     {
         parent::__construct();
 
-        $this->form = new BootstrapFormBuilder( "list_pacientes_em_classificacao" );
-        $this->form->setFormTitle( "Listagem de Pacientes Em Classificação " );
+        $this->form = new BootstrapFormBuilder( "list_pacientes_classificacao_risco" );
+        $this->form->setFormTitle( "Classificação de Risco" );
         $this->form->class = "tform";
 
         $opcao = new TCombo( "opcao" );
@@ -46,7 +46,7 @@ class PacientesEmClassificacaoList extends TPage
         $this->datagrid->addColumn( $column_horaentrada );
         $this->datagrid->addColumn( $column_queixaprincipal );
 
-        $action_avaliacao = new CustomDataGridAction( [ "ClassificacaoRiscoFormList", "onReload" ] );
+        $action_avaliacao = new CustomDataGridAction( [ "ClassificacaoRiscoDetail", "onReload" ] );
         $action_avaliacao->setButtonClass( "btn btn-default" );
         $action_avaliacao->setLabel( "Avaliação" );
         $action_avaliacao->setImage( "fa:stethoscope green fa-lg" );

@@ -1,6 +1,6 @@
 <?php
 
-class PacientesEmAtendimentoList extends TPage
+class PacientesAtendimentoList extends TPage
 {
     private $form;
     private $datagrid;
@@ -11,8 +11,8 @@ class PacientesEmAtendimentoList extends TPage
     {
         parent::__construct();
 
-        $this->form = new BootstrapFormBuilder( "list_pacientes_em_classificacao" );
-        $this->form->setFormTitle( "Listagem de Pacientes em Atendimento " );
+        $this->form = new BootstrapFormBuilder( "list_pacientes_atendimento" );
+        $this->form->setFormTitle( "Atendimento " );
         $this->form->class = "tform";
 
         $opcao = new TCombo( "opcao" );
@@ -46,7 +46,7 @@ class PacientesEmAtendimentoList extends TPage
         $this->datagrid->addColumn( $column_horaentrada );
         $this->datagrid->addColumn( $column_queixaprincipal );
 
-        $action_avaliacao = new CustomDataGridAction( [ "AtendimentoFormList", "onReload" ] );
+        $action_avaliacao = new CustomDataGridAction( [ "AtendimentoDetail", "onReload" ] );
         $action_avaliacao->setButtonClass( "btn btn-default" );
         $action_avaliacao->setLabel( "Atendimento Médico" );
         $action_avaliacao->setImage( "fa:stethoscope green fa-lg" );
@@ -134,7 +134,7 @@ class PacientesEmAtendimentoList extends TPage
         }
     }
 
-    
+
     public function onSearch()
     {
         $data = $this->form->getData();
@@ -156,7 +156,7 @@ class PacientesEmAtendimentoList extends TPage
                 $criteria = new TCriteria();
                 $criteria->setProperties( $param );
                 $criteria->setProperty( "limit", $limit );
-                
+
                 //$criteria = new TCriteria();
                 //$criteria->add( new TFilter( $data->opcao, "LIKE", $data->dados . "%" ) );
                         $criteria->add( new TFilter( $data->opcao, "LIKE", $data->dados . "%" ) );
@@ -171,7 +171,7 @@ class PacientesEmAtendimentoList extends TPage
 
 
                 }*/
-                
+
 
                 $objects = $repository->load( $criteria, FALSE );
 
@@ -212,7 +212,7 @@ class PacientesEmAtendimentoList extends TPage
             new TMessage( "erro", $ex->getMessage() );
         }
     }
-    
+
 
     public function show(){
 

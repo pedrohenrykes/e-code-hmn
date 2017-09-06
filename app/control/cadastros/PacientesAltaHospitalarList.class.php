@@ -12,7 +12,7 @@ class PacientesAltaHospitalarList extends TPage
         parent::__construct();
 
         $this->form = new BootstrapFormBuilder( "list_alta_hospitalar" );
-        $this->form->setFormTitle( "Listagem de Alta Hospitalar " );
+        $this->form->setFormTitle( "Alta Hospitalar " );
         $this->form->class = "tform";
 
         $opcao = new TCombo( "opcao" );
@@ -46,7 +46,7 @@ class PacientesAltaHospitalarList extends TPage
         $this->datagrid->addColumn( $column_horaentrada );
         $this->datagrid->addColumn( $column_queixaprincipal );
 
-        $action_avaliacao = new CustomDataGridAction( [ "AltaHospitalarForm", "onReload" ] );
+        $action_avaliacao = new CustomDataGridAction( [ "AltaHospitalarDetail", "onReload" ] );
         $action_avaliacao->setButtonClass( "btn btn-default" );
         $action_avaliacao->setLabel( "Alta Hospitalar" );
         $action_avaliacao->setImage( "fa:stethoscope green fa-lg" );
