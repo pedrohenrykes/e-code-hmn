@@ -11,8 +11,6 @@ class ClassificacaoRiscoDetail extends TPage
     private $framegrid2;
     private $framegrid3;
 
-    private $cid_list;
-
     public function __construct()
     {
         parent::__construct();
@@ -557,9 +555,9 @@ class ClassificacaoRiscoDetail extends TPage
 
     public function onSaveFrame1( $param = null )
     {
-        $object = $this->form->getData( "BauComorbidadesRecord" );
-
         try {
+
+            $object = $this->form->getData( "BauComorbidadesRecord" );
 
             TTransaction::open( "database" );
 
@@ -609,9 +607,9 @@ class ClassificacaoRiscoDetail extends TPage
 
     public function onSaveFrame2( $param = null )
     {
-        $object = $this->form->getData( "BauUsoMedicacoesRecord" );
-
         try {
+
+            $object = $this->form->getData( "BauUsoMedicacoesRecord" );
 
             TTransaction::open( "database" );
 
@@ -637,9 +635,6 @@ class ClassificacaoRiscoDetail extends TPage
             unset( $object->dor );
             unset( $object->observacoes );
 
-            print_r($object);
-            exit;
-
             $object->store();
 
             TTransaction::close();
@@ -664,22 +659,129 @@ class ClassificacaoRiscoDetail extends TPage
 
     public function onSaveFrame3( $param = null )
     {
-        $this->onReloadFrames( $param );
+        try {
+
+            $object = $this->form->getData( "BauAlergiaMedicamentosaRecord" );
+
+            TTransaction::open( "database" );
+
+            unset( $object->id );
+            unset( $object->enfermeiro_id );
+            unset( $object->cid_id );
+            unset( $object->medicamento_id );
+            unset( $object->tipoclassificacaorisco_id );
+            unset( $object->tipoestadogeral_id );
+            unset( $object->cid_codigo );
+            unset( $object->medicamento_nome );
+            unset( $object->principioativo_nome );
+            unset( $object->paciente_nome );
+            unset( $object->dataclassificacao );
+            unset( $object->horaclassificacao );
+            unset( $object->pressaoarterial );
+            unset( $object->frequenciacardiaca );
+            unset( $object->frequenciarespiratoria );
+            unset( $object->temperatura );
+            unset( $object->spo2 );
+            unset( $object->htg );
+            unset( $object->queixaprincipal );
+            unset( $object->dor );
+            unset( $object->observacoes );
+
+            $object->store();
+
+            TTransaction::close();
+
+            $action = new TAction( [ "ClassificacaoRiscoDetail", "onReloadFrames" ] );
+            $action->setParameters( $param );
+
+            new TMessage( "info", "Registro salvo com sucesso!", $action );
+
+        } catch ( Exception $ex ) {
+
+            TTransaction::rollback();
+
+            $this->onReloadFrames( $param );
+
+            $this->form->setData( $object );
+
+            new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
+
+        }
     }
 
     public function onDeleteFrame1( $param = null )
     {
-        $this->onReloadFrames( $param );
+        try {
+
+            TTransaction::open( "database" );
+
+            $object = new BauComorbidadesRecord( $param[ "key" ] );
+
+            $object->delete();
+
+            TTransaction::close();
+
+            $this->onReloadFrames( $param );
+
+            // new TMessage( "info", "O Registro foi apagado com sucesso!" );
+
+        } catch ( Exception $ex ) {
+
+            TTransaction::rollback();
+
+            new TMessage( "error", $ex->getMessage() );
+
+        }
     }
 
     public function onDeleteFrame2( $param = null )
     {
-        $this->onReloadFrames( $param );
+        try {
+
+            TTransaction::open( "database" );
+
+            $object = new BauUsoMedicacoesRecord( $param[ "key" ] );
+
+            $object->delete();
+
+            TTransaction::close();
+
+            $this->onReloadFrames( $param );
+
+            // new TMessage( "info", "O Registro foi apagado com sucesso!" );
+
+        } catch ( Exception $ex ) {
+
+            TTransaction::rollback();
+
+            new TMessage( "error", $ex->getMessage() );
+
+        }
     }
 
     public function onDeleteFrame3( $param = null )
     {
-        $this->onReloadFrames( $param );
+        try {
+
+            TTransaction::open( "database" );
+
+            $object = new BauAlergiaMedicamentosaRecord( $param[ "key" ] );
+
+            $object->delete();
+
+            TTransaction::close();
+
+            $this->onReloadFrames( $param );
+
+            // new TMessage( "info", "O Registro foi apagado com sucesso!" );
+
+        } catch ( Exception $ex ) {
+
+            TTransaction::rollback();
+
+            new TMessage( "error", $ex->getMessage() );
+
+        }
     }
 
     public function onError()

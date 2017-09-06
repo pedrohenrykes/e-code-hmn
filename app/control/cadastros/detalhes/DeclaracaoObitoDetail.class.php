@@ -1,12 +1,14 @@
 <?php
 
-class DeclaracaoObitoDetail extends TPage
+class DeclaracaoObitoDetail extends TWindow
 {
     private $form;
 
     public function __construct()
     {
         parent::__construct();
+        parent::setTitle( "Óbito de Pacientes" );
+        parent::setSize( 0.600, 0.800 );
 
         $redstar = '<font color="red"><b>*</b></font>';
 
@@ -96,7 +98,7 @@ class DeclaracaoObitoDetail extends TPage
         $this->form->addAction( "Voltar", $onReload, "fa:table blue" );
 
         $container = new TVBox();
-        $container->style = "width: 90%";
+        $container->style = "width: 100%";
         $container->add( $this->form );
 
         parent::add( $container );

@@ -1,6 +1,6 @@
 <?php
 
-class EncaminhamentoDetail extends TPage
+class EncaminhamentoDetail extends TWindow
 {
     private $form;
     private $datagrid;
@@ -11,6 +11,8 @@ class EncaminhamentoDetail extends TPage
     public function __construct()
     {
         parent::__construct();
+        parent::setTitle( "Encaminhamento de Pacientes" );
+        parent::setSize( 0.600, 0.800 );
 
         $redstar = '<font color="red"><b>*</b></font>';
 
@@ -21,12 +23,9 @@ class EncaminhamentoDetail extends TPage
         $id                       = new THidden("id");
         $paciente_id              = new THidden( "paciente_id" );
         $paciente_nome            = new TEntry( "paciente_nome" );
-        //$internamentolocal        = new TCombo("internamentolocal");
         $datainternamento         = new TDate("datainternamento");
-        //$remocao                  = new TCombo("remocao");
         $dataremocao              = new TDate("dataremocao");
         $localremocao_id          = new TCombo("localremocao_id");
-        //$transferencia            = new TCombo("transferencia");
         $datatransferencia        = new TDate("datatransferencia");
         $localtransferencia_id    = new TCombo("localtransferencia_id");
         $transportedestino_id     = new TCombo("transportedestino_id");
@@ -63,36 +62,18 @@ class EncaminhamentoDetail extends TPage
 
         $id                      ->setSize( "38%" );
         $paciente_nome           ->setSize( "38%" );
-        //$internamentolocal       ->setSize( "38%" );
         $datainternamento        ->setSize( "38%" );
-        //$remocao                 ->setSize( "38%" );
         $dataremocao             ->setSize( "38%" );
         $localremocao_id         ->setSize( "38%" );
-        //$transferencia           ->setSize( "38%" );
         $datatransferencia       ->setSize( "38%" );
         $localtransferencia_id   ->setSize( "38%" );
         $transportedestino_id    ->setSize( "38%" );
         $especificartransporte   ->setSize( "38%" );
         $datatransporte          ->setSize( "38%" );
 
-        //$internamentolocal       ->setDefaultOption( "..::SELECIONE::.." );
-        //$remocao                 ->setDefaultOption( "..::SELECIONE::.." );
         $localremocao_id         ->setDefaultOption( "..::SELECIONE::.." );
-        //$transferencia           ->setDefaultOption( "..::SELECIONE::.." );
         $localtransferencia_id   ->setDefaultOption( "..::SELECIONE::.." );
         $transportedestino_id    ->setDefaultOption( "..::SELECIONE::.." );
-
-        //$internamentolocal->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
-        //$remocao          ->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
-        //$transferencia    ->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
-
-        //$internamentolocal->addItems( [ "S" => "SIM", "N" => "NÃO" ] );
-        //$remocao          ->addItems( [ "S" => "SIM", "N" => "NÃO" ] );
-        //$transferencia    ->addItems( [ "S" => "SIM", "N" => "NÃO" ] );
-
-        //$internamentolocal->setValue( "N" );
-        //$remocao          ->setValue( "N" );
-        //$transferencia    ->setValue( "N" );
 
         $datainternamento   ->setMask( "dd/mm/yyyy" );
         $dataremocao        ->setMask( "dd/mm/yyyy" );
@@ -106,28 +87,37 @@ class EncaminhamentoDetail extends TPage
 
         $paciente_nome->setEditable( false );
 
-        $paciente_id->addValidation('Paciente ID', new TRequiredValidator );
+        $this->form->addFields( [ new TLabel( "Paciente:" ) ], [ $paciente_nome ] );
 
-        $this->form->addFields( [ new TLabel( "Paciente:" ) ], [ $paciente_nome ]);
-        switch($_GET['mode']) {
-            case 'internamento':
+        switch( filter_input( INPUT_GET, "mode" ) ) {
+
+            case "internamento":
+
                 $this->form->addFields( [ new TLabel( "Data de Internamento: {$redstar}" ) ], [ $datainternamento ] );
-                $datainternamento->addValidation('Data de Internamento', new TRequiredValidator );
+                $datainternamento->addValidation( "Data de Internamento", new TRequiredValidator );
+
                 break;
-            case 'remocao':
+
+            case "remocao":
+
                 $this->form->addFields( [ new TLabel( "Data de Remoção: {$redstar}") ], [ $dataremocao ] );
                 $this->form->addFields( [ new TLabel( "Local de Remoção: {$redstar}") ], [ $localremocao_id ] );
-                $dataremocao->addValidation('Data de Remoção', new TRequiredValidator );
-                $localremocao_id->addValidation('Local de Remoção', new TRequiredValidator );
+                $dataremocao->addValidation( "Data de Remoção", new TRequiredValidator );
+                $localremocao_id->addValidation( "Local de Remoção", new TRequiredValidator );
+
                 break;
-            case 'transferencia':
+
+            case "transferencia":
+
                 $this->form->addFields( [ new TLabel( "Data de Transferência: {$redstar}" ) ], [ $datatransferencia ] );
                 $this->form->addFields( [ new TLabel( "Local de Transferência:" ) ], [ $localtransferencia_id ] );
                 $this->form->addFields( [ new TLabel( "Destino do Transporte:" ) ], [ $transportedestino_id ] );
                 $this->form->addFields( [ new TLabel( "Informações do Transporte:" ) ], [ $especificartransporte ] );
                 $this->form->addFields( [ new TLabel( "Data do Transporte:" ) ], [ $datatransporte ] );
-                $datatransferencia->addValidation('Data de Transferência', new TRequiredValidator );
+                $datatransferencia->addValidation( "Data de Transferência", new TRequiredValidator );
+
                 break;
+
         }
 
         $this->form->addFields([ $paciente_id, $id ]);
@@ -139,7 +129,7 @@ class EncaminhamentoDetail extends TPage
         $this->form->addAction( "Voltar", new TAction( [ "PacientesEncaminhamentoList", "onReload" ] ), "fa:table blue" );
 
         $container = new TVBox();
-        $container->style = "width: 90%";
+        $container->style = "width: 100%";
         $container->add( $this->form );
 
         parent::add( $container );
@@ -147,10 +137,12 @@ class EncaminhamentoDetail extends TPage
 
     public function onReload( $param = null )
     {
-        if (!isset($_GET['mode'])) {
+        if ( empty( filter_input( INPUT_GET, "mode" ) ) ) {
+
             $action = new TAction( [ "PacientesEncaminhamentoList", "onReload" ] );
 
-            new TMessage( "error", "Algo não deu certo!", $action );
+            $this->onError();
+
         }
     }
 
@@ -166,7 +158,7 @@ class EncaminhamentoDetail extends TPage
 
             TTransaction::open( "database" );
 
-            $object->situacao = 'ENCAMINHADO';
+            $object->situacao = "ENCAMINHADO";
 
             $object->store();
 
@@ -182,16 +174,15 @@ class EncaminhamentoDetail extends TPage
 
             $this->form->setData( $object );
 
-            foreach ( $this->changeFields as $field ) {
-                self::onChangeAction([
-                    "_field_name" => $field,
-                    $field => $object->$field
-                ]);
-            }
-
             new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
 
         }
     }
 
+    public function onError()
+    {
+        $action = new TAction( [ "PacientesEncaminhamentoList", "onReload" ] );
+
+        new TMessage( "error", "Uma instabilidade momentâneo no sistema impediu a ação, tente novamente mais tarde.", $action );
+    }
 }
