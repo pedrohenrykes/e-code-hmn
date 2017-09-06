@@ -194,7 +194,7 @@ class AtendimentoDetail extends TPage
 
             TTransaction::close();
 
-            $action = new TAction( [ "ClassificacaoRiscoDetail", "onReload" ] );
+            $action = new TAction( [ "PacienteAtendimentoList", "onReload" ] );
             $action->setParameters( $param );
 
             new TMessage( "info", "Registro salvo com sucesso!", $action );

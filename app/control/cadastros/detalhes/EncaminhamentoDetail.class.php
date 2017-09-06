@@ -1,6 +1,6 @@
 <?php
 
-class EncaminhamentoDetalhe extends TPage
+class EncaminhamentoDetail extends TPage
 {
     private $form;
     private $datagrid;

@@ -1,6 +1,6 @@
 <?php
 
-class ObitoDetail extends TPage
+class DeclaracaoObitoDetail extends TPage
 {
     private $form;
 
@@ -10,7 +10,7 @@ class ObitoDetail extends TPage
 
         $redstar = '<font color="red"><b>*</b></font>';
 
-        $this->form = new BootstrapFormBuilder( "detail_obito" );
+        $this->form = new BootstrapFormBuilder( "detail_declaracao_obito" );
         $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 

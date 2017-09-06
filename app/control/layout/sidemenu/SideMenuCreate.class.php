@@ -31,7 +31,7 @@ class SideMenuCreate
             $repository = new TRepository("SideMenuModel");
 
             $criteria = new TCriteria();
-            $criteria->setProperty( "order", "sequence" );
+            $criteria->setProperty( "order", "sequence, name" );
 
             $objects = $repository->load( $criteria );
 

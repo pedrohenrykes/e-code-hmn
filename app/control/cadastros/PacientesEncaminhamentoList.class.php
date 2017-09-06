@@ -46,7 +46,7 @@ class PacientesEncaminhamentoList extends TPage
         $this->datagrid->addColumn( $column_horaentrada );
         $this->datagrid->addColumn( $column_queixaprincipal );
 
-        $action_internamento = new CustomDataGridAction( [ "EncaminhamentoDetalhe", "onReload" ] );
+        $action_internamento = new CustomDataGridAction( [ "EncaminhamentoDetail", "onReload" ] );
         $action_internamento->setButtonClass( "btn btn-default" );
         $action_internamento->setLabel( "Encaminhar para Internamento" );
         $action_internamento->setImage( "fa:arrow-circle-right green fa-lg" );
@@ -55,7 +55,7 @@ class PacientesEncaminhamentoList extends TPage
         $action_internamento->setDid( "paciente_id" );
         $action_internamento->setParameter( "mode", "internamento" );
 
-        $action_remocao = new CustomDataGridAction( [ "EncaminhamentoDetalhe", "onReload" ] );
+        $action_remocao = new CustomDataGridAction( [ "EncaminhamentoDetail", "onReload" ] );
         $action_remocao->setButtonClass( "btn btn-default" );
         $action_remocao->setLabel( "Encaminhar para Remoção" );
         $action_remocao->setImage( "fa:arrow-circle-right green fa-lg" );
@@ -64,7 +64,7 @@ class PacientesEncaminhamentoList extends TPage
         $action_remocao->setDid( "paciente_id" );
         $action_remocao->setParameter( "mode", "remocao" );
 
-        $action_transferencia = new CustomDataGridAction( [ "EncaminhamentoDetalhe", "onReload" ] );
+        $action_transferencia = new CustomDataGridAction( [ "EncaminhamentoDetail", "onReload" ] );
         $action_transferencia->setButtonClass( "btn btn-default" );
         $action_transferencia->setLabel( "Encaminhar para Transferência" );
         $action_transferencia->setImage( "fa:arrow-circle-right green fa-lg" );

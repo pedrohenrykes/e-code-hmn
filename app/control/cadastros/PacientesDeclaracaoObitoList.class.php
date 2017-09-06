@@ -46,7 +46,7 @@ class PacientesDeclaracaoObitoList extends TPage
         $this->datagrid->addColumn( $column_horaentrada );
         $this->datagrid->addColumn( $column_queixaprincipal );
 
-        $action_obito = new CustomDataGridAction( [ "ObitoDetail", "onReload" ] );
+        $action_obito = new CustomDataGridAction( [ "DeclaracaoObitoDetail", "onReload" ] );
         $action_obito->setButtonClass( "btn btn-default" );
         $action_obito->setLabel( "Óbito" );
         $action_obito->setImage( "fa:stethoscope green fa-lg" );
