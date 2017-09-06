@@ -13,78 +13,34 @@ class AtendimentoDetail extends TPage
 
         $redstar = '<font color="red"><b>*</b></font>';
 
-        $this->form = new BootstrapFormBuilder( "detail_atendimento" );
+        $this->form = new BootstrapFormBuilder( "form_list_classificacao_risco" );
         $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 
+
+        $fk = filter_input( INPUT_GET, "fk" );
+        $did = filter_input( INPUT_GET, "did" );
+
         $id                        = new THidden( "id" );
-        $paciente_id               = new THidden( "paciente_id" );
+        //$paciente_id               = new THidden( $did );
         $bau_id                    = new THidden( "bau_id" );
         $enfermeiro_id             = new THidden( "enfermeiro_id" ); // Deve ser capturado a partir da sessão
         $dataclassificacao         = new TDate( "dataclassificacao" );
         $horaclassificacao         = new TDateTime( "horaclassificacao" );
         $paciente_nome             = new TEntry( "paciente_name" );
-        $pressaoarterial           = new TEntry( "pressaoarterial" );
-        $frequenciacardiaca        = new TEntry( "frequenciacardiaca" );
-        $frequenciarespiratoria    = new TEntry( "frequenciarespiratoria" );
-        $temperatura               = new TEntry( "temperatura" );
-        $spo2                      = new TEntry( "spo2" );
-        $htg                       = new TEntry( "htg" );
-        $observacoes               = new TText( "observacoes" );
-        $queixaprincipal           = new TText( "queixaprincipal" );
-        $dor                       = new TCombo( "dor" );
-
-        $tipoclassificacaorisco_id = new TDBCombo(
-            "tipoclassificacaorisco_id",
-            "database", "TipoClassificacaoRiscoRecord",
-            "id", "nometipoclassificacaorisco",
-            "nometipoclassificacaorisco"
-        );
-
-        $dor->addItems([
-            "LEVE" => "LEVE",
-            "MODERADA" => "MODERADA",
-            "INTENSA" => "INTENSA"
-        ]);
-
-        $fk = filter_input( INPUT_GET, "fk" );
-        $did = filter_input( INPUT_GET, "did" );
-
+        
         try {
-
             TTransaction::open( "database" );
-
             $paciente = new PacienteRecord( $did );
-
             if( isset( $paciente ) ){
-                $paciente_id->setValue( $paciente->id );
                 $paciente_nome->setValue( $paciente->nomepaciente );
             }
-
             TTransaction::close();
 
         } catch ( Exception $ex ) {
-
             new TMessage( "error", "Não foi possível carregar os dados do paciente.<br><br>" . $ex->getMessage() );
-
         }
 
-        $dataclassificacao        ->setSize("38%");
-        $horaclassificacao        ->setSize("38%");
-        $paciente_nome            ->setSize("38%");
-        $pressaoarterial          ->setSize("38%");
-        $frequenciacardiaca       ->setSize("38%");
-        $frequenciarespiratoria   ->setSize("38%");
-        $temperatura              ->setSize("38%");
-        $spo2                     ->setSize("38%");
-        $htg                      ->setSize("38%");
-        $dor                      ->setSize("38%");
-        $observacoes              ->setSize("38%");
-        $queixaprincipal          ->setSize("38%");
-        $tipoclassificacaorisco_id->setSize("38%");
-
-        $dor                      ->setDefaultOption( "..::SELECIONE::.." );
-        $tipoclassificacaorisco_id->setDefaultOption( "..::SELECIONE::.." );
 
         $dataclassificacao->setMask( "dd/mm/yyyy" );
         $dataclassificacao->setDatabaseMask("yyyy-mm-dd");
@@ -96,32 +52,21 @@ class AtendimentoDetail extends TPage
         $paciente_nome->setEditable( false );
         $paciente_nome->forceUpperCase();
 
-        $paciente_id      ->addValidation( TextFormat::set( "Nome do Paciente" ), new TRequiredValidator );
         $dataclassificacao->addValidation( TextFormat::set( "Data da Avaliação" ), new TRequiredValidator );
 
         $this->form->addFields( [ new TLabel( "Paciente: {$redstar}" ) ], [ $paciente_nome ] );
-        $this->form->addFields( [ new TLabel( "Data da Avaliação: {$redstar}" ) ], [ $dataclassificacao ] );
-        $this->form->addFields( [ new TLabel( "Hora da Avaliação:" ) ], [ $horaclassificacao ] );
-        $this->form->addFields( [ new TLabel( "Pressão Arterial:" ) ], [ $pressaoarterial ] );
-        $this->form->addFields( [ new TLabel( "Frequência Cardíaca:" ) ], [ $frequenciacardiaca ] );
-        $this->form->addFields( [ new TLabel( "Frequência Respiratória:" ) ], [ $frequenciarespiratoria ] );
-        $this->form->addFields( [ new TLabel( "Temperatura:" ) ], [ $temperatura ] );
-        $this->form->addFields( [ new TLabel( "SPO2:" ) ], [ $spo2 ] );
-        $this->form->addFields( [ new TLabel( "HTG:" ) ], [ $htg ] );
-        $this->form->addFields( [ new TLabel( "Escala de Dor:" ) ], [ $dor ] );
-        $this->form->addFields( [ new TLabel( "Queixa Principal:" ) ], [ $queixaprincipal ] );
-        $this->form->addFields( [ new TLabel( "Observações:" ) ], [ $observacoes ] );
-        $this->form->addFields( [ new TLabel( "Classificação: {$redstar}" ) ], [ $tipoclassificacaorisco_id ] );
-        $this->form->addFields( [ $id, $paciente_id, $bau_id, $enfermeiro_id ] );
+        $this->form->addFields([ new TLabel( "Data do atendimento: {$redstar}" ) ], [ $dataclassificacao ] , [ new TLabel( "Hora do atendimento:" ) ], [ $horaclassificacao ] );
+        $this->form->addFields( [ $id, $bau_id, $enfermeiro_id ] );
 
         $onSave = new TAction( [ $this, "onSave" ] );
         $onSave->setParameter( "fk", $fk );
         $onSave->setParameter( "did", $did );
 
-        $onReload = new TAction( [ "PacienteAtendimentoList", "onReload" ] );
+        $onReload = new TAction( [ "PacientesAtendimentoList", "onReload" ] );
+        $onReload->setParameter( "did", $did );
 
         $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
-        $this->form->addAction( "Voltar", $onReload, "fa:table blue" );
+        $this->form->addAction( "Voltar para B.A.U.", $onReload, "fa:table blue" );
 
         $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
         $this->datagrid->datatable = "true";
@@ -129,17 +74,9 @@ class AtendimentoDetail extends TPage
         $this->datagrid->setHeight( 320 );
 
         $column_paciente_nome               = new TDataGridColumn( "paciente_nome", "Paciente", "left" );
-        $column_dataclassificacao           = new TDataGridColumn( "dataclassificacao", "Data da Avaliação", "left" );
-        $column_horaclassificacao           = new TDataGridColumn( "horaclassificacao", "Hora da Avaliação", "left" );
-        $column_queixaprincipal             = new TDataGridColumn( "queixaprincipal", "Queixa Principal", "left" );
-        $column_tipoclassificacaorisco_nome = new TDataGridColumn( "tipoclassificacaorisco_nome", "Classificação", "left" );
         $column_enfermeiro_nome             = new TDataGridColumn( "enfermeiro_nome", "Enfermeiro", "left" );
 
         $this->datagrid->addColumn( $column_paciente_nome );
-        $this->datagrid->addColumn( $column_dataclassificacao );
-        $this->datagrid->addColumn( $column_horaclassificacao );
-        $this->datagrid->addColumn( $column_queixaprincipal );
-        $this->datagrid->addColumn( $column_tipoclassificacaorisco_nome );
         $this->datagrid->addColumn( $column_enfermeiro_nome );
 
         $action_edit = new CustomDataGridAction( [ $this, "onEdit" ] );
@@ -177,24 +114,19 @@ class AtendimentoDetail extends TPage
 
     public function onSave( $param = null )
     {
+        $object = $this->form->getData( "AtendimentoRecord" );
 
         try {
 
             $this->form->validate();
-
-            $object = $this->form->getData( "ClassificacaoRiscoRecord" );
-
             TTransaction::open( "database" );
-
             unset( $object->paciente_name );
-
             $object->bau_id = $param[ "fk" ];
-
             $object->store();
 
             TTransaction::close();
 
-            $action = new TAction( [ "PacienteAtendimentoList", "onReload" ] );
+            $action = new TAction( [ "AtendimentoFormList", "onReload" ] );
             $action->setParameters( $param );
 
             new TMessage( "info", "Registro salvo com sucesso!", $action );
@@ -202,9 +134,7 @@ class AtendimentoDetail extends TPage
         } catch ( Exception $ex ) {
 
             TTransaction::rollback();
-
-            // $this->form->setData( $object );
-
+            $this->form->setData( $object );
             new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
 
         }
@@ -215,10 +145,9 @@ class AtendimentoDetail extends TPage
         try {
 
             if ( isset( $param[ "key" ] ) ) {
-
                 TTransaction::open( "database" );
 
-                $object = new ClassificacaoRiscoRecord( $param[ "key" ] );
+                $object = new AtendimentoRecord( $param[ "key" ] );
 
                 $dataclassificacao = new DateTime( $object->dataclassificacao );
                 $horaclassificacao = new DateTime( $object->horaclassificacao );
@@ -227,9 +156,7 @@ class AtendimentoDetail extends TPage
                 $object->horaclassificacao = $horaclassificacao->format("H:i");
 
                 $this->onReload( $param );
-
                 $this->form->setData( $object );
-
                 TTransaction::close();
 
             }
@@ -268,11 +195,8 @@ class AtendimentoDetail extends TPage
         try {
 
             TTransaction::open( "database" );
-
-            $object = new ClassificacaoRiscoRecord( $param[ "key" ] );
-
+            $object = new AtendimentoRecord( $param[ "key" ] );
             $object->delete();
-
             TTransaction::close();
 
             $this->onReload( $param );
@@ -280,9 +204,7 @@ class AtendimentoDetail extends TPage
             new TMessage( "info", "O Registro foi apagado com sucesso!" );
 
         } catch ( Exception $ex ) {
-
             TTransaction::rollback();
-
             new TMessage( "error", $ex->getMessage() );
 
         }
@@ -294,10 +216,10 @@ class AtendimentoDetail extends TPage
 
             TTransaction::open( "database" );
 
-            $repository = new TRepository( "ClassificacaoRiscoRecord" );
+            $repository = new TRepository( "AtendimentoRecord" );
 
             $properties = [
-                "order" => "dataclassificacao",
+                "order" => "dataatendimento",
                 "direction" => "asc"
             ];
 
@@ -307,7 +229,6 @@ class AtendimentoDetail extends TPage
             $criteria->setProperties( $properties );
             $criteria->setProperty( "limit", $limit );
             $criteria->add( new TFilter( "bau_id", "=", $param[ "fk" ] ) );
-            $criteria->add( new TFilter( "paciente_id", "=", $param[ "did" ] ) );
 
             $objects = $repository->load( $criteria, FALSE );
 
