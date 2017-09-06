@@ -24,23 +24,26 @@ class TipoClassificacaoRiscoForm extends TWindow
         $tempoparaatendimento       = new TEntry("tempoparaatendimento");
         $tempoparaatendimento->setProperty('type', 'time');
         
-        $situacao->addItems(["ATIVO" => "ATIVO", "INATIVO" => "INATIVO"]);
         $situacao->setDefaultOption( "..::SELECIONE::.." );
+        $situacao->addItems(["ATIVO" => "ATIVO", "INATIVO" => "INATIVO"]);
         
-        $cortipoclassificacaorisco->addItems(['#0000FF' => 'Azul', '#008000' => 'Verde', '#FFFF00' => 'Amarelo', '#FF0000' => 'Vermelho']);
         $cortipoclassificacaorisco->setDefaultOption( "..::SELECIONE::.." );
+        $cortipoclassificacaorisco->addItems(['#0000FF' => 'Azul', '#008000' => 'Verde', '#FFFF00' => 'Amarelo', '#FF0000' => 'Vermelho']);
 
         $ordem->setProperty("title", "O campo e obrigatorio");
         $situacao->setProperty("title", "O campo e obrigatorio");
-        $nometipoclassificacaorisco->setProperty("title", "");
-        $cortipoclassificacaorisco->setProperty("title", "");
-        $tempoparaatendimento->setProperty("title", "");
+        $tempoparaatendimento->setProperty("title", "O campo e obrigatorio");
+        $cortipoclassificacaorisco->setProperty("title", "O campo e obrigatorio");
+        $nometipoclassificacaorisco->setProperty("title", "O campo e obrigatorio");
         
         $ordem->setSize("38%");
         $situacao->setSize("38%");
-        $nometipoclassificacaorisco->setSize("38%");
-        $cortipoclassificacaorisco->setSize("38%");
         $tempoparaatendimento->setSize("38%");
+        $cortipoclassificacaorisco->setSize("38%");
+        $nometipoclassificacaorisco->setSize("38%");
+        
+        $tempoparaatendimento->setMask( "hh:ii" );
+        //$tempoparaatendimento->setValue( date( "H:i" ) );
         
         $this->form->addFields([new TLabel("Ordem:    $redstar")], [$ordem]);
         $this->form->addFields([new TLabel("Situação: $redstar")], [$situacao]);
@@ -57,13 +60,13 @@ class TipoClassificacaoRiscoForm extends TWindow
 
         parent::add( $container );
     }
-
+    
     public function onSave()
     {
         try {
 
             $this->form->validate();
-
+            
             TTransaction::open( "database" );
                 $object = $this->form->getData("TipoClassificacaoRiscoRecord");
                 $object->store();
@@ -71,7 +74,7 @@ class TipoClassificacaoRiscoForm extends TWindow
 
             $action = new TAction( [ "TipoClassificacaoRiscoList", "onReload" ] );
 
-            new TMessage( "info", "Registro salvo com s,ucesso!", $action );
+            new TMessage( "info", "Registro salvo com sucesso!", $action );
 
         } catch ( Exception $ex ) {
 
