@@ -23,7 +23,7 @@ class DeclaracaoObitoDetail extends TWindow
         $declaracaoobitodata      = new TDate("declaracaoobitodata");
         $horaobito                = new TDateTime("horaobito");
         $declaracaoobitohora      = new TDateTime("declaracaoobitohora");
-        $destinoobito_id          = new TCombo("destinoobito_id");
+        $destinoobito_id          = new TDBCombo("destinoobito_id","database","DestinoObitoRecord","id","nomedestinoobito");
         $declaracaoobitomedico_id = new TCombo("declaracaoobitomedico_id");
 
         $fk = filter_input( INPUT_GET, "fk" );
