@@ -38,7 +38,6 @@ class ClassificacaoRiscoDetail extends TPage
         $queixaprincipal           = new TText( "queixaprincipal" );
         $dor                       = new TCombo( "dor" );
 
-
         $tipoclassificacaorisco_id = new TDBCombo(
             "tipoclassificacaorisco_id",
             "database", "TipoClassificacaoRiscoRecord",
@@ -137,9 +136,10 @@ class ClassificacaoRiscoDetail extends TPage
         $add_button1 = TButton::create(
             "add1", [ $this,"onError" ], null, null
         );
-        $onSaveFrame1 = new TAction( [ $this, "onSaveFrame1" ] );
+        $onSaveFrame1 = new TAction( [ $this, "onSaveFrames" ] );
         $onSaveFrame1->setParameter( "fk", $fk );
         $onSaveFrame1->setParameter( "did", $did );
+        $onSaveFrame1->setParameter( "frm", 1 );
         $add_button1->setAction( $onSaveFrame1 );
         $add_button1->setLabel( "Adicionar" );
         $add_button1->setImage( "fa:plus green" );
@@ -152,9 +152,10 @@ class ClassificacaoRiscoDetail extends TPage
         $this->framegrid1->style='width: 100%';
         $this->framegrid1->id = 'framegrid1';
         $this->framegrid1->disableDefaultClick();
-        $remove_action1 = new TDataGridAction( [ $this, "onDeleteFrame1" ] );
+        $remove_action1 = new TDataGridAction( [ $this, "onDeleteFrames" ] );
         $remove_action1->setParameter( "fk", $fk );
         $remove_action1->setParameter( "did", $did );
+        $remove_action1->setParameter( "frm", 1 );
         $this->framegrid1->addQuickAction( "Remover", $remove_action1, "id", "fa:trash red", "20%" );
         $this->framegrid1->addQuickColumn( "Código CID", 'cid_codigo', 'left', '20%');
         $this->framegrid1->addQuickColumn( "Patologia", 'cid_nome', 'left', '100%');
@@ -182,9 +183,10 @@ class ClassificacaoRiscoDetail extends TPage
         $add_button2 = TButton::create(
             "add2", [ $this,"onError" ], null, null
         );
-        $onSaveFrame2 = new TAction( [ $this, "onSaveFrame2" ] );
+        $onSaveFrame2 = new TAction( [ $this, "onSaveFrames" ] );
         $onSaveFrame2->setParameter( "fk", $fk );
         $onSaveFrame2->setParameter( "did", $did );
+        $onSaveFrame2->setParameter( "frm", 2 );
         $add_button2->setAction( $onSaveFrame2 );
         $add_button2->setLabel( "Adicionar" );
         $add_button2->setImage( "fa:plus green" );
@@ -197,9 +199,10 @@ class ClassificacaoRiscoDetail extends TPage
         $this->framegrid2->style='width: 100%';
         $this->framegrid2->id = 'framegrid2';
         $this->framegrid2->disableDefaultClick();
-        $remove_action2 = new TDataGridAction( [ $this, "onDeleteFrame2" ] );
+        $remove_action2 = new TDataGridAction( [ $this, "onDeleteFrames" ] );
         $remove_action2->setParameter( "fk", $fk );
         $remove_action2->setParameter( "did", $did );
+        $remove_action2->setParameter( "frm", 2 );
         $this->framegrid2->addQuickAction( "Remover", $remove_action2, "id", "fa:trash red", "20%" );
         $this->framegrid2->addQuickColumn( "Medicamento", 'medicamento_nome', 'left', '100%');
         $this->framegrid2->createModel();
@@ -226,9 +229,10 @@ class ClassificacaoRiscoDetail extends TPage
         $add_button3 = TButton::create(
             "add3", [ $this,"onError" ], null, null
         );
-        $onSaveFrame3 = new TAction( [ $this, "onSaveFrame3" ] );
+        $onSaveFrame3 = new TAction( [ $this, "onSaveFrames" ] );
         $onSaveFrame3->setParameter( "fk", $fk );
         $onSaveFrame3->setParameter( "did", $did );
+        $onSaveFrame3->setParameter( "frm", 3 );
         $add_button3->setAction( $onSaveFrame3 );
         $add_button3->setLabel( "Adicionar" );
         $add_button3->setImage( "fa:plus green" );
@@ -241,9 +245,10 @@ class ClassificacaoRiscoDetail extends TPage
         $this->framegrid3->style='width: 100%';
         $this->framegrid3->id = 'framegrid3';
         $this->framegrid3->disableDefaultClick();
-        $remove_action3 = new TDataGridAction( [ $this, "onDeleteFrame3" ] );
+        $remove_action3 = new TDataGridAction( [ $this, "onDeleteFrames" ] );
         $remove_action3->setParameter( "fk", $fk );
         $remove_action3->setParameter( "did", $did );
+        $remove_action3->setParameter( "frm", 3 );
         $this->framegrid3->addQuickAction( "Remover", $remove_action3, "id", "fa:trash red", "20%" );
         $this->framegrid3->addQuickColumn( "Principio Ativo", 'principioativo_nome', 'left', '100%');
         $this->framegrid3->createModel();
@@ -355,6 +360,12 @@ class ClassificacaoRiscoDetail extends TPage
 
             TTransaction::open( "database" );
 
+            unset( $object->cid_id );
+            unset( $object->cid_codigo );
+            unset( $object->medicamento_id );
+            unset( $object->medicamento_nome );
+            unset( $object->principioativo_id );
+            unset( $object->principioativo_nome );
             unset( $object->paciente_nome );
 
             $object->store();
@@ -369,8 +380,6 @@ class ClassificacaoRiscoDetail extends TPage
         } catch ( Exception $ex ) {
 
             TTransaction::rollback();
-
-            // $this->form->setData( $object );
 
             new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
 
@@ -396,8 +405,6 @@ class ClassificacaoRiscoDetail extends TPage
                 $this->onReload( $param );
 
                 $this->form->setData( $object );
-
-                $this->onReloadFrames( $param );
 
                 TTransaction::close();
 
@@ -520,6 +527,60 @@ class ClassificacaoRiscoDetail extends TPage
         }
     }
 
+    public function onSaveFrames( $param = null )
+    {
+        try {
+
+            $object = $this->unSetFields( $param );
+
+            TTransaction::open( "database" );
+
+            if ( isset( $object ) ) {
+                $object->store();
+            } else {
+                $this->onError();
+            }
+
+            TTransaction::close();
+
+            $this->onReloadFrames( $param );
+
+        } catch ( Exception $ex ) {
+
+            TTransaction::rollback();
+
+            new TMessage( "error", $ex->getMessage() );
+
+        }
+    }
+
+    public function onDeleteFrames( $param = null )
+    {
+        try {
+
+            TTransaction::open( "database" );
+
+            $object = $this->getFrameItem( $param );
+
+            if ( isset( $object ) ) {
+                $object->delete();
+            } else {
+                $this->onError();
+            }
+
+            TTransaction::close();
+
+            $this->onReloadFrames( $param );
+
+        } catch ( Exception $ex ) {
+
+            TTransaction::rollback();
+
+            new TMessage( "error", $ex->getMessage() );
+
+        }
+    }
+
     public function onReloadFrames( $param = null )
     {
         try {
@@ -553,75 +614,42 @@ class ClassificacaoRiscoDetail extends TPage
         }
     }
 
-    public function onSaveFrame1( $param = null )
+    public function unSetFields( $param = null )
     {
-        try {
+        switch ( $param[ "frm" ] ) {
 
-            $object = $this->form->getData( "BauComorbidadesRecord" );
+            case 1:
 
-            TTransaction::open( "database" );
+                $object = $this->form->getData( "BauComorbidadesRecord" );
+                unset( $object->medicamento_id );
+                unset( $object->principioativo_id );
 
-            unset( $object->id );
-            unset( $object->enfermeiro_id );
-            unset( $object->medicamento_id );
-            unset( $object->principioativo_id );
-            unset( $object->tipoclassificacaorisco_id );
-            unset( $object->tipoestadogeral_id );
-            unset( $object->cid_codigo );
-            unset( $object->medicamento_nome );
-            unset( $object->principioativo_nome );
-            unset( $object->paciente_nome );
-            unset( $object->dataclassificacao );
-            unset( $object->horaclassificacao );
-            unset( $object->pressaoarterial );
-            unset( $object->frequenciacardiaca );
-            unset( $object->frequenciarespiratoria );
-            unset( $object->temperatura );
-            unset( $object->spo2 );
-            unset( $object->htg );
-            unset( $object->observacoes );
-            unset( $object->queixaprincipal );
-            unset( $object->dor );
+                break;
 
-            $object->store();
+            case 2:
 
-            TTransaction::close();
+                $object = $this->form->getData( "BauUsoMedicacoesRecord" );
+                unset( $object->cid_id );
+                unset( $object->principioativo_id );
 
-            $action = new TAction( [ "ClassificacaoRiscoDetail", "onReloadFrames" ] );
-            $action->setParameters( $param );
+                break;
 
-            new TMessage( "info", "Registro salvo com sucesso!", $action );
+            case 3:
 
-        } catch ( Exception $ex ) {
+                $object = $this->form->getData( "BauAlergiaMedicamentosaRecord" );
+                unset( $object->cid_id );
+                unset( $object->medicamento_id );
 
-            TTransaction::rollback();
-
-            $this->onReloadFrames( $param );
-
-            $this->form->setData( $object );
-
-            new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
+                break;
 
         }
-    }
 
-    public function onSaveFrame2( $param = null )
-    {
-        try {
-
-            $object = $this->form->getData( "BauUsoMedicacoesRecord" );
-
-            TTransaction::open( "database" );
+        if ( isset( $object ) ) {
 
             unset( $object->id );
             unset( $object->enfermeiro_id );
-            unset( $object->cid_id );
-            unset( $object->principioativo_id );
             unset( $object->tipoclassificacaorisco_id );
             unset( $object->tipoestadogeral_id );
-            unset( $object->cid_codigo );
-            unset( $object->medicamento_nome );
-            unset( $object->principioativo_nome );
             unset( $object->paciente_nome );
             unset( $object->dataclassificacao );
             unset( $object->horaclassificacao );
@@ -634,154 +662,39 @@ class ClassificacaoRiscoDetail extends TPage
             unset( $object->queixaprincipal );
             unset( $object->dor );
             unset( $object->observacoes );
-
-            $object->store();
-
-            TTransaction::close();
-
-            $action = new TAction( [ "ClassificacaoRiscoDetail", "onReloadFrames" ] );
-            $action->setParameters( $param );
-
-            new TMessage( "info", "Registro salvo com sucesso!", $action );
-
-        } catch ( Exception $ex ) {
-
-            TTransaction::rollback();
-
-            $this->onReloadFrames( $param );
-
-            $this->form->setData( $object );
-
-            new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
-
-        }
-    }
-
-    public function onSaveFrame3( $param = null )
-    {
-        try {
-
-            $object = $this->form->getData( "BauAlergiaMedicamentosaRecord" );
-
-            TTransaction::open( "database" );
-
-            unset( $object->id );
-            unset( $object->enfermeiro_id );
-            unset( $object->cid_id );
-            unset( $object->medicamento_id );
-            unset( $object->tipoclassificacaorisco_id );
-            unset( $object->tipoestadogeral_id );
             unset( $object->cid_codigo );
             unset( $object->medicamento_nome );
             unset( $object->principioativo_nome );
-            unset( $object->paciente_nome );
-            unset( $object->dataclassificacao );
-            unset( $object->horaclassificacao );
-            unset( $object->pressaoarterial );
-            unset( $object->frequenciacardiaca );
-            unset( $object->frequenciarespiratoria );
-            unset( $object->temperatura );
-            unset( $object->spo2 );
-            unset( $object->htg );
-            unset( $object->queixaprincipal );
-            unset( $object->dor );
-            unset( $object->observacoes );
 
-            $object->store();
+            return $object;
 
-            TTransaction::close();
+        } else {
 
-            $action = new TAction( [ "ClassificacaoRiscoDetail", "onReloadFrames" ] );
-            $action->setParameters( $param );
-
-            new TMessage( "info", "Registro salvo com sucesso!", $action );
-
-        } catch ( Exception $ex ) {
-
-            TTransaction::rollback();
-
-            $this->onReloadFrames( $param );
-
-            $this->form->setData( $object );
-
-            new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
+            return null;
 
         }
+
     }
 
-    public function onDeleteFrame1( $param = null )
+    public function getFrameItem( $param = null )
     {
-        try {
+        switch ( $param[ "frm" ] ) {
 
-            TTransaction::open( "database" );
+            case 1:
+                $object = new BauComorbidadesRecord( $param[ "key" ] );
+                break;
 
-            $object = new BauComorbidadesRecord( $param[ "key" ] );
+            case 2:
+                $object = new BauUsoMedicacoesRecord( $param[ "key" ] );
+                break;
 
-            $object->delete();
-
-            TTransaction::close();
-
-            $this->onReloadFrames( $param );
-
-            // new TMessage( "info", "O Registro foi apagado com sucesso!" );
-
-        } catch ( Exception $ex ) {
-
-            TTransaction::rollback();
-
-            new TMessage( "error", $ex->getMessage() );
+            case 3:
+                $object = new BauAlergiaMedicamentosaRecord( $param[ "key" ] );
+                break;
 
         }
-    }
 
-    public function onDeleteFrame2( $param = null )
-    {
-        try {
-
-            TTransaction::open( "database" );
-
-            $object = new BauUsoMedicacoesRecord( $param[ "key" ] );
-
-            $object->delete();
-
-            TTransaction::close();
-
-            $this->onReloadFrames( $param );
-
-            // new TMessage( "info", "O Registro foi apagado com sucesso!" );
-
-        } catch ( Exception $ex ) {
-
-            TTransaction::rollback();
-
-            new TMessage( "error", $ex->getMessage() );
-
-        }
-    }
-
-    public function onDeleteFrame3( $param = null )
-    {
-        try {
-
-            TTransaction::open( "database" );
-
-            $object = new BauAlergiaMedicamentosaRecord( $param[ "key" ] );
-
-            $object->delete();
-
-            TTransaction::close();
-
-            $this->onReloadFrames( $param );
-
-            // new TMessage( "info", "O Registro foi apagado com sucesso!" );
-
-        } catch ( Exception $ex ) {
-
-            TTransaction::rollback();
-
-            new TMessage( "error", $ex->getMessage() );
-
-        }
+        return isset( $object ) ? $object : null;
     }
 
     public function onError()
