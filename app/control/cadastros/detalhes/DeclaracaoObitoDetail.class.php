@@ -24,7 +24,11 @@ class DeclaracaoObitoDetail extends TWindow
         $horaobito                = new TDateTime("horaobito");
         $declaracaoobitohora      = new TDateTime("declaracaoobitohora");
         $destinoobito_id          = new TDBCombo("destinoobito_id","database","DestinoObitoRecord","id","nomedestinoobito");
-        $declaracaoobitomedico_id = new TCombo("declaracaoobitomedico_id");
+
+        $criteria1 = new TCriteria;
+        $criteria1->add(new TFilter("tipoprofissional_id","=",1));
+        $declaracaoobitomedico_id = new TDBCombo("declaracaoobitomedico_id","database","ProfissionalRecord","id","nomeprofissional","nomeprofissional",$criteria1);
+
 
         $fk = filter_input( INPUT_GET, "fk" );
         $did = filter_input( INPUT_GET, "did" );
@@ -106,6 +110,7 @@ class DeclaracaoObitoDetail extends TWindow
 
     public function onSave( $param = null )
     {
+
         try {
 
             $this->form->validate();
@@ -126,6 +131,8 @@ class DeclaracaoObitoDetail extends TWindow
         } catch ( Exception $ex ) {
 
             TTransaction::rollback();
+
+            // $this->form->setData( $object );
 
             new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
 
