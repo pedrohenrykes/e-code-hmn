@@ -123,7 +123,6 @@ class AtendimentoDetail extends TPage
             $this->form->validate();
             TTransaction::open( "database" );
             unset( $object->paciente_name );
-            $object->bau_id = $param[ "fk" ];
             $object->store();
 
             TTransaction::close();

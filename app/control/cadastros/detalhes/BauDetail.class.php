@@ -193,45 +193,45 @@ class BauDetail extends TPage
                 new TLabel( "Change the world, do it for love! :)" )
             ]);
 
+            $page2 = new TLabel( "Encaminhamento", "#7D78B6", 12, "bi" );
+            $page2->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
+            $this->form->appendPage( "Encaminhamento" );
+            $this->form->addContent( [ $page2 ] );
+            $this->form->addFields( [ new TLabel( "Internamento: {$redstar}" ) ], [ $internamentolocal ]);
+            $this->form->addFields( [ new TLabel( "Data de Internamento: {$redstar}" ) ], [ $datainternamento ] );
+            $this->form->addFields( [ new TLabel( "Remoção: {$redstar}") ], [ $remocao ] );
+            $this->form->addFields( [ new TLabel( "Data de Remoção: {$redstar}") ], [ $dataremocao ] );
+            $this->form->addFields( [ new TLabel( "Local de Remoção: {$redstar}") ], [ $localremocao_id ] );
+            $this->form->addFields( [ new TLabel( "Transferência: {$redstar}") ], [ $transferencia ] );
+            $this->form->addFields( [ new TLabel( "Data de Transferência: {$redstar}" ) ], [ $datatransferencia ] );
+            $this->form->addFields( [ new TLabel( "Local de Transferência:" ) ], [ $localtransferencia_id ] );
+            $this->form->addFields( [ new TLabel( "Destino do Transporte:" ) ], [ $transportedestino_id ] );
+            $this->form->addFields( [ new TLabel( "Informações do Transporte:" ) ], [ $especificartransporte ] );
+            $this->form->addFields( [ new TLabel( "Data do Transporte:" ) ], [ $datatransporte ] );
+
+            $page3 = new TLabel( "Alta Hospitalar", "#7D78B6", 12, "bi");
+            $page3->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
+            $this->form->appendPage( "Alta Hospitalar" );
+            $this->form->addContent( [ $page3 ] );
+            $this->form->addFields( [ new TLabel( "Alta:" ) ], [ $alta ] );
+            $this->form->addFields( [ new TLabel( "Tipo de Alta:" ) ], [ $tipoaltahospitalar_id ] );
+            $this->form->addFields( [ new TLabel( "Data da Alta:" ) ], [ $dataaltahospitalar ] );
+            $this->form->addFields( [ new TLabel( "Hora da Alta:" ) ], [ $horaaltahospitalar ] );
+            $this->form->addFields( [ new TLabel( "Médico Responsável:" ) ], [ $medicoalta_id ] );
+
+            $page4 = new TLabel( "Declaração de Óbito", "#7D78B6", 12, "bi");
+            $page4->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
+            $this->form->appendPage( "Declaração de Óbito" );
+            $this->form->addContent( [ $page4 ] );
+            $this->form->addFields( [ new TLabel( "Óbito:" ) ], [ $obito ] );
+            $this->form->addFields( [ new TLabel( "Data do Óbito:" ) ], [ $dataobito ] );
+            $this->form->addFields( [ new TLabel( "Hora do Óbito:" ) ], [ $horaobito ] );
+            $this->form->addFields( [ new TLabel( "Data da Declaração:" ) ], [ $declaracaoobitodata ] );
+            $this->form->addFields( [ new TLabel( "Hora da Declaração:" ) ], [ $declaracaoobitohora ] );
+            $this->form->addFields( [ new TLabel( "Destino do Corpo:" ) ], [ $destinoobito_id ] );
+            $this->form->addFields( [ new TLabel( "Medico Responsável:" ) ], [ $medicoobito_id ] );
+
         }
-
-        $page2 = new TLabel( "Encaminhamento", "#7D78B6", 12, "bi" );
-        $page2->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
-        $this->form->appendPage( "Encaminhamento" );
-        $this->form->addContent( [ $page2 ] );
-        $this->form->addFields( [ new TLabel( "Internamento: {$redstar}" ) ], [ $internamentolocal ]);
-        $this->form->addFields( [ new TLabel( "Data de Internamento: {$redstar}" ) ], [ $datainternamento ] );
-        $this->form->addFields( [ new TLabel( "Remoção: {$redstar}") ], [ $remocao ] );
-        $this->form->addFields( [ new TLabel( "Data de Remoção: {$redstar}") ], [ $dataremocao ] );
-        $this->form->addFields( [ new TLabel( "Local de Remoção: {$redstar}") ], [ $localremocao_id ] );
-        $this->form->addFields( [ new TLabel( "Transferência: {$redstar}") ], [ $transferencia ] );
-        $this->form->addFields( [ new TLabel( "Data de Transferência: {$redstar}" ) ], [ $datatransferencia ] );
-        $this->form->addFields( [ new TLabel( "Local de Transferência:" ) ], [ $localtransferencia_id ] );
-        $this->form->addFields( [ new TLabel( "Destino do Transporte:" ) ], [ $transportedestino_id ] );
-        $this->form->addFields( [ new TLabel( "Informações do Transporte:" ) ], [ $especificartransporte ] );
-        $this->form->addFields( [ new TLabel( "Data do Transporte:" ) ], [ $datatransporte ] );
-
-        $page3 = new TLabel( "Alta Hospitalar", "#7D78B6", 12, "bi");
-        $page3->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
-        $this->form->appendPage( "Alta Hospitalar" );
-        $this->form->addContent( [ $page3 ] );
-        $this->form->addFields( [ new TLabel( "Alta:" ) ], [ $alta ] );
-        $this->form->addFields( [ new TLabel( "Tipo de Alta:" ) ], [ $tipoaltahospitalar_id ] );
-        $this->form->addFields( [ new TLabel( "Data da Alta:" ) ], [ $dataaltahospitalar ] );
-        $this->form->addFields( [ new TLabel( "Hora da Alta:" ) ], [ $horaaltahospitalar ] );
-        $this->form->addFields( [ new TLabel( "Médico Responsável:" ) ], [ $medicoalta_id ] );
-
-        $page4 = new TLabel( "Declaração de Óbito", "#7D78B6", 12, "bi");
-        $page4->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
-        $this->form->appendPage( "Declaração de Óbito" );
-        $this->form->addContent( [ $page4 ] );
-        $this->form->addFields( [ new TLabel( "Óbito:" ) ], [ $obito ] );
-        $this->form->addFields( [ new TLabel( "Data do Óbito:" ) ], [ $dataobito ] );
-        $this->form->addFields( [ new TLabel( "Hora do Óbito:" ) ], [ $horaobito ] );
-        $this->form->addFields( [ new TLabel( "Data da Declaração:" ) ], [ $declaracaoobitodata ] );
-        $this->form->addFields( [ new TLabel( "Hora da Declaração:" ) ], [ $declaracaoobitohora ] );
-        $this->form->addFields( [ new TLabel( "Destino do Corpo:" ) ], [ $destinoobito_id ] );
-        $this->form->addFields( [ new TLabel( "Medico Responsável:" ) ], [ $medicoobito_id ] );
 
         $onSave = new TAction( [ $this, "onSave" ] );
         $onSave->setParameter( "fk", $fk );
@@ -323,8 +323,8 @@ class BauDetail extends TPage
         } catch ( Exception $ex ) {
 
             TTransaction::rollback();
-
-            // $this->form->setData( $object );
+/*
+            $this->form->setData( $object );
 
             foreach ( $this->changeFields as $field ) {
                 self::onChangeAction([
@@ -332,7 +332,7 @@ class BauDetail extends TPage
                     $field => $object->$field
                 ]);
             }
-
+*/
             new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
 
         }
@@ -379,14 +379,14 @@ class BauDetail extends TPage
                 TTransaction::close();
 
             }
-
+/*
             foreach ( $this->changeFields as $field ) {
                 self::onChangeAction([
                     "_field_name" => $field,
                     $field => ( isset( $param[ "key" ] ) ? $object->$field : "N" )
                 ]);
             }
-
+*/
         } catch ( Exception $ex ) {
 
             TTransaction::rollback();
@@ -491,14 +491,14 @@ class BauDetail extends TPage
             TTransaction::close();
 
             $this->loaded = true;
-
+/*
             foreach ( $this->changeFields as $field ) {
                 self::onChangeAction([
                     "_field_name" => $field,
                     $field => "N"
                 ]);
             }
-
+*/
         } catch ( Exception $ex ) {
 
             TTransaction::rollback();
