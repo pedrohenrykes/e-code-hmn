@@ -98,9 +98,7 @@ class AltaHospitalarDetail extends TWindow
             TTransaction::open( "database" );
 
             unset($object->paciente_nome);
-
             $object->situacao = "ALTA";
-
             $object->store();
 
             TTransaction::close();

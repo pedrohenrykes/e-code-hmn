@@ -48,7 +48,7 @@ class BauDetail extends TPage
         $tipoaltahospitalar_id    = new TCombo("tipoaltahospitalar_id");
         $medicoalta_id            = new TCombo("medicoalta_id");
         $destinoobito_id          = new TCombo("destinoobito_id");
-        $declaracaoobitomedico_id = new TCombo("declaracaoobitomedico_id");
+        $medicoobito_id           = new TCombo("medicoobito_id");
         $convenio_id              = new TDBCombo( "convenio_id", "database", "ConvenioRecord", "id", "nome", "nome");
 
         $this->changeFields = [ "internamentolocal", "remocao", "transferencia", "alta", "obito" ];
@@ -101,7 +101,7 @@ class BauDetail extends TPage
         $tipoaltahospitalar_id   ->setSize( "38%" );
         $medicoalta_id           ->setSize( "38%" );
         $destinoobito_id         ->setSize( "38%" );
-        $declaracaoobitomedico_id->setSize( "38%" );
+        $medicoobito_id          ->setSize( "38%" );
         $convenio_id             ->setSize( "38%" );
         $responsavel             ->setSize( "38%" );
 
@@ -116,7 +116,7 @@ class BauDetail extends TPage
         $tipoaltahospitalar_id   ->setDefaultOption( "..::SELECIONE::.." );
         $medicoalta_id           ->setDefaultOption( "..::SELECIONE::.." );
         $destinoobito_id         ->setDefaultOption( "..::SELECIONE::.." );
-        $declaracaoobitomedico_id->setDefaultOption( "..::SELECIONE::.." );
+        $medicoobito_id          ->setDefaultOption( "..::SELECIONE::.." );
         $convenio_id             ->setDefaultOption( "..::SELECIONE::.." );
 
         $internamentolocal->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
@@ -168,14 +168,13 @@ class BauDetail extends TPage
         $responsavel->forceUpperCase();
         $responsavel->setProperty( "title", "Caso o paciente seja menor de idade." );
 
-        $convenio_id->addValidation( TextFormat::set( "Nome do Paciente" ), new TRequiredValidator );
-        $paciente_id->addValidation( TextFormat::set( "Sexo" ), new TRequiredValidator );
+        $dataentrada->addValidation( TextFormat::set( "Data de Entrada:" ), new TRequiredValidator );
 
         $page1 = new TLabel( "Identificação", "#7D78B6", 12, "bi");
         $page1->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
         $this->form->appendPage( "Identificação" );
         $this->form->addContent( [ $page1 ] );
-        $this->form->addFields( [ new TLabel( "Nome do Paciente: {$redstar}") ], [ $paciente_nome ] );
+        $this->form->addFields( [ new TLabel( "Nome do Paciente:") ], [ $paciente_nome ] );
         $this->form->addFields( [ new TLabel( "Responsável:") ], [ $responsavel ] );
         $this->form->addFields( [ new TLabel( "Convênio:" ) ], [ $convenio_id ] );
         $this->form->addFields( [ new TLabel( "Data de Entrada: {$redstar}" ) ], [ $dataentrada ] );
@@ -232,7 +231,7 @@ class BauDetail extends TPage
         $this->form->addFields( [ new TLabel( "Data da Declaração:" ) ], [ $declaracaoobitodata ] );
         $this->form->addFields( [ new TLabel( "Hora da Declaração:" ) ], [ $declaracaoobitohora ] );
         $this->form->addFields( [ new TLabel( "Destino do Corpo:" ) ], [ $destinoobito_id ] );
-        $this->form->addFields( [ new TLabel( "Medico Responsável:" ) ], [ $declaracaoobitomedico_id ] );
+        $this->form->addFields( [ new TLabel( "Medico Responsável:" ) ], [ $medicoobito_id ] );
 
         $onSave = new TAction( [ $this, "onSave" ] );
         $onSave->setParameter( "fk", $fk );
@@ -325,7 +324,7 @@ class BauDetail extends TPage
 
             TTransaction::rollback();
 
-            $this->form->setData( $object );
+            // $this->form->setData( $object );
 
             foreach ( $this->changeFields as $field ) {
                 self::onChangeAction([
@@ -617,7 +616,7 @@ class BauDetail extends TPage
                     TQuickForm::showField( "detail_bau", "declaracaoobitodata" );
                     TQuickForm::showField( "detail_bau", "declaracaoobitohora" );
                     TQuickForm::showField( "detail_bau", "destinoobito_id" );
-                    TQuickForm::showField( "detail_bau", "declaracaoobitomedico_id" );
+                    TQuickForm::showField( "detail_bau", "medicoobito_id" );
 
                 } else {
 
@@ -626,7 +625,7 @@ class BauDetail extends TPage
                     $object->declaracaoobitodata = "";
                     $object->declaracaoobitohora = "";
                     $object->destinoobito_id = "";
-                    $object->declaracaoobitomedico_id = "";
+                    $object->medicoobito_id = "";
 
                     TQuickForm::sendData( "detail_bau", $object );
                     TQuickForm::hideField( "detail_bau", "dataobito" );
@@ -634,7 +633,7 @@ class BauDetail extends TPage
                     TQuickForm::hideField( "detail_bau", "declaracaoobitodata" );
                     TQuickForm::hideField( "detail_bau", "declaracaoobitohora" );
                     TQuickForm::hideField( "detail_bau", "destinoobito_id" );
-                    TQuickForm::hideField( "detail_bau", "declaracaoobitomedico_id" );
+                    TQuickForm::hideField( "detail_bau", "medicoobito_id" );
 
                 }
 

@@ -148,31 +148,26 @@ class EncaminhamentoDetail extends TWindow
 
     public function onSave( $param = null )
     {
-        $object = $this->form->getData( "BauRecord" );
-
         try {
 
             $this->form->validate();
 
-            unset($object->paciente_nome);
+            $object = $this->form->getData( "BauRecord" );
 
             TTransaction::open( "database" );
 
+            unset($object->paciente_nome);
             $object->situacao = "ENCAMINHADO";
-
             $object->store();
 
             TTransaction::close();
 
             $action = new TAction( [ "PacientesEncaminhamentoList", "onReload" ] );
-
             new TMessage( "info", "Registro salvo com sucesso!", $action );
 
         } catch ( Exception $ex ) {
 
             TTransaction::rollback();
-
-            $this->form->setData( $object );
 
             new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
 

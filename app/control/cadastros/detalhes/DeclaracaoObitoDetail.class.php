@@ -106,7 +106,6 @@ class DeclaracaoObitoDetail extends TWindow
 
     public function onSave( $param = null )
     {
-
         try {
 
             $this->form->validate();
@@ -127,8 +126,6 @@ class DeclaracaoObitoDetail extends TWindow
         } catch ( Exception $ex ) {
 
             TTransaction::rollback();
-
-            // $this->form->setData( $object );
 
             new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
 

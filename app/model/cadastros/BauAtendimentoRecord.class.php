@@ -1,6 +1,6 @@
 <?php
 
-class AtendimentoRecord extends TRecord
+class BauAtendimentoRecord extends TRecord
 {
     const TABLENAME  = "bauatendimento";
     const PRIMARYKEY = "id";

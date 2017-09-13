@@ -17,28 +17,30 @@ class AtendimentoDetail extends TPage
         $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 
+        $id                        = new THidden( "id" );
+        $paciente_id               = new THidden( "paciente_id" );
+        $bau_id                    = new THidden( "bau_id" );
+        $enfermeiro_id             = new THidden( "enfermeiro_id" ); // Deve ser capturado a partir da sessão
+        $paciente_nome             = new TEntry( "paciente_name" );
+        $dataclassificacao         = new TDate( "dataclassificacao" );
+        $horaclassificacao         = new TDateTime( "horaclassificacao" );
 
         $fk = filter_input( INPUT_GET, "fk" );
         $did = filter_input( INPUT_GET, "did" );
 
-        $id                        = new THidden( "id" );
-        //$paciente_id               = new THidden( $did );
-        $bau_id                    = new THidden( "bau_id" );
-        $enfermeiro_id             = new THidden( "enfermeiro_id" ); // Deve ser capturado a partir da sessão
-        $dataclassificacao         = new TDate( "dataclassificacao" );
-        $horaclassificacao         = new TDateTime( "horaclassificacao" );
-        $paciente_nome             = new TEntry( "paciente_name" );
-        
         try {
             TTransaction::open( "database" );
-            $paciente = new PacienteRecord( $did );
-            if( isset( $paciente ) ){
-                $paciente_nome->setValue( $paciente->nomepaciente );
+            $bau = new BauRecord($fk);
+            $paciente = new PacienteRecord($did);
+            if(isset($bau) && isset($paciente)) {
+                $id->setValue($bau->id);
+                $paciente_id->setValue($paciente->id);
+                $paciente_nome->setValue($paciente->nomepaciente);
             }
             TTransaction::close();
-
-        } catch ( Exception $ex ) {
-            new TMessage( "error", "Não foi possível carregar os dados do paciente.<br><br>" . $ex->getMessage() );
+        } catch (Exception $ex) {
+            $action = new TAction(["PacientesEncaminhamentoList", "onReload"]);
+            new TMessage("error", "Ocorreu um erro ao carregar as dependência do formulário.", $action);
         }
 
 
@@ -73,8 +75,8 @@ class AtendimentoDetail extends TPage
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
 
-        $column_paciente_nome               = new TDataGridColumn( "paciente_nome", "Paciente", "left" );
-        $column_enfermeiro_nome             = new TDataGridColumn( "enfermeiro_nome", "Enfermeiro", "left" );
+        $column_paciente_nome   = new TDataGridColumn( "paciente_nome", "Paciente", "left" );
+        $column_enfermeiro_nome = new TDataGridColumn( "enfermeiro_nome", "Enfermeiro", "left" );
 
         $this->datagrid->addColumn( $column_paciente_nome );
         $this->datagrid->addColumn( $column_enfermeiro_nome );
@@ -114,7 +116,7 @@ class AtendimentoDetail extends TPage
 
     public function onSave( $param = null )
     {
-        $object = $this->form->getData( "AtendimentoRecord" );
+        $object = $this->form->getData( "BauAtendimentoRecord" );
 
         try {
 
@@ -147,7 +149,7 @@ class AtendimentoDetail extends TPage
             if ( isset( $param[ "key" ] ) ) {
                 TTransaction::open( "database" );
 
-                $object = new AtendimentoRecord( $param[ "key" ] );
+                $object = new BauAtendimentoRecord( $param[ "key" ] );
 
                 $dataclassificacao = new DateTime( $object->dataclassificacao );
                 $horaclassificacao = new DateTime( $object->horaclassificacao );
@@ -195,7 +197,7 @@ class AtendimentoDetail extends TPage
         try {
 
             TTransaction::open( "database" );
-            $object = new AtendimentoRecord( $param[ "key" ] );
+            $object = new BauAtendimentoRecord( $param[ "key" ] );
             $object->delete();
             TTransaction::close();
 
@@ -216,7 +218,7 @@ class AtendimentoDetail extends TPage
 
             TTransaction::open( "database" );
 
-            $repository = new TRepository( "AtendimentoRecord" );
+            $repository = new TRepository( "BauAtendimentoRecord" );
 
             $properties = [
                 "order" => "dataatendimento",
