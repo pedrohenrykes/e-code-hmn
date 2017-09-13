@@ -25,11 +25,13 @@ class PacienteList extends TPage
         $dados->setSize( "38%" );
 
         $opcao->addItems([
-            "nomepaciente" => "Nome",
             "numerosus" => "Cartão SUS",
+            "nomepaciente" => "Nome",
             "numerorg" => "RG",
             "numerocpf" => "CPF"
         ]);
+
+        $opcao->setValue( "numerosus" );
 
         $this->form->addFields( [ new TLabel( "Opção de busca:" ) ], [ $opcao ] );
         $this->form->addFields( [ new TLabel( "Dados à buscar:" )  ], [ $dados ] );

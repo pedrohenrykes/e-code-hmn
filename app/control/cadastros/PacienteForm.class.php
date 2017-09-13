@@ -161,7 +161,8 @@ class PacienteForm extends TPage
 
             TTransaction::close();
 
-            $action = new TAction( [ "PacienteList", "onReload" ] );
+            $action = new TAction( [ "BauDetail", "onReload" ] );
+            $action->setParameter( "fk", $object->id );
 
             new TMessage( "info", "Registro salvo com sucesso!", $action );
 
@@ -183,7 +184,6 @@ class PacienteForm extends TPage
                 TTransaction::open( "database" );
 
                 $object = new PacienteRecord( $param[ "key" ] );
-                // $object->nascimento = TDate::date2br( $object->nascimento );
 
 				if ( empty( $object->cidade ) ) {
 					$object->cidade = "NATAL";
