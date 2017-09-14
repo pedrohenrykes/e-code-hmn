@@ -28,7 +28,7 @@ class ProfissionalForm extends TWindow
         $telefone1 = new TEntry("telefone1");
         $telefone2 = new TEntry("telefone2");
         $email = new TEntry("email");
-        //$situacao = new TCombo("situacao");
+        $situacao = new TCombo('situacao');
 
 
         //$nomeprofissional->forceUpperCase();
@@ -45,7 +45,7 @@ class ProfissionalForm extends TWindow
         $telefone1 ->setProperty("title", "O campo e obrigatorio");
         $telefone2 ->setProperty("title", "O campo e obrigatorio");
         $email ->setProperty("title", "O campo e obrigatorio");
-        //$situacao ->setProperty("title", "O campo e obrigatorio");
+        $situacao ->setProperty("title", "O campo e obrigatorio");
 
         $tipoprofissional_id->setSize("38%");
         $nomeprofissional->setSize("38%");
@@ -58,7 +58,10 @@ class ProfissionalForm extends TWindow
         $telefone1->setSize("38%");
         $telefone2->setSize("38%");
         $email->setSize("38%");
-        //$situacao->setSize("38%")
+        $situacao->setSize("38%");
+
+        $situacao->setDefaultOption('::..SELECIONE..::');
+        $situacao->addItems([ 'ATIVO'=>'ATIVO','INATIVO'=>'INATIVO']);
 
         $cidade->setValue( "NATAL" );
         $uf->setValue( "RN" );
@@ -84,7 +87,7 @@ class ProfissionalForm extends TWindow
         $telefone1->addValidation( TextFormat::set( "Telefone" ), new TRequiredValidator );
         $telefone2->addValidation( TextFormat::set( "Telefone" ), new TRequiredValidator );
         $email->addValidation( TextFormat::set( "E-mail" ), new TRequiredValidator );
-        //$situacao->addValidation( TextFormat::set( "Situacao" ), new TRequiredValidator );
+        $situacao->addValidation( TextFormat::set( "Situacao" ), new TRequiredValidator );
 
         $this->form->addFields([new TLabel("Nome do Profissional: $redstar")], [$nomeprofissional]);
         $this->form->addFields([new TLabel("Tipo de Profissional: $redstar")], [$tipoprofissional_id]);
@@ -97,7 +100,7 @@ class ProfissionalForm extends TWindow
         $this->form->addFields([new TLabel("Telefone: $redstar")], [$telefone1]);
         $this->form->addFields([new TLabel("Telefone: $redstar")], [$telefone2]);
         $this->form->addFields([new TLabel("E-mail: $redstar")], [$email]);
-        //$this->form->addFields([new TLabel("Situação: $redstar")], [$situacao]);
+        $this->form->addFields([new TLabel("Situação: $redstar")], [$situacao]);
         $this->form->addFields( [ $id ] );
 
         $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );

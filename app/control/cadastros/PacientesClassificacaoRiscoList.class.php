@@ -36,7 +36,7 @@ class PacientesClassificacaoRiscoList extends TPage
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
 
-        $column_paciente_nome   = new TDataGridColumn( "paciente_nome", "Paciente", "left" );
+        $column_paciente_nome   = new TDataGridColumn( "nomepaciente", "Paciente", "left" );
         $column_dataentrada     = new TDataGridColumn( "dataentrada", "Data de Chegada", "left" );
         $column_horaentrada     = new TDataGridColumn( "horaentrada", "Hora de Chegada", "left" );
         $column_queixaprincipal = new TDataGridColumn( "queixaprincipal", "Queixa Principal", "left" );
@@ -80,7 +80,7 @@ class PacientesClassificacaoRiscoList extends TPage
 
             TTransaction::open( "database" );
 
-            $repository = new TRepository( "BauRecord" );
+            $repository = new TRepository( "VwBauPacientesRecord" );
 
             $properties = [
                 "order" => "dataentrada",
@@ -143,7 +143,7 @@ class PacientesClassificacaoRiscoList extends TPage
 
                 TTransaction::open( "database" );
 
-                $repository = new TRepository( "PacienteRecord" );
+                $repository = new TRepository( "VwBauPacientesRecord" );
 
                 if ( empty( $param[ "order" ] ) ) {
                     $param[ "order" ] = "id";
@@ -166,7 +166,7 @@ class PacientesClassificacaoRiscoList extends TPage
 
                 }
 
-                $objects = $repository->load( $criteria, FALSE );
+                $objects = $repository->load( $criteria );
 
                 $this->datagrid->clear();
 

@@ -34,9 +34,9 @@ class TipoAltaHospitalarForm extends TWindow
 
         $this->form->addFields([new TLabel("Situação: $redstar")], [$situacao]);
         $this->form->addFields([new TLabel("Nome do Tipo Hospitalar: $redstar")], [$nometipoaltahospitalar]);
+        $this->form->addFields( [ $id ] );
 
         $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );
-        //$this->form->addAction( "Voltar", new TAction( [ "MedicamentoList", "onReload" ] ), "fa:table blue" );
 
         $container = new TVBox();
         $container->style = "width: 100%";
@@ -53,35 +53,41 @@ class TipoAltaHospitalarForm extends TWindow
 
             $this->form->validate();
 
-            TTransaction::open('database');
-                $object = $this->form->getData('TipoAltaHospitalarRecord');
-                $object->store();
+            TTransaction::open("database");
+
+            $object = $this->form->getData("TipoAltaHospitalarRecord");
+            $object->store();
+
             TTransaction::close();
 
-           // $action = new TAction( [ "MedicamentoList", "onReload" ] );
-            new TMessage("info", "Registro salvo com sucesso!");
+            $action = new TAction( [ "TipoAltaHospitalarList", "onReload" ] );
+
+            new TMessage( "info", "Registro salvo com sucesso!", $action );
 
         } catch (Exception $ex) {
 
             TTransaction::rollback();
+
             new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
+
         }
+
     }
 
-    function onEdit($param)
+    function onEdit( $param )
     {
-
         try {
 
-            if (isset($param['key'])) {
+            if ( isset( $param[ "key" ] ) ) {
 
                 TTransaction::open( "database" );
 
-                $object = new TipoAltaHospitalarRecord($param["key"]);
+                $object = new TipoAltaHospitalarRecord( $param[ "key" ] );
 
-                $this->form->setData($object);
+                $this->form->setData( $object );
 
                 TTransaction::close();
+
             }
 
         } catch ( Exception $ex ) {
