@@ -27,7 +27,7 @@ class DeclaracaoObitoDetail extends TWindow
 
         $criteria1 = new TCriteria;
         $criteria1->add(new TFilter("tipoprofissional_id","=",1));
-        $declaracaoobitomedico_id = new TDBCombo("declaracaoobitomedico_id","database","ProfissionalRecord","id","nomeprofissional","nomeprofissional",$criteria1);
+        $declaracaoobitomedico_id = new TDBCombo("medicoobito_id","database","ProfissionalRecord","id","nomeprofissional","nomeprofissional",$criteria1);
 
 
         $fk = filter_input( INPUT_GET, "fk" );

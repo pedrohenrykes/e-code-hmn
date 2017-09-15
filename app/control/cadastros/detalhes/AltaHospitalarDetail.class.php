@@ -21,7 +21,10 @@ class AltaHospitalarDetail extends TWindow
         $paciente_nome         = new TEntry("paciente_nome");
         $dataaltahospitalar    = new TDate("dataaltahospitalar");
         $horaaltahospitalar    = new TDateTime("horaaltahospitalar");
-        $medicoalta_id         = new TCombo("medicoalta_id");
+
+        $criteria1 = new TCriteria;
+        $criteria1->add(new TFilter("tipoprofissional_id","=",1));
+        $medicoalta_id = new TDBCombo("medicoalta_id","database","ProfissionalRecord","id","nomeprofissional","nomeprofissional",$criteria1);
 
         $tipoaltahospitalar_id = new TDBCombo(
             "tipoaltahospitalar_id", "database",

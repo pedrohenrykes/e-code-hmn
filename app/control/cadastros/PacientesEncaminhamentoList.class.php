@@ -12,7 +12,7 @@ class PacientesEncaminhamentoList extends TPage
         parent::__construct();
 
         $this->form = new BootstrapFormBuilder( "list_pacientes_encaminhamento" );
-        $this->form->setFormTitle( "Listagem de Pacientes com Encaminhamento " );
+        $this->form->setFormTitle( "Encaminhamento " );
         $this->form->class = "tform";
 
         $opcao = new TCombo( "opcao" );
@@ -36,7 +36,7 @@ class PacientesEncaminhamentoList extends TPage
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
 
-        $column_paciente_nome   = new TDataGridColumn( "paciente_nome", "Paciente", "left" );
+        $column_paciente_nome   = new TDataGridColumn( "nomepaciente", "Paciente", "left" );
         $column_dataentrada     = new TDataGridColumn( "dataentrada", "Data de Chegada", "left" );
         $column_horaentrada     = new TDataGridColumn( "horaentrada", "Hora de Chegada", "left" );
         $column_queixaprincipal = new TDataGridColumn( "queixaprincipal", "Queixa Principal", "left" );
@@ -48,28 +48,28 @@ class PacientesEncaminhamentoList extends TPage
 
         $action_internamento = new CustomDataGridAction( [ "EncaminhamentoDetail", "onReload" ] );
         $action_internamento->setButtonClass( "btn btn-default" );
-        $action_internamento->setLabel( "Encaminhar para Internamento" );
+        $action_internamento->setLabel( "Internamento" );
         $action_internamento->setImage( "fa:arrow-circle-right green fa-lg" );
-        $action_internamento->setField( "id" );
-        $action_internamento->setFk( "id" );
+        $action_internamento->setField( "bau_id" );
+        $action_internamento->setFk( "bau_id" );
         $action_internamento->setDid( "paciente_id" );
         $action_internamento->setParameter( "mode", "internamento" );
 
         $action_remocao = new CustomDataGridAction( [ "EncaminhamentoDetail", "onReload" ] );
         $action_remocao->setButtonClass( "btn btn-default" );
-        $action_remocao->setLabel( "Encaminhar para Remoção" );
+        $action_remocao->setLabel( "Remoção" );
         $action_remocao->setImage( "fa:arrow-circle-right green fa-lg" );
-        $action_remocao->setField( "id" );
-        $action_remocao->setFk( "id" );
+        $action_remocao->setField( "bau_id" );
+        $action_remocao->setFk( "bau_id" );
         $action_remocao->setDid( "paciente_id" );
         $action_remocao->setParameter( "mode", "remocao" );
 
         $action_transferencia = new CustomDataGridAction( [ "EncaminhamentoDetail", "onReload" ] );
         $action_transferencia->setButtonClass( "btn btn-default" );
-        $action_transferencia->setLabel( "Encaminhar para Transferência" );
+        $action_transferencia->setLabel( "Transferência" );
         $action_transferencia->setImage( "fa:arrow-circle-right green fa-lg" );
-        $action_transferencia->setField( "id" );
-        $action_transferencia->setFk( "id" );
+        $action_transferencia->setField( "bau_id" );
+        $action_transferencia->setFk( "bau_id" );
         $action_transferencia->setDid( "paciente_id" );
         $action_transferencia->setParameter( "mode", "transferencia" );
 
@@ -101,11 +101,11 @@ class PacientesEncaminhamentoList extends TPage
 
             TTransaction::open( "database" );
 
-            $repository = new TRepository( "BauRecord" );
+            $repository = new TRepository( "VwBauPacientesRecord" );
 
             $properties = [
                 "order" => "dataentrada",
-                "direction" => "asc"
+                "direction" => "desc"
             ];
 
             $limit = 10;
@@ -113,6 +113,8 @@ class PacientesEncaminhamentoList extends TPage
             $criteria = new TCriteria();
             $criteria->setProperties( $properties );
             $criteria->setProperty( "limit", $limit );
+            $criteria->add( new TFilter( "situacao", "!=", "ALTA") );
+            $criteria->add( new TFilter( "situacao", "!=", "OBITO") );
             $criteria->add( new TFilter( "situacao", "!=", "ENCAMINHADO") );
 
 
@@ -165,11 +167,11 @@ class PacientesEncaminhamentoList extends TPage
 
                 TTransaction::open( "database" );
 
-                $repository = new TRepository( "PacienteRecord" );
+                $repository = new TRepository( "VwBauPacientesRecord" );
 
                 if ( empty( $param[ "order" ] ) ) {
-                    $param[ "order" ] = "id";
-                    $param[ "direction" ] = "asc";
+                    $param[ "order" ] = "dataentrada";
+                    $param[ "direction" ] = "desc";
                 }
 
                 $limit = 10;
@@ -177,6 +179,9 @@ class PacientesEncaminhamentoList extends TPage
                 $criteria = new TCriteria();
                 $criteria->setProperties( $param );
                 $criteria->setProperty( "limit", $limit );
+                $criteria->add( new TFilter( "situacao", "!=", "ALTA") );
+                $criteria->add( new TFilter( "situacao", "!=", "OBITO") );
+                $criteria->add( new TFilter( "situacao", "!=", "ENCAMINHADO") );
 
                 switch( $data->opcao ) {
 
@@ -194,6 +199,11 @@ class PacientesEncaminhamentoList extends TPage
 
                 if ( $objects ) {
                     foreach ( $objects as $object ) {
+                        $dataentrada = new DateTime( $object->dataentrada );
+                        $horaentrada = new DateTime( $object->horaentrada );
+
+                        $object->dataentrada = $dataentrada->format("d/m/Y");
+                        $object->horaentrada = $horaentrada->format("H:i");
                         $this->datagrid->addItem( $object );
                     }
                 } else {

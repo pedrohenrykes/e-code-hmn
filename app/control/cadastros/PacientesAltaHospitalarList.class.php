@@ -36,7 +36,7 @@ class PacientesAltaHospitalarList extends TPage
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
 
-        $column_paciente_nome   = new TDataGridColumn( "paciente_nome", "Paciente", "left" );
+        $column_paciente_nome   = new TDataGridColumn( "nomepaciente", "Paciente", "left" );
         $column_dataentrada     = new TDataGridColumn( "dataentrada", "Data de Chegada", "left" );
         $column_horaentrada     = new TDataGridColumn( "horaentrada", "Hora de Chegada", "left" );
         $column_queixaprincipal = new TDataGridColumn( "queixaprincipal", "Queixa Principal", "left" );
@@ -50,8 +50,8 @@ class PacientesAltaHospitalarList extends TPage
         $action_avaliacao->setButtonClass( "btn btn-default" );
         $action_avaliacao->setLabel( "Alta Hospitalar" );
         $action_avaliacao->setImage( "fa:stethoscope green fa-lg" );
-        $action_avaliacao->setField( "id" );
-        $action_avaliacao->setFk( "id" );
+        $action_avaliacao->setField( "bau_id" );
+        $action_avaliacao->setFk( "bau_id" );
         $action_avaliacao->setDid( "paciente_id" );
 
         $action_group = new TDataGridActionGroup('Opções', 'bs:th');
@@ -80,11 +80,11 @@ class PacientesAltaHospitalarList extends TPage
 
             TTransaction::open( "database" );
 
-            $repository = new TRepository( "BauRecord" );
+            $repository = new TRepository( "VwBauPacientesRecord" );
 
             $properties = [
                 "order" => "dataentrada",
-                "direction" => "asc"
+                "direction" => "desc"
             ];
 
             $limit = 10;
@@ -93,6 +93,8 @@ class PacientesAltaHospitalarList extends TPage
             $criteria->setProperties( $properties );
             $criteria->setProperty( "limit", $limit );
             $criteria->add( new TFilter( "situacao", "!=", "ALTA") );
+            $criteria->add( new TFilter( "situacao", "!=", "OBITO") );
+            $criteria->add( new TFilter( "situacao", "!=", "ENCAMINHADO") );
 
             $objects = $repository->load( $criteria, FALSE );
 
@@ -143,11 +145,11 @@ class PacientesAltaHospitalarList extends TPage
 
                 TTransaction::open( "database" );
 
-                $repository = new TRepository( "BauRecord" );
+                $repository = new TRepository( "VwBauPacientesRecord" );
 
                 if ( empty( $param[ "order" ] ) ) {
-                    $param[ "order" ] = "id";
-                    $param[ "direction" ] = "asc";
+                    $param[ "order" ] = "dataentrada";
+                    $param[ "direction" ] = "desc";
                 }
 
                 $limit = 10;
@@ -155,6 +157,9 @@ class PacientesAltaHospitalarList extends TPage
                 $criteria = new TCriteria();
                 $criteria->setProperties( $param );
                 $criteria->setProperty( "limit", $limit );
+                $criteria->add( new TFilter( "situacao", "!=", "ALTA") );
+                $criteria->add( new TFilter( "situacao", "!=", "OBITO") );
+                $criteria->add( new TFilter( "situacao", "!=", "ENCAMINHADO") );
 
                 switch( $data->opcao ) {
 
@@ -172,6 +177,11 @@ class PacientesAltaHospitalarList extends TPage
 
                 if ( $objects ) {
                     foreach ( $objects as $object ) {
+                        $dataentrada = new DateTime( $object->dataentrada );
+                        $horaentrada = new DateTime( $object->horaentrada );
+
+                        $object->dataentrada = $dataentrada->format("d/m/Y");
+                        $object->horaentrada = $horaentrada->format("H:i");
                         $this->datagrid->addItem( $object );
                     }
                 } else {

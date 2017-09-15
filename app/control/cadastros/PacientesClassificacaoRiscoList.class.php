@@ -48,10 +48,10 @@ class PacientesClassificacaoRiscoList extends TPage
 
         $action_avaliacao = new CustomDataGridAction( [ "ClassificacaoRiscoDetail", "onReload" ] );
         $action_avaliacao->setButtonClass( "btn btn-default" );
-        $action_avaliacao->setLabel( "Avaliação" );
+        $action_avaliacao->setLabel( "Classificação" );
         $action_avaliacao->setImage( "fa:stethoscope green fa-lg" );
-        $action_avaliacao->setField( "id" );
-        $action_avaliacao->setFk( "id" );
+        $action_avaliacao->setField( "bau_id" );
+        $action_avaliacao->setFk( "bau_id" );
         $action_avaliacao->setDid( "paciente_id" );
 
         $action_group = new TDataGridActionGroup('Opções', 'bs:th');
@@ -84,7 +84,7 @@ class PacientesClassificacaoRiscoList extends TPage
 
             $properties = [
                 "order" => "dataentrada",
-                "direction" => "asc"
+                "direction" => "desc"
             ];
 
             $limit = 10;
@@ -146,8 +146,8 @@ class PacientesClassificacaoRiscoList extends TPage
                 $repository = new TRepository( "VwBauPacientesRecord" );
 
                 if ( empty( $param[ "order" ] ) ) {
-                    $param[ "order" ] = "id";
-                    $param[ "direction" ] = "asc";
+                    $param[ "order" ] = "dataentrada";
+                    $param[ "direction" ] = "desc";
                 }
 
                 $limit = 10;
@@ -155,6 +155,7 @@ class PacientesClassificacaoRiscoList extends TPage
                 $criteria = new TCriteria();
                 $criteria->setProperties( $param );
                 $criteria->setProperty( "limit", $limit );
+                $criteria->add( new TFilter( "situacao", "=", "ABERTO") );
 
                 switch( $data->opcao ) {
 
@@ -172,6 +173,11 @@ class PacientesClassificacaoRiscoList extends TPage
 
                 if ( $objects ) {
                     foreach ( $objects as $object ) {
+                        $dataentrada = new DateTime( $object->dataentrada );
+                        $horaentrada = new DateTime( $object->horaentrada );
+
+                        $object->dataentrada = $dataentrada->format("d/m/Y");
+                        $object->horaentrada = $horaentrada->format("H:i");
                         $this->datagrid->addItem( $object );
                     }
                 } else {

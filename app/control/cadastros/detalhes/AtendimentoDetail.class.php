@@ -13,8 +13,8 @@ class AtendimentoDetail extends TPage
 
         $redstar = '<font color="red"><b>*</b></font>';
 
-        $this->form = new BootstrapFormBuilder( "form_list_classificacao_risco" );
-        $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
+        $this->form = new BootstrapFormBuilder( "form_list_atendimento" );
+        $this->form->setFormTitle( "Registro de Atendimento" );
         $this->form->class = "tform";
 
         $id                     = new THidden( "id" );
@@ -29,11 +29,13 @@ class AtendimentoDetail extends TPage
         $diagnosticomedico      = new TText( "diagnosticomedico" );
         $descricaotratamento    = new TText( "descricaotratamento" );
 
-        $paciente_nome->setSize("50%");
-        $exameclinico->setSize("100%");
-        $examescomplementares->setSize("100%");
-        $diagnosticomedico->setSize("100%");
-        $descricaotratamento->setSize("100%");
+        $paciente_nome->setSize("60%");
+        $exameclinico->setSize("90%");
+        $examescomplementares->setSize("90%");
+        $diagnosticomedico->setSize("90%");
+        $descricaotratamento->setSize("90%");
+        $horaclassificacao->setSize("15%");
+        $dataclassificacao->setSize("45%");
 
         $fk = filter_input( INPUT_GET, "fk" );
         $did = filter_input( INPUT_GET, "did" );
@@ -70,7 +72,7 @@ class AtendimentoDetail extends TPage
         $dataclassificacao->addValidation( TextFormat::set( "Data da Avaliação" ), new TRequiredValidator );
 
         $this->form->addFields( [ new TLabel( "Paciente: {$redstar}" ) ], [ $paciente_nome ] );
-        $this->form->addFields([ new TLabel( "Data do atendimento: {$redstar}" ) ], [ $dataclassificacao ] , [ new TLabel( "Hora do atendimento:" ) ], [ $horaclassificacao ] );
+        $this->form->addFields([ new TLabel( "Data do Atendimento: {$redstar}" ) ], [ $dataclassificacao , $horaclassificacao ] );
 
         $this->form->addFields( [ new TLabel( "Exame Clinico:" ) ], [ $exameclinico ] );
         $this->form->addFields( [ new TLabel( "Exames Complementares:" ) ], [ $examescomplementares ] );
@@ -86,7 +88,7 @@ class AtendimentoDetail extends TPage
         $onReload->setParameter( "did", $did );
 
         $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
-        $this->form->addAction( "Voltar para B.A.U.", $onReload, "fa:table blue" );
+        $this->form->addAction( "Voltar", $onReload, "fa:table blue" );
 
         $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
         $this->datagrid->datatable = "true";
@@ -128,7 +130,7 @@ class AtendimentoDetail extends TPage
         $this->pageNavigation->setWidth( $this->datagrid->getWidth() );
 
         $container = new TVBox();
-        $container->style = "width: 95%";
+        $container->style = "width: 90%";
         $container->add( $this->form );
         $container->add( TPanelGroup::pack( NULL, $this->datagrid ) );
         $container->add( $this->pageNavigation );
