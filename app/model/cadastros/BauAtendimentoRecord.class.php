@@ -31,9 +31,9 @@ class BauAtendimentoRecord extends TRecord
     public function get_enfermeiro_nome()
     {
         if ( empty( $this->enfermeiro ) ) {
-            $this->enfermeiro = new ProfissionalRecord( $this->enfermeiro_id );
+            $this->enfermeiro = new ProfissionalRecord( $this->profissional_id );
         }
 
-        return $this->paciente->nomeprofissional;
+        return $this->enfermeiro->nomeprofissional;
     }
 }

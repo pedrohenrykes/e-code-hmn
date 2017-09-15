@@ -17,24 +17,36 @@ class AtendimentoDetail extends TPage
         $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 
-        $id                        = new THidden( "id" );
-        $paciente_id               = new THidden( "paciente_id" );
-        $bau_id                    = new THidden( "bau_id" );
-        $enfermeiro_id             = new THidden( "enfermeiro_id" ); // Deve ser capturado a partir da sessão
-        $paciente_nome             = new TEntry( "paciente_name" );
-        $dataclassificacao         = new TDate( "dataclassificacao" );
-        $horaclassificacao         = new TDateTime( "horaclassificacao" );
+        $id                     = new THidden( "id" );
+        $paciente_id            = new THidden( "paciente_id" );
+        $bau_id                 = new THidden( "bau_id" );
+        $profissional_id        = new THidden( "profissional_id" ); // Deve ser capturado a partir da sessão
+        $paciente_nome          = new TEntry( "paciente_name" );
+        $dataclassificacao      = new TDate( "dataatendimento" );
+        $horaclassificacao      = new TDateTime( "horaatendimento" );
+        $exameclinico           = new TText( "exameclinico" );
+        $examescomplementares   = new TText( "examescomplementares" );
+        $diagnosticomedico      = new TText( "diagnosticomedico" );
+        $descricaotratamento    = new TText( "descricaotratamento" );
+
+        $paciente_nome->setSize("50%");
+        $exameclinico->setSize("100%");
+        $examescomplementares->setSize("100%");
+        $diagnosticomedico->setSize("100%");
+        $descricaotratamento->setSize("100%");
 
         $fk = filter_input( INPUT_GET, "fk" );
         $did = filter_input( INPUT_GET, "did" );
 
+        $bau_id->setValue ($fk);
+        $paciente_id->setValue ($did);
+        $profissional_id->setValue ($did);
+        //$profissional_id  ALTERAR PARA O DA SESSSAAAAOOOOO
+
         try {
             TTransaction::open( "database" );
-            $bau = new BauRecord($fk);
             $paciente = new PacienteRecord($did);
-            if(isset($bau) && isset($paciente)) {
-                $id->setValue($bau->id);
-                $paciente_id->setValue($paciente->id);
+            if( isset($paciente) ) {
                 $paciente_nome->setValue($paciente->nomepaciente);
             }
             TTransaction::close();
@@ -50,6 +62,7 @@ class AtendimentoDetail extends TPage
 
         $dataclassificacao->setValue( date( "d/m/Y" ) );
         $horaclassificacao->setValue( date( "H:i" ) );
+        $horaclassificacao->setEditable( false );
 
         $paciente_nome->setEditable( false );
         $paciente_nome->forceUpperCase();
@@ -58,7 +71,12 @@ class AtendimentoDetail extends TPage
 
         $this->form->addFields( [ new TLabel( "Paciente: {$redstar}" ) ], [ $paciente_nome ] );
         $this->form->addFields([ new TLabel( "Data do atendimento: {$redstar}" ) ], [ $dataclassificacao ] , [ new TLabel( "Hora do atendimento:" ) ], [ $horaclassificacao ] );
-        $this->form->addFields( [ $id, $bau_id, $enfermeiro_id ] );
+
+        $this->form->addFields( [ new TLabel( "Exame Clinico:" ) ], [ $exameclinico ] );
+        $this->form->addFields( [ new TLabel( "Exames Complementares:" ) ], [ $examescomplementares ] );
+        $this->form->addFields( [ new TLabel( "Diagnóstico:" ) ], [ $diagnosticomedico ] );
+        $this->form->addFields( [ new TLabel( "Descrição do Tratamento:" ) ], [ $descricaotratamento ] );
+        $this->form->addFields( [ $id, $bau_id, $paciente_id, $profissional_id ] );
 
         $onSave = new TAction( [ $this, "onSave" ] );
         $onSave->setParameter( "fk", $fk );
@@ -75,11 +93,15 @@ class AtendimentoDetail extends TPage
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
 
-        $column_paciente_nome   = new TDataGridColumn( "paciente_nome", "Paciente", "left" );
-        $column_enfermeiro_nome = new TDataGridColumn( "enfermeiro_nome", "Enfermeiro", "left" );
+        $column_1 = new TDataGridColumn( "paciente_nome", "Paciente", "left" );
+        $column_2 = new TDataGridColumn( "enfermeiro_nome", "Responsável", "left" );
+        $column_3 = new TDataGridColumn( "dataatendimento", "Data", "left" );
+        $column_4 = new TDataGridColumn( "horaatendimento", "Hora", "left" );
 
-        $this->datagrid->addColumn( $column_paciente_nome );
-        $this->datagrid->addColumn( $column_enfermeiro_nome );
+        $this->datagrid->addColumn( $column_1 );
+        $this->datagrid->addColumn( $column_2 );
+        $this->datagrid->addColumn( $column_3 );
+        $this->datagrid->addColumn( $column_4 );
 
         $action_edit = new CustomDataGridAction( [ $this, "onEdit" ] );
         $action_edit->setButtonClass( "btn btn-default" );
@@ -106,7 +128,7 @@ class AtendimentoDetail extends TPage
         $this->pageNavigation->setWidth( $this->datagrid->getWidth() );
 
         $container = new TVBox();
-        $container->style = "width: 90%";
+        $container->style = "width: 95%";
         $container->add( $this->form );
         $container->add( TPanelGroup::pack( NULL, $this->datagrid ) );
         $container->add( $this->pageNavigation );
@@ -127,7 +149,7 @@ class AtendimentoDetail extends TPage
 
             TTransaction::close();
 
-            $action = new TAction( [ "AtendimentoFormList", "onReload" ] );
+            $action = new TAction( [ "AtendimentoDetail", "onReload" ] );
             $action->setParameters( $param );
 
             new TMessage( "info", "Registro salvo com sucesso!", $action );
@@ -150,10 +172,12 @@ class AtendimentoDetail extends TPage
 
                 $object = new BauAtendimentoRecord( $param[ "key" ] );
 
-                $dataclassificacao = new DateTime( $object->dataclassificacao );
-                $horaclassificacao = new DateTime( $object->horaclassificacao );
+                //$dataclassificacao = new DateTime( $object->dataclassificacao );
+                //$object->dataclassificacao = $dataclassificacao->format("d/m/Y");
 
-                $object->dataclassificacao = $dataclassificacao->format("d/m/Y");
+                $object->dataatendimento = TDate::date2br($object->dataatendimento);
+
+                $horaclassificacao = new DateTime( $object->horaclassificacao );
                 $object->horaclassificacao = $horaclassificacao->format("H:i");
 
                 $this->onReload( $param );
@@ -211,7 +235,7 @@ class AtendimentoDetail extends TPage
         }
     }
 
-    public function onReload( $param = null )
+    public function onReload( $param )
     {
         try {
 
@@ -239,10 +263,12 @@ class AtendimentoDetail extends TPage
 
                 foreach ( $objects as $object ) {
 
-                    $dataclassificacao = new DateTime( $object->dataclassificacao );
-                    $horaclassificacao = new DateTime( $object->horaclassificacao );
+                    //$dataclassificacao = new DateTime( $object->dataclassificacao );
 
-                    $object->dataclassificacao = $dataclassificacao->format("d/m/Y");
+                    //$object->dataclassificacao = $dataclassificacao->format("d/m/Y");
+
+                    $object->dataatendimento = TDate::date2br($object->dataatendimento);
+                    $horaclassificacao = new DateTime( $object->horaclassificacao );
                     $object->horaclassificacao = $horaclassificacao->format("H:i");
 
                     $this->datagrid->addItem( $object );
