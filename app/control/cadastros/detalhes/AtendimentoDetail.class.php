@@ -21,7 +21,7 @@ class AtendimentoDetail extends TPage
         $paciente_id            = new THidden( "paciente_id" );
         $bau_id                 = new THidden( "bau_id" );
         $profissional_id        = new THidden( "profissional_id" ); // Deve ser capturado a partir da sessão
-        $paciente_nome          = new TEntry( "paciente_name" );
+        $paciente_nome          = new TEntry( "paciente_nome" );
         $dataclassificacao      = new TDate( "dataatendimento" );
         $horaclassificacao      = new TDateTime( "horaatendimento" );
         $exameclinico           = new TText( "exameclinico" );
