@@ -26,13 +26,12 @@ class AtendimentoDetail extends TPage
         $horaclassificacao      = new TDateTime( "horaatendimento" );
         $exameclinico           = new TText( "exameclinico" );
         $examescomplementares   = new TText( "examescomplementares" );
-        $diagnosticomedico      = new TText( "diagnosticomedico" );
+        //$diagnosticomedico      = new TText( "diagnosticomedico" );
         $descricaotratamento    = new TText( "descricaotratamento" );
 
         $paciente_nome->setSize("60%");
         $exameclinico->setSize("90%");
         $examescomplementares->setSize("90%");
-        $diagnosticomedico->setSize("90%");
         $descricaotratamento->setSize("90%");
         $horaclassificacao->setSize("15%");
         $dataclassificacao->setSize("45%");
@@ -69,6 +68,52 @@ class AtendimentoDetail extends TPage
         $paciente_nome->setEditable( false );
         $paciente_nome->forceUpperCase();
 
+
+        /*--- frame de comorbidades ---*/
+        $frame1 = new TFrame;
+        $frame1->setLegend( "Comorbidades" );
+        $frame1->style .= ';margin:0px;width:95%';
+        $cid_id     = new THidden( "cid_id" );
+        $cid_codigo = new TDBSeekButton(
+            "cid_codigo", "database", "form_list_atendimento",
+            "CidRecord", "codigocid", "cid_id", "cid_codigo"
+        );
+        $add_button1 = TButton::create( "add1", [ $this,"onError" ], null, null );
+        $onSaveFrame1 = new TAction( [ $this, "onSaveFrames" ] );
+        $onSaveFrame1->setParameter( "fk", $fk );
+        $onSaveFrame1->setParameter( "did", $did );
+        $onSaveFrame1->setParameter( "frm", 1 );
+        $add_button1->setAction( $onSaveFrame1 );
+        $add_button1->setLabel( "Adicionar" );
+        $add_button1->setImage( "fa:plus green" );
+        $this->form->addContent( [ $frame1 ] );
+        $this->form->addField( $cid_codigo );
+        $this->form->addField( $add_button1 );
+        $this->framegrid1 = new TQuickGrid();
+        $this->framegrid1->setHeight(200);
+        $this->framegrid1->makeScrollable();
+        $this->framegrid1->style='width: 100%';
+        $this->framegrid1->id = 'framegrid1';
+        $this->framegrid1->disableDefaultClick();
+        $remove_action1 = new TDataGridAction( [ $this, "onDeleteFrames" ] );
+        $remove_action1->setParameter( "fk", $fk );
+        $remove_action1->setParameter( "did", $did );
+        $remove_action1->setParameter( "frm", 1 );
+        $this->framegrid1->addQuickAction( "Remover", $remove_action1, "id", "fa:trash red", "20%" );
+        $this->framegrid1->addQuickColumn( "Código CID", 'cid_codigo', 'left', '20%');
+        $this->framegrid1->addQuickColumn( "Patologia", 'cid_nome', 'left', '100%');
+        $this->framegrid1->createModel();
+        $hbox1 = new THBox;
+        $hbox1->add( $cid_codigo );
+        $hbox1->add( $add_button1 );
+        $hbox1->style = 'margin: 4px';
+        $vbox1 = new TVBox;
+        $vbox1->style='width:100%';
+        $vbox1->add( $hbox1 );
+        $vbox1->add( $this->framegrid1 );
+        $frame1->add( $vbox1 );
+        /*--------------------------------------*/
+
         $dataclassificacao->addValidation( TextFormat::set( "Data da Avaliação" ), new TRequiredValidator );
 
         $this->form->addFields( [ new TLabel( "Paciente: {$redstar}" ) ], [ $paciente_nome ] );
@@ -76,7 +121,7 @@ class AtendimentoDetail extends TPage
 
         $this->form->addFields( [ new TLabel( "Exame Clinico:" ) ], [ $exameclinico ] );
         $this->form->addFields( [ new TLabel( "Exames Complementares:" ) ], [ $examescomplementares ] );
-        $this->form->addFields( [ new TLabel( "Diagnóstico:" ) ], [ $diagnosticomedico ] );
+        //$this->form->addFields( [ new TLabel( "Diagnóstico:" ) ], [ $diagnosticomedico ] );
         $this->form->addFields( [ new TLabel( "Descrição do Tratamento:" ) ], [ $descricaotratamento ] );
         $this->form->addFields( [ $id, $bau_id, $paciente_id, $profissional_id ] );
 
@@ -302,5 +347,171 @@ class AtendimentoDetail extends TPage
     public function onClear()
     {
         $this->form->clear();
+    }
+
+    public function onSaveFrames( $param = null )
+    {
+        try {
+
+            $object = $this->unSetFields( $param );
+
+            TTransaction::open( "database" );
+
+            if ( isset( $object ) ) {
+                $object->store();
+            } else {
+                $this->onError();
+            }
+
+            TTransaction::close();
+
+            $this->onReloadFrames( $param );
+
+        } catch ( Exception $ex ) {
+
+            TTransaction::rollback();
+
+            new TMessage( "error", $ex->getMessage() );
+
+        }
+    }
+
+    public function onDeleteFrames( $param = null )
+    {
+        try {
+
+            TTransaction::open( "database" );
+
+            $object = $this->getFrameItem( $param );
+
+            if ( isset( $object ) ) {
+                $object->delete();
+            } else {
+                $this->onError();
+            }
+
+            TTransaction::close();
+
+            $this->onReloadFrames( $param );
+
+        } catch ( Exception $ex ) {
+
+            TTransaction::rollback();
+
+            new TMessage( "error", $ex->getMessage() );
+
+        }
+    }
+
+    public function onReloadFrames( $param = null )
+    {
+        try {
+
+            TTransaction::open('database');
+
+            $object = new PacienteRecord( $param[ "did" ] );
+
+            if ( isset( $object ) ) {
+
+                foreach ( $object->getComorbidades() as $comorbidade ) {
+                    $this->framegrid1->addItem( $comorbidade );
+                }
+
+                foreach ( $object->getMedicacoes() as $medicacao ) {
+                    $this->framegrid2->addItem( $medicacao );
+                }
+
+                foreach ( $object->getAlergias() as $alergia ) {
+                    $this->framegrid3->addItem( $alergia );
+                }
+
+            }
+
+            TTransaction::close();
+
+        } catch( Exception $ex ) {
+
+            new TMessage( "error", $ex->getMessage() );
+
+        }
+    }
+
+    public function unSetFields( $param = null )
+    {
+        switch ( $param[ "frm" ] ) {
+
+            case 1:
+
+                $object = $this->form->getData( "BauComorbidadesRecord" );
+                unset( $object->medicamento_id );
+                unset( $object->principioativo_id );
+
+                break;
+
+            case 2:
+
+                $object = $this->form->getData( "BauUsoMedicacoesRecord" );
+                unset( $object->cid_id );
+                unset( $object->principioativo_id );
+
+                break;
+
+            case 3:
+
+                $object = $this->form->getData( "BauAlergiaMedicamentosaRecord" );
+                unset( $object->cid_id );
+                unset( $object->medicamento_id );
+
+                break;
+
+        }
+
+        if ( isset( $object ) ) {
+
+            unset( $object->id );
+            unset( $object->profissional_id );
+            unset( $object->paciente_name );
+            unset( $object->dataatendimento );
+            unset( $object->horaatendimento );
+            unset( $object->exameclinico );
+            unset( $object->examescomplementares );
+            unset( $object->descricaotratamento );
+
+            return $object;
+
+        } else {
+
+            return null;
+
+        }
+
+    }
+
+    public function getFrameItem( $param = null )
+    {
+        switch ( $param[ "frm" ] ) {
+
+            case 1:
+                $object = new BauComorbidadesRecord( $param[ "key" ] );
+                break;
+
+            case 2:
+                $object = new BauUsoMedicacoesRecord( $param[ "key" ] );
+                break;
+
+            case 3:
+                $object = new BauAlergiaMedicamentosaRecord( $param[ "key" ] );
+                break;
+
+        }
+
+        return isset( $object ) ? $object : null;
+    }
+
+    public function onError()
+    {
+        $action = new TAction( [ "PacientesClassificacaoRiscoList", "onReload" ] );
+
+        new TMessage( "error", "Uma instabilidade momentâneo no sistema impediu a ação, tente novamente mais tarde.", $action );
     }
 }
