@@ -76,9 +76,11 @@ class AtendimentoDetail extends TPage
         $cid_id     = new THidden( "cid_id" );
         $cid_codigo = new TDBSeekButton(
             "cid_codigo", "database", "form_list_atendimento",
-            "CidRecord", "codigocid", "cid_id", "cid_codigo"
+            "VwCidRecord", "nomecid", "cid_id", "cid_codigo"
         );
-        $add_button1 = TButton::create( "add1", [ $this,"onError" ], null, null );
+        $add_button1 = TButton::create(
+            "add1", [ $this,"onError" ], null, null
+        );
         $onSaveFrame1 = new TAction( [ $this, "onSaveFrames" ] );
         $onSaveFrame1->setParameter( "fk", $fk );
         $onSaveFrame1->setParameter( "did", $did );
@@ -100,8 +102,7 @@ class AtendimentoDetail extends TPage
         $remove_action1->setParameter( "did", $did );
         $remove_action1->setParameter( "frm", 1 );
         $this->framegrid1->addQuickAction( "Remover", $remove_action1, "id", "fa:trash red", "20%" );
-        $this->framegrid1->addQuickColumn( "Código CID", 'cid_codigo', 'left', '20%');
-        $this->framegrid1->addQuickColumn( "Patologia", 'cid_nome', 'left', '100%');
+        $this->framegrid1->addQuickColumn( "Patologia", 'cid_codnome', 'left', '100%');
         $this->framegrid1->createModel();
         $hbox1 = new THBox;
         $hbox1->add( $cid_codigo );
@@ -123,7 +124,7 @@ class AtendimentoDetail extends TPage
         $this->form->addFields( [ new TLabel( "Exames Complementares:" ) ], [ $examescomplementares ] );
         //$this->form->addFields( [ new TLabel( "Diagnóstico:" ) ], [ $diagnosticomedico ] );
         $this->form->addFields( [ new TLabel( "Descrição do Tratamento:" ) ], [ $descricaotratamento ] );
-        $this->form->addFields( [ $id, $bau_id, $paciente_id, $profissional_id ] );
+        $this->form->addFields( [ $id, $bau_id, $paciente_id, $profissional_id, $cid_id ] );
 
         $onSave = new TAction( [ $this, "onSave" ] );
         $onSave->setParameter( "fk", $fk );
@@ -332,6 +333,9 @@ class AtendimentoDetail extends TPage
             $this->pageNavigation->setProperties( $properties );
             $this->pageNavigation->setLimit( $limit );
 
+
+            $this->onReloadFrames( $param );
+
             TTransaction::close();
 
             $this->loaded = true;
@@ -417,6 +421,7 @@ class AtendimentoDetail extends TPage
                     $this->framegrid1->addItem( $comorbidade );
                 }
 
+                /*
                 foreach ( $object->getMedicacoes() as $medicacao ) {
                     $this->framegrid2->addItem( $medicacao );
                 }
@@ -424,6 +429,7 @@ class AtendimentoDetail extends TPage
                 foreach ( $object->getAlergias() as $alergia ) {
                     $this->framegrid3->addItem( $alergia );
                 }
+                */
 
             }
 
@@ -443,8 +449,8 @@ class AtendimentoDetail extends TPage
             case 1:
 
                 $object = $this->form->getData( "BauComorbidadesRecord" );
-                unset( $object->medicamento_id );
-                unset( $object->principioativo_id );
+                //unset( $object->medicamento_id );
+                //unset( $object->principioativo_id );
 
                 break;
 
@@ -470,7 +476,7 @@ class AtendimentoDetail extends TPage
 
             unset( $object->id );
             unset( $object->profissional_id );
-            unset( $object->paciente_name );
+            unset( $object->paciente_nome );
             unset( $object->dataatendimento );
             unset( $object->horaatendimento );
             unset( $object->exameclinico );
