@@ -8,6 +8,7 @@ class BauComorbidadesRecord extends TRecord
 
     private $cidNome;
     private $cidCodigo;
+    private $cidCodNome;
 
     public function get_cid_nome()
     {
@@ -25,5 +26,14 @@ class BauComorbidadesRecord extends TRecord
         }
 
         return $this->cidCodigo->codigocid;
+    }
+
+    public function get_cid_codnome()
+    {
+        if ( empty( $this->cidCodNome ) ) {
+            $this->cidCodNome = new VwCidRecord( $this->cid_id );
+        }
+
+        return $this->cidCodNome->nomecid;
     }
 }
