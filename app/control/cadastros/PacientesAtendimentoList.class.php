@@ -36,7 +36,7 @@ class PacientesAtendimentoList extends TPage
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
 
-        $column_paciente_nome   = new TDataGridColumn( "cortipoclassificacaorisco", "Paciente", "left" );
+        $column_paciente_nome   = new TDataGridColumn( "nomepacientecor", "Classificação/Paciente", "left" );
         $column_dataentrada     = new TDataGridColumn( "dataentrada", "Data de Chegada", "left" );
         $column_horaentrada     = new TDataGridColumn( "horaentrada", "Hora de Chegada", "left" );
         $column_queixaprincipal = new TDataGridColumn( "queixaprincipal", "Queixa Principal", "left" );
