@@ -18,38 +18,38 @@ class BauDetail extends TPage
         $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 
-        $id                       = new THidden("id");
-        $paciente_id              = new THidden( "paciente_id" );
-        $paciente_nome            = new TEntry( "paciente_nome" );
-        $especificartransporte    = new TEntry("especificartransporte");
-        $responsavel              = new TEntry("responsavel");
-        $queixaprincipal          = new TText("queixaprincipal");
-        $dataentrada              = new TDate("dataentrada");
-        $dataaltahospitalar       = new TDate("dataaltahospitalar");
-        $dataobito                = new TDate("dataobito");
-        $declaracaoobitodata      = new TDate("declaracaoobitodata");
-        $datainternamento         = new TDate("datainternamento");
-        $dataremocao              = new TDate("dataremocao");
-        $datatransferencia        = new TDate("datatransferencia");
-        $datatransporte           = new TDate("datatransporte");
-        $horaentrada              = new TDateTime("horaentrada");
-        $horaaltahospitalar       = new TDateTime("horaaltahospitalar");
-        $horaobito                = new TDateTime("horaobito");
-        $declaracaoobitohora      = new TDateTime("declaracaoobitohora");
-        $internamentolocal        = new TCombo("internamentolocal");
-        $remocao                  = new TCombo("remocao");
-        $transferencia            = new TCombo("transferencia");
-        $alta                     = new TCombo("alta");
-        $obito                    = new TCombo("obito");
-
-        $localremocao_id          = new TCombo("localremocao_id");
-        $localtransferencia_id    = new TCombo("localtransferencia_id");
-        $transportedestino_id     = new TCombo("transportedestino_id");
-        $tipoaltahospitalar_id    = new TCombo("tipoaltahospitalar_id");
-        $medicoalta_id            = new TCombo("medicoalta_id");
-        $destinoobito_id          = new TCombo("destinoobito_id");
-        $medicoobito_id           = new TCombo("medicoobito_id");
-        $convenio_id              = new TDBCombo( "convenio_id", "database", "ConvenioRecord", "id", "nome", "nome");
+        $id                    = new THidden("id");
+        $paciente_id           = new THidden("paciente_id");
+        $paciente_nome         = new TEntry("paciente_nome");
+        $especificartransporte = new TEntry("especificartransporte");
+        $responsavel           = new TEntry("responsavel");
+        $queixaprincipal       = new TText("queixaprincipal");
+        $dataentrada           = new TDate("dataentrada");
+        $dataaltahospitalar    = new TDate("dataaltahospitalar");
+        $dataobito             = new TDate("dataobito");
+        $declaracaoobitodata   = new TDate("declaracaoobitodata");
+        $datainternamento      = new TDate("datainternamento");
+        $dataremocao           = new TDate("dataremocao");
+        $datatransferencia     = new TDate("datatransferencia");
+        $datatransporte        = new TDate("datatransporte");
+        $horaentrada           = new TDateTime("horaentrada");
+        $horaaltahospitalar    = new TDateTime("horaaltahospitalar");
+        $horaobito             = new TDateTime("horaobito");
+        $declaracaoobitohora   = new TDateTime("declaracaoobitohora");
+        $internamentolocal     = new TCombo("internamentolocal");
+        $remocao               = new TCombo("remocao");
+        $transferencia         = new TCombo("transferencia");
+        $alta                  = new TCombo("alta");
+        $obito                 = new TCombo("obito");
+// TODO
+        $localremocao_id       = new TCombo("localremocao_id");
+        $localtransferencia_id = new TCombo("localtransferencia_id");
+        $transportedestino_id  = new TCombo("transportedestino_id");
+        $tipoaltahospitalar_id = new TCombo("tipoaltahospitalar_id");
+        $medicoalta_id         = new TCombo("medicoalta_id");
+        $destinoobito_id       = new TCombo("destinoobito_id");
+        $medicoobito_id        = new TCombo("medicoobito_id");
+        $convenio_id           = new TDBCombo("convenio_id", "database", "ConvenioRecord", "id", "nome", "nome");
 
         $this->changeFields = [ "internamentolocal", "remocao", "transferencia", "alta", "obito" ];
 
@@ -183,16 +183,7 @@ class BauDetail extends TPage
         $this->form->addFields( [ $id, $paciente_id ] );
 
         if ( filter_input( INPUT_GET, "method" ) == "onEdit" ) {
-
-            $page1 = new TLabel( "Avaliação", "#7D78B6", 12, "bi");
-            $page1->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
-            $this->form->appendPage( "Avaliação" );
-            $this->form->addContent( [ $page1 ] );
-            $this->form->addFields([
-                new TLabel( "Em desenvolvimento..." ),
-                new TLabel( "Change the world, do it for love! :)" )
-            ]);
-
+// TODO
             $page2 = new TLabel( "Encaminhamento", "#7D78B6", 12, "bi" );
             $page2->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
             $this->form->appendPage( "Encaminhamento" );
@@ -284,9 +275,13 @@ class BauDetail extends TPage
         $this->datagrid->addActionGroup( $action_group );
 
         $this->datagrid->createModel();
+        $this->datagrid->disableDefaultClick();
+
+        $onReload = new TAction( [ $this, "onReload" ] );
+        $onReload->setParameter( "fk", $fk );
 
         $this->pageNavigation = new TPageNavigation();
-        $this->pageNavigation->setAction( new TAction( [ $this, "onReload" ] ) );
+        $this->pageNavigation->setAction( $onReload );
         $this->pageNavigation->setWidth( $this->datagrid->getWidth() );
 
         $container = new TVBox();
@@ -298,13 +293,13 @@ class BauDetail extends TPage
         parent::add( $container );
     }
 
-    public function onSave( $param = null )
+    public function onSave( $param = NULL )
     {
-        $object = $this->form->getData( "BauRecord" );
-
         try {
 
             $this->form->validate();
+
+            $object = $this->form->getData( "BauRecord" );
 
             TTransaction::open( "database" );
 
@@ -323,9 +318,9 @@ class BauDetail extends TPage
         } catch ( Exception $ex ) {
 
             TTransaction::rollback();
-/*
-            $this->form->setData( $object );
 
+            $this->onReload( $param );
+/*
             foreach ( $this->changeFields as $field ) {
                 self::onChangeAction([
                     "_field_name" => $field,
@@ -338,7 +333,7 @@ class BauDetail extends TPage
         }
     }
 
-    public function onEdit( $param = null )
+    public function onEdit( $param = NULL )
     {
         try {
 
@@ -396,7 +391,7 @@ class BauDetail extends TPage
         }
     }
 
-    public function onDelete( $param = null )
+    public function onDelete( $param = NULL )
     {
         if( isset( $param[ "key" ] ) ) {
 
@@ -415,7 +410,7 @@ class BauDetail extends TPage
         }
     }
 
-    public function Delete( $param = null )
+    public function Delete( $param = NULL )
     {
         try {
 
@@ -440,7 +435,7 @@ class BauDetail extends TPage
         }
     }
 
-    public function onReload( $param = null )
+    public function onReload( $param = NULL )
     {
         try {
 
@@ -448,19 +443,19 @@ class BauDetail extends TPage
 
             $repository = new TRepository( "BauRecord" );
 
-            $properties = [
-                "order" => "dataentrada",
-                "direction" => "asc"
-            ];
+            if ( empty( $param[ "order" ] ) ) {
+                $param[ "order" ] = "dataentrada";
+                $param[ "direction" ] = "desc";
+            }
 
             $limit = 10;
 
             $criteria = new TCriteria();
-            $criteria->setProperties( $properties );
+            $criteria->setProperties( $param );
             $criteria->setProperty( "limit", $limit );
             $criteria->add( new TFilter( "paciente_id", "=", $param[ "fk" ] ) );
 
-            $objects = $repository->load( $criteria, FALSE );
+            $objects = $repository->load( $criteria );
 
             if ( isset( $objects ) ) {
 
@@ -485,7 +480,7 @@ class BauDetail extends TPage
             $count = $repository->count( $criteria );
 
             $this->pageNavigation->setCount( $count );
-            $this->pageNavigation->setProperties( $properties );
+            $this->pageNavigation->setProperties( $param );
             $this->pageNavigation->setLimit( $limit );
 
             TTransaction::close();
@@ -507,7 +502,7 @@ class BauDetail extends TPage
         }
     }
 
-    public static function onChangeAction( $param = null )
+    public static function onChangeAction( $param = NULL )
     {
         $object = new StdClass;
 

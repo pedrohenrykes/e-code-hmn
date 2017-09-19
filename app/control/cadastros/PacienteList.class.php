@@ -12,7 +12,7 @@ class PacienteList extends TPage
         parent::__construct();
 
         $this->form = new BootstrapFormBuilder( "list_paciente" );
-        $this->form->setFormTitle( "Listagem de Registros de Pacientes" );
+        $this->form->setFormTitle( "Listagem de Pacientes" );
         $this->form->class = "tform";
 
         $opcao = new TCombo( "opcao" );
@@ -83,6 +83,7 @@ class PacienteList extends TPage
         $this->datagrid->addActionGroup( $action_group );
 
         $this->datagrid->createModel();
+        $this->datagrid->disableDefaultClick();
 
         $this->pageNavigation = new TPageNavigation();
         $this->pageNavigation->setAction( new TAction( [ $this, "onReload" ] ) );
@@ -97,7 +98,7 @@ class PacienteList extends TPage
         parent::add( $container );
     }
 
-    public function onReload()
+    public function onReload( $param = NULL )
     {
         try {
 
@@ -105,15 +106,15 @@ class PacienteList extends TPage
 
             $repository = new TRepository( "PacienteRecord" );
 
-            $properties = [
-                "order" => "nomepaciente",
-                "direction" => "asc"
-            ];
+            if ( empty( $param[ "order" ] ) ) {
+                $param[ "order" ] = "nomepaciente";
+                $param[ "direction" ] = "asc";
+            }
 
             $limit = 10;
 
             $criteria = new TCriteria();
-            $criteria->setProperties( $properties );
+            $criteria->setProperties( $param );
             $criteria->setProperty( "limit", $limit );
 
             $objects = $repository->load( $criteria, FALSE );
@@ -131,7 +132,7 @@ class PacienteList extends TPage
             $count = $repository->count( $criteria );
 
             $this->pageNavigation->setCount( $count );
-            $this->pageNavigation->setProperties( $properties );
+            $this->pageNavigation->setProperties( $param );
             $this->pageNavigation->setLimit( $limit );
 
             TTransaction::close();
@@ -148,9 +149,9 @@ class PacienteList extends TPage
 
     public function onSearch()
     {
-        $data = $this->form->getData();
-
         try {
+
+            $data = $this->form->getData();
 
             if( !empty( $data->opcao ) && !empty( $data->dados ) ) {
 
@@ -172,7 +173,7 @@ class PacienteList extends TPage
                 switch( $data->opcao ) {
 
                     case "nomepaciente":
-                        $criteria->add( new TFilter( $data->opcao, "LIKE", "%" . $data->dados . "%" ) );
+                        $criteria->add( new TFilter( $data->opcao, "LIKE", $data->dados . "%" ) );
                         break;
 
                     case "numerocpf":
@@ -227,9 +228,8 @@ class PacienteList extends TPage
 
             TTransaction::rollback();
 
-            $this->form->setData( $data );
-
             new TMessage( "erro", $ex->getMessage() );
+
         }
     }
 
