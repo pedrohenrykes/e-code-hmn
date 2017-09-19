@@ -131,7 +131,7 @@ class ClassificacaoRiscoDetail extends TPage
         $cid_id     = new THidden( "cid_id" );
         $cid_codigo = new TDBSeekButton(
             "cid_codigo", "database", "detail_classificacao_risco",
-            "CidRecord", "codigocid", "cid_id", "cid_codigo"
+            "VwCidRecord", "nomecid", "cid_id", "cid_codigo"
         );
         $add_button1 = TButton::create(
             "add1", [ $this,"onError" ], null, null
@@ -157,8 +157,7 @@ class ClassificacaoRiscoDetail extends TPage
         $remove_action1->setParameter( "did", $did );
         $remove_action1->setParameter( "frm", 1 );
         $this->framegrid1->addQuickAction( "Remover", $remove_action1, "id", "fa:trash red", "20%" );
-        $this->framegrid1->addQuickColumn( "Código CID", 'cid_codigo', 'left', '20%');
-        $this->framegrid1->addQuickColumn( "Patologia", 'cid_nome', 'left', '100%');
+        $this->framegrid1->addQuickColumn( "Patologia", 'cid_codnome', 'left', '100%');
         $this->framegrid1->createModel();
         $hbox1 = new THBox;
         $hbox1->add( $cid_codigo );

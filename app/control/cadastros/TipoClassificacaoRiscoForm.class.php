@@ -23,28 +23,33 @@ class TipoClassificacaoRiscoForm extends TWindow
         $cortipoclassificacaorisco  = new TCombo( "cortipoclassificacaorisco" );
         $tempoparaatendimento       = new TEntry("tempoparaatendimento");
         $tempoparaatendimento->setProperty('type', 'time');
-        
+
         $situacao->setDefaultOption( "..::SELECIONE::.." );
         $situacao->addItems(["ATIVO" => "ATIVO", "INATIVO" => "INATIVO"]);
-        
+
         $cortipoclassificacaorisco->setDefaultOption( "..::SELECIONE::.." );
-        $cortipoclassificacaorisco->addItems(['#0000FF' => 'Azul', '#008000' => 'Verde', '#FFFF00' => 'Amarelo', '#FF0000' => 'Vermelho']);
+        $cortipoclassificacaorisco->addItems([
+            '#0088cc' => 'AZUL',
+            '#00a65a' => 'VERDE',
+            '#f3df12' => 'AMARELO',
+            '#dd4b39' => 'VERMELHO'
+        ]);
 
         $ordem->setProperty("title", "O campo e obrigatorio");
         $situacao->setProperty("title", "O campo e obrigatorio");
         $tempoparaatendimento->setProperty("title", "O campo e obrigatorio");
         $cortipoclassificacaorisco->setProperty("title", "O campo e obrigatorio");
         $nometipoclassificacaorisco->setProperty("title", "O campo e obrigatorio");
-        
+
         $ordem->setSize("38%");
         $situacao->setSize("38%");
         $tempoparaatendimento->setSize("38%");
         $cortipoclassificacaorisco->setSize("38%");
         $nometipoclassificacaorisco->setSize("38%");
-        
+
         $tempoparaatendimento->setMask( "hh:ii" );
         //$tempoparaatendimento->setValue( date( "H:i" ) );
-        
+
         $this->form->addFields([new TLabel("Ordem:    $redstar")], [$ordem]);
         $this->form->addFields([new TLabel("Situação: $redstar")], [$situacao]);
         $this->form->addFields([new TLabel("Tipo Classificação Risco: $redstar")], [$nometipoclassificacaorisco]);
@@ -60,13 +65,13 @@ class TipoClassificacaoRiscoForm extends TWindow
 
         parent::add( $container );
     }
-    
+
     public function onSave()
     {
         try {
 
             $this->form->validate();
-            
+
             TTransaction::open( "database" );
                 $object = $this->form->getData("TipoClassificacaoRiscoRecord");
                 $object->store();
