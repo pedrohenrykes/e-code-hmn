@@ -24,6 +24,8 @@ class SystemUserForm extends TPage
         $groups              = new TDBCheckGroup('groups','database','SystemGroup','id','name');
         $frontpage_id        = new TDBSeekButton('frontpage_id', 'database', 'form_System_user', 'SystemProgram', 'name', 'frontpage_id', 'frontpage_name');
         $frontpage_name      = new TEntry('frontpage_name');
+        $profissional_id     = new TDBSeekButton('profissional_id', 'database', 'form_System_user', 'ProfissionalRecord', 'nomeprofissional', 'profissional_id', 'profissional_name');
+        $profissional_name   = new TEntry('profissional_name');
 
         $groups->setLayout('horizontal');
         $groups->setBreakItems(3);
@@ -85,32 +87,35 @@ class SystemUserForm extends TPage
         $frontpage_name->setSize('calc(38% - 60px)');
         $program_id->setSize('30');
         $program_name->setSize('calc(50% - 200px)');
+        $profissional_id->setSize('30');
+        $profissional_name->setSize('calc(50% - 200px)');
 
         $program_name->setEditable(false);
         $frontpage_name->setEditable(false);
 
-        $name->addValidation(_t('Name'), new TRequiredValidator);
-        $login->addValidation('Login', new TRequiredValidator);
-        $email->addValidation('Email', new TEmailValidator);
+        $profissional_id->addValidation( _t( 'Profissional' ), new TRequiredValidator );
+        $name->addValidation( _t('Name'), new TRequiredValidator );
+        $login->addValidation( 'Login', new TRequiredValidator );
+        $email->addValidation( 'Email', new TEmailValidator );
 
-        $this->form->addFields( [new TLabel(_t('Name'))], [$name] );
-        $this->form->addFields( [new TLabel(_t('Login'))], [$login] );
-        $this->form->addFields( [new TLabel(_t('Password'))], [$password] );
-        $this->form->addFields( [new TLabel(_t('Password confirmation'))], [$repassword] );
-        $this->form->addFields( [new TLabel(_t('Email'))], [$email] );
-        // $this->form->addFields( [new TLabel(_t('Unit'))], [$unit_id] );
-        $this->form->addFields( [new TLabel(_t('Front page'))], [$frontpage_id, $frontpage_name] );
-        $this->form->addFields( [$id] );
+        $this->form->addFields( [ new TLabel( 'Profissional' ) ], [ $profissional_id, $profissional_name ] );
+        $this->form->addFields( [ new TLabel( _t( 'Name' ) ) ], [ $name ] );
+        $this->form->addFields( [ new TLabel( _t( 'Login' ) ) ], [ $login ] );
+        $this->form->addFields( [ new TLabel( _t( 'Password' ) ) ], [ $password ] );
+        $this->form->addFields( [ new TLabel( _t( 'Password confirmation' ) ) ], [ $repassword ] );
+        $this->form->addFields( [ new TLabel( _t( 'Email' ) ) ], [ $email ] );
+        // $this->form->addFields( [ new TLabel( _t( 'Unit' ) ) ], [ $unit_id ] );
+        $this->form->addFields( [ new TLabel( _t( 'Front page' ) ) ], [ $frontpage_id, $frontpage_name ] );
+        $this->form->addFields( [ $id ] );
 
-        $this->form->addContent( [$frame_groups] );
-        $this->form->addContent( [$frame_programs] );
+        $this->form->addContent( [ $frame_groups ] );
+        $this->form->addContent( [ $frame_programs ] );
 
         $container = new TVBox;
         $container->style = 'width: 90%';
-        // $container->add(new TXMLBreadCrumb('menu.xml', 'SystemUserList'));
-        $container->add($this->form);
+        $container->add( $this->form );
 
-        parent::add($container);
+        parent::add( $container );
     }
 
     public static function deleteProgram($param)

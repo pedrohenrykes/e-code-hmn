@@ -1,23 +1,17 @@
 <?php
-/**
- * System_user Active Record
- * @author  <your-name-here>
- */
+
 class SystemUser extends TRecord
 {
     const TABLENAME = 'usuarios';
     const PRIMARYKEY= 'id';
-    const IDPOLICY =  'max'; // {max, serial}
+    const IDPOLICY =  'serial';
 
     private $frontpage;
     private $unit;
     private $system_user_groups = array();
     private $system_user_programs = array();
-    // private $medico;
+    private $profissional;
 
-    /**
-     * Constructor method
-     */
     public function __construct($id = NULL)
     {
         parent::__construct($id);
@@ -28,64 +22,55 @@ class SystemUser extends TRecord
         parent::addAttribute('frontpage_id');
         parent::addAttribute('system_unit_id');
         parent::addAttribute('active');
-        // parent::addAttribute('medico_id');
-
+        parent::addAttribute('profissional_id');
     }
 
-    /**
-     * Returns the frontpage name
-     */
-/*
-    public function get_medico_nome(){
-
-        if(empty($this->medico)){
-            $this->medico = new MedicoRecord($this->medico_id);
-          }
-          return $this->medico->nome;
+    public function get_nomeprofissional()
+    {
+        if( empty( $this->profissional ) ) {
+            $this->profissional = new ProfissionalRecord( $this->profissional_id );
+        }
+        
+        return $this->profissional->nomeprofissional;
     }
-*/
+
+    public function get_tipoprofissional()
+    {
+        if( empty( $this->profissional ) ) {
+            $this->profissional = new ProfissionalRecord( $this->profissional_id );
+        }
+        
+        return $this->profissional->tipoprofissional_id;
+    }
+
     public function get_frontpage_name()
     {
-        // loads the associated object
-        if (empty($this->frontpage))
-            $this->frontpage = new SystemProgram($this->frontpage_id);
+        if ( empty( $this->frontpage ) ) {
+            $this->frontpage = new SystemProgram( $this->frontpage_id );
+        }
 
-        // returns the associated object
         return $this->frontpage->name;
     }
 
-    /**
-     * Returns the frontpage
-     */
     public function get_frontpage()
     {
-        // loads the associated object
-        if (empty($this->frontpage))
-            $this->frontpage = new SystemProgram($this->frontpage_id);
-
-        // returns the associated object
+        if ( empty( $this->frontpage ) ) {
+            $this->frontpage = new SystemProgram( $this->frontpage_id );
+        }
+        
         return $this->frontpage;
     }
 
-   /**
-     * Returns the unit
-     */
     public function get_unit()
     {
-        // loads the associated object
-        if (empty($this->unit))
-            $this->unit = new SystemUnit($this->system_unit_id);
+        if ( empty( $this->unit ) ) {
+            $this->unit = new SystemUnit( $this->system_unit_id );
+        }
 
-        // returns the associated object
         return $this->unit;
     }
 
-    /**
-     * Method addSystem_user_group
-     * Add a System_user_group to the System_user
-     * @param $object Instance of System_group
-     */
-    public function addSystemUserGroup(SystemGroup $systemusergroup)
+    public function addSystemUserGroup( SystemGroup $systemusergroup )
     {
         $object = new SystemUserGroup;
         $object->system_group_id = $systemusergroup->id;
@@ -93,36 +78,25 @@ class SystemUser extends TRecord
         $object->store();
     }
 
-    /**
-     * Method getSystem_user_groups
-     * Return the System_user' System_user_group's
-     * @return Collection of System_user_group
-     */
     public function getSystemUserGroups()
     {
-        $system_user_groups = array();
+        $groups = [];
 
-        // load the related System_user_group objects
-        $repository = new TRepository('SystemUserGroup');
+        $repository = new TRepository( 'SystemUserGroup' );
         $criteria = new TCriteria;
-        $criteria->add(new TFilter('system_user_id', '=', $this->id));
-        $system_user_system_user_groups = $repository->load($criteria);
-        if ($system_user_system_user_groups)
-        {
-            foreach ($system_user_system_user_groups as $system_user_system_user_group)
-            {
-                $system_user_groups[] = new SystemGroup( $system_user_system_user_group->system_group_id );
+        $criteria->add( new TFilter( 'system_user_id', '=', $this->id ) );
+        $objects = $repository->load( $criteria );
+        
+        if ( $objects ) {
+            foreach ( $objects as $object ) {
+                $groups[] = new SystemGroup( $object->system_group_id );
             }
         }
-        return $system_user_groups;
+
+        return $groups;
     }
 
-    /**
-     * Method addSystem_user_program
-     * Add a System_user_program to the System_user
-     * @param $object Instance of System_program
-     */
-    public function addSystemUserProgram(SystemProgram $systemprogram)
+    public function addSystemUserProgram( SystemProgram $systemprogram )
     {
         $object = new SystemUserProgram;
         $object->system_program_id = $systemprogram->id;
@@ -130,235 +104,179 @@ class SystemUser extends TRecord
         $object->store();
     }
 
-    /**
-     * Method getSystem_user_programs
-     * Return the System_user' System_user_program's
-     * @return Collection of System_user_program
-     */
     public function getSystemUserPrograms()
     {
-        $system_user_programs = array();
+        $programs = [];
 
-        // load the related System_user_program objects
-        $repository = new TRepository('SystemUserProgram');
+        $repository = new TRepository( 'SystemUserProgram' );
         $criteria = new TCriteria;
-        $criteria->add(new TFilter('system_user_id', '=', $this->id));
-        $system_user_system_user_programs = $repository->load($criteria);
-        if ($system_user_system_user_programs)
-        {
-            foreach ($system_user_system_user_programs as $system_user_system_user_program)
-            {
-                $system_user_programs[] = new SystemProgram( $system_user_system_user_program->system_program_id );
+        $criteria->add( new TFilter( 'system_user_id', '=', $this->id ) );
+        $objects = $repository->load( $criteria );
+
+        if ( $objects ) {
+            foreach ( $objects as $object ) {
+                $programs[] = new SystemProgram( $object->system_program_id );
             }
         }
-        return $system_user_programs;
+
+        return $programs;
     }
 
-    /**
-     * Get user group ids
-     */
     public function getSystemUserGroupIds()
     {
-        $groupnames = array();
+        $groupids = [];
+
         $groups = $this->getSystemUserGroups();
-        if ($groups)
-        {
-            foreach ($groups as $group)
-            {
-                $groupnames[] = $group->id;
+
+        if ( $groups ) {
+            foreach ( $groups as $group ) {
+                $groupids[] = $group->id;
             }
         }
 
-        return implode(',', $groupnames);
+        return implode( ',', $groupids );
     }
 
-    /**
-     * Get user group names
-     */
     public function getSystemUserGroupNames()
     {
-        $groupnames = array();
+        $groupnames = [];
+
         $groups = $this->getSystemUserGroups();
-        if ($groups)
-        {
-            foreach ($groups as $group)
-            {
+
+        if ( $groups ) {
+            foreach ( $groups as $group ) {
                 $groupnames[] = $group->name;
             }
         }
 
-        return implode(',', $groupnames);
+        return implode( ',', $groupnames );
     }
 
-    /**
-     * Reset aggregates
-     */
     public function clearParts()
     {
-        // delete the related System_userSystem_user_group objects
         $criteria = new TCriteria;
-        $criteria->add(new TFilter('system_user_id', '=', $this->id));
+        $criteria->add( new TFilter( 'system_user_id', '=', $this->id ) );
 
-        $repository = new TRepository('SystemUserGroup');
-        $repository->delete($criteria);
+        $repository = new TRepository( 'SystemUserGroup' );
+        $repository->delete( $criteria );
 
-        $repository = new TRepository('SystemUserProgram');
-        $repository->delete($criteria);
+        $repository = new TRepository( 'SystemUserProgram' );
+        $repository->delete( $criteria );
     }
 
-    /**
-     * Delete the object and its aggregates
-     * @param $id object ID
-     */
-    public function delete($id = NULL)
+    public function delete( $id = NULL )
     {
-        // delete the related System_userSystem_user_group objects
-        $id = isset($id) ? $id : $this->id;
-        $repository = new TRepository('SystemUserGroup');
+        $id = isset( $id ) ? $id : $this->id;
+        $repository = new TRepository( 'SystemUserGroup' );
         $criteria = new TCriteria;
-        $criteria->add(new TFilter('system_user_id', '=', $id));
-        $repository->delete($criteria);
+        $criteria->add( new TFilter( 'system_user_id', '=', $id ) );
+        $repository->delete( $criteria );
 
-        // delete the related System_userSystem_user_program objects
-        $id = isset($id) ? $id : $this->id;
-        $repository = new TRepository('SystemUserProgram');
+        $id = isset( $id ) ? $id : $this->id;
+        $repository = new TRepository( 'SystemUserProgram' );
         $criteria = new TCriteria;
-        $criteria->add(new TFilter('system_user_id', '=', $id));
-        $repository->delete($criteria);
+        $criteria->add( new TFilter( 'system_user_id', '=', $id ) );
+        $repository->delete( $criteria );
 
-
-        // delete the object itself
-        parent::delete($id);
+        parent::delete( $id );
     }
 
-    /**
-     * Authenticate the user
-     * @param $login String with user login
-     * @param $password String with user password
-     * @returns TRUE if the password matches, otherwise throw Exception
-     */
-    public static function authenticate($login, $password)
+    public static function authenticate( $login, $password )
     {
-        $user = self::newFromLogin($login);
+        $user = self::newFromLogin( $login );
 
-        if ($user instanceof SystemUser)
-        {
-            if ($user->active == 'N')
-            {
-                throw new Exception(_t('Inactive user'));
-            }
-            else if (isset( $user->password ) AND ($user->password == md5($password)) )
-            {
+        if ( $user instanceof SystemUser ) {
+
+            if ( $user->active == 'N' ) {
+                throw new Exception( _t( 'Inactive user' ) );
+            } else if ( isset( $user->password ) AND ( $user->password == md5( $password ) ) ) {
                 return $user;
+            } else {
+                throw new Exception( _t( 'Wrong password' ) );
             }
-            else
-            {
-                throw new Exception(_t('Wrong password'));
-            }
-        }
-        else
-        {
-            throw new Exception(_t('User not found'));
+
+        } else {
+
+            throw new Exception( _t( 'User not found' ) );
+
         }
     }
 
-    /**
-     * Returns a SystemUser object based on its login
-     * @param $login String with user login
-     */
-    static public function newFromLogin($login)
+    static public function newFromLogin( $login )
     {
-        $repos = new TRepository('SystemUser');
+        $repos = new TRepository( 'SystemUser' );
         $criteria = new TCriteria;
-        $criteria->add(new TFilter('login', '=', $login));
-        $objects = $repos->load($criteria);
-        if (isset($objects[0]))
-        {
+        $criteria->add(new TFilter( 'login', '=', $login ) );
+        $objects = $repos->load( $criteria );
+        
+        if ( isset( $objects[0] ) ) {
             return $objects[0];
         }
     }
 
-    /**
-     * Return the programs the user has permission to run
-     */
     public function getPrograms()
     {
-        $programs = array();
+        $programs = [];
 
-        foreach( $this->getSystemUserGroups() as $group )
-        {
-            foreach( $group->getSystemPrograms() as $prog )
-            {
-                $programs[$prog->controller] = true;
+        foreach( $this->getSystemUserGroups() as $group ) {
+            foreach( $group->getSystemPrograms() as $prog ) {
+                $programs[ $prog->controller ] = true;
             }
         }
 
-        foreach( $this->getSystemUserPrograms() as $prog )
-        {
-            $programs[$prog->controller] = true;
+        foreach( $this->getSystemUserPrograms() as $prog ) {
+            $programs[ $prog->controller ] = true;
         }
 
         return $programs;
     }
 
-    /**
-     * Return the programs the user has permission to run
-     */
     public function getProgramsList()
     {
-        $programs = array();
+        $programs = [];
 
-        foreach( $this->getSystemUserGroups() as $group )
-        {
-            foreach( $group->getSystemPrograms() as $prog )
-            {
-                $programs[$prog->controller] = $prog->name;
+        foreach( $this->getSystemUserGroups() as $group ) {
+            foreach( $group->getSystemPrograms() as $prog ) {
+                $programs[ $prog->controller ] = $prog->name;
             }
         }
 
-        foreach( $this->getSystemUserPrograms() as $prog )
-        {
-            $programs[$prog->controller] = $prog->name;
+        foreach( $this->getSystemUserPrograms() as $prog ) {
+            $programs[ $prog->controller ] = $prog->name;
         }
 
-        asort($programs);
+        asort( $programs );
+
         return $programs;
     }
 
-    /**
-     * Check if the user is within a group
-     */
     public function checkInGroup( SystemGroup $group )
     {
-        $user_groups = array();
-        foreach( $this->getSystemUserGroups() as $user_group )
-        {
-            $user_groups[] = $user_group->id;
+        $groups = [];
+
+        foreach( $this->getSystemUserGroups() as $user_group ) {
+            $groups[] = $user_group->id;
         }
 
-        return in_array($group->id, $user_groups);
+        return in_array( $group->id, $groups );
     }
 
-    /**
-     *
-     */
     public static function getInGroups( $groups )
     {
         $collection = [];
+
         $users = self::all();
-        if ($users)
-        {
-            foreach ($users as $user)
-            {
-                foreach ($groups as $group)
-                {
-                    if ($user->checkInGroup($group))
-                    {
+
+        if ( $users ) {
+            foreach ( $users as $user ) {
+                foreach ( $groups as $group ) {
+                    if ( $user->checkInGroup( $group ) ) {
                         $collection[] = $user;
                     }
                 }
             }
         }
+        
         return $collection;
     }
 }
