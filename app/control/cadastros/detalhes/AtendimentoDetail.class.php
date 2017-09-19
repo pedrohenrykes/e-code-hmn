@@ -231,7 +231,7 @@ class AtendimentoDetail extends TPage
 
             $this->form->validate();
             TTransaction::open( "database" );
-            unset( $object->paciente_name );
+            unset( $object->paciente_nome );
             $object->store();
 
             TTransaction::close();
