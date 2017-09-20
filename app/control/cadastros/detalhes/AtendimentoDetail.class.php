@@ -131,12 +131,12 @@ class AtendimentoDetail extends TPage
         $frame2->style .= ';margin:0%;width:90%';
 
         $add_button2 = TButton::create("buttonmed", [ $this,"onError" ], null, null);
-        $onSaveFrame2 = new TAction( [ 'MedicamentoList', "onReload" ] );
+        $onSaveFrame2 = new TAction( [ 'PrescreverMedicacaoDetail', "onReload" ] );
         $onSaveFrame2->setParameter( "fk", $fk );
         $onSaveFrame2->setParameter( "did", $did );
         $onSaveFrame2->setParameter( "frm", 1 );
         $add_button2->setAction( $onSaveFrame2 );
-        $add_button2->setLabel( "Medicar Paciente" );
+        $add_button2->setLabel( "Prescrever Medicação" );
         $add_button2->setImage( "fa:plus green" );
 
         $add_button3 = TButton::create("buttonalt", [ $this,"onError" ], null, null);
