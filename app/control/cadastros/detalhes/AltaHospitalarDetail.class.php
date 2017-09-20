@@ -15,22 +15,21 @@ class AltaHospitalarDetail extends TWindow
         $this->form = new BootstrapFormBuilder( "detail_alta_hospitalar" );
         $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
+// TODO conclui as alterações relacionadas a obito e transferencia
+        $id                 = new THidden( "id" );
+        $paciente_id        = new THidden( "paciente_id" );
+        $medicoalta_id      = new THidden( "medicoalta_id" );
+        $paciente_nome      = new TEntry( "paciente_nome" );
+        $dataaltahospitalar = new TDate( "dataaltahospitalar" );
+        $horaaltahospitalar = new TEntry( "horaaltahospitalar" );
 
-        $id                    = new THidden( "id" );
-        $paciente_id           = new THidden( "paciente_id" );
-        $paciente_nome         = new TEntry("paciente_nome");
-        $dataaltahospitalar    = new TDate("dataaltahospitalar");
-        $horaaltahospitalar    = new TDateTime("horaaltahospitalar");
-
-        $criteria1 = new TCriteria;
-        $criteria1->add(new TFilter("tipoprofissional_id","=",1));
-        $medicoalta_id = new TDBCombo("medicoalta_id","database","ProfissionalRecord","id","nomeprofissional","nomeprofissional",$criteria1);
-
-        $tipoaltahospitalar_id = new TDBCombo(
+        $tipoaltahospitalar_id = new TDBCombo (
             "tipoaltahospitalar_id", "database",
             "TipoAltaHospitalarRecord", "id",
             "nometipoaltahospitalar", "nometipoaltahospitalar"
         );
+
+        $medicoalta_id->setValue( TSession::getValue( "profissionalid" ) );
 
         $fk = filter_input( INPUT_GET, "fk" );
         $did = filter_input( INPUT_GET, "did" );
@@ -56,26 +55,28 @@ class AltaHospitalarDetail extends TWindow
 
         }
 
-        $paciente_nome        ->setSize( "38%" );
-        $tipoaltahospitalar_id->setSize( "38%" );
-        $dataaltahospitalar   ->setSize( "38%" );
-        $horaaltahospitalar   ->setSize( "38%" );
-        $medicoalta_id        ->setSize( "38%" );
-
-        $paciente_nome        ->setEditable( false );
-        $tipoaltahospitalar_id->setDefaultOption( "..::SELECIONE::.." );
-        $medicoalta_id        ->setDefaultOption( "..::SELECIONE::.." );
-
         $horaaltahospitalar->setMask( "hh:ii" );
         $dataaltahospitalar->setMask( "dd/mm/yyyy" );
         $dataaltahospitalar->setDatabaseMask("yyyy-mm-dd");
 
-        $this->form->addFields( [ new TLabel( "Nome do Paciente:" ) ], [ $paciente_nome ] );
-        $this->form->addFields( [ new TLabel( "Tipo de Alta:" ) ], [ $tipoaltahospitalar_id ] );
-        $this->form->addFields( [ new TLabel( "Data da Alta:" ) ], [ $dataaltahospitalar ] );
-        $this->form->addFields( [ new TLabel( "Hora da Alta:" ) ], [ $horaaltahospitalar ] );
-        $this->form->addFields( [ new TLabel( "Médico Responsável:" ) ], [ $medicoalta_id ] );
-        $this->form->addFields( [ $id, $paciente_id ] );
+        $horaaltahospitalar->setValue( date( "H:i" ) );
+        $dataaltahospitalar->setValue( date( "d/m/Y" ) );
+        
+        $paciente_nome        ->setSize( "38%" );
+        $dataaltahospitalar   ->setSize( "28%" );
+        $horaaltahospitalar   ->setSize( "10%" );
+        $tipoaltahospitalar_id->setSize( "38%" );
+
+        $paciente_nome     ->setEditable( false );
+        $horaaltahospitalar->setEditable( false );
+        $dataaltahospitalar->setEditable( false );
+
+        $tipoaltahospitalar_id->setDefaultOption( "..::SELECIONE::.." );
+
+        $this->form->addFields( [ new TLabel( "Paciente:" ) ], [ $paciente_nome ] );
+        $this->form->addFields( [ new TLabel( "Data da Alta:" ) ], [ $dataaltahospitalar, $horaaltahospitalar ] );
+        $this->form->addFields( [ new TLabel( "Tipo da Alta:" ) ], [ $tipoaltahospitalar_id ] );
+        $this->form->addFields( [ $id, $paciente_id, $medicoalta_id ] );
 
         $onSave = new TAction( [ $this, "onSave" ] );
         $onReload = new TAction( [ "PacientesAltaHospitalarList", "onReload" ] );
