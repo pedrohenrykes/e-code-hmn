@@ -19,28 +19,37 @@ class PrescreverMedicacaoDetail extends TWindow
         $id                 = new THidden("id");
         $bau_id             = new THidden("bau_id");
         $paciente_id        = new THidden( "paciente_id" );
+        $medicamento_id     = new THidden( "medicamento_id" );
         $paciente_nome      = new TEntry( "paciente_nome" );
         $profissional_id    = new THidden("profissional_id");
         $dataprescricao     = new TDateTime("dataprescricao");
-        $principioativo_id  = new TDBCombo("principioativo_id","database","PrincipioAtivoRecord","id","nomeprincipioativo");
-        $medicamento_id     = new TDBCombo("medicamento_id","database","MedicamentoRecord","id","nomemedicamento");
+        //$principioativo_id  = new TDBCombo("principioativo_id","database","PrincipioAtivoRecord","id","nomeprincipioativo");
+        //$medicamento_id     = new TDBCombo("medicamento_id","database","MedicamentoRecord","id","nomemedicamento");
         $dosagem            = new TEntry("dosagem");
-        $posologia          = new TEntry("posologia");
+        $posologia          = new TCombo("posologia");
         $observacao         = new TEntry("observacao");
 
-        /*
-        $criteria1 = new TCriteria;
-        $criteria1->add(new TFilter("tipoprofissional_id","=",1));
-        $medicamento_id = new TDBCombo("medicoobito_id","database","ProfissionalRecord","id","nomeprofissional","nomeprofissional",$criteria1);
-        */
+
+        $criteria3 = new TCriteria;
+        /*if ($_SESSION['empresa_id'] == 1) {
+        $criteria3->add(new TFilter('empresa_id', '=', $_SESSION['empresa_id']));
+        }*/
+        //$criteria3->add($criteria_servidor);
+
+        $principioativo_id = new TDBMultiSearch('principioativo_id', 'database', 'Vw_Principio_MultiSearchRecord', 'medicamento_id', 'principio_medicamento', 'principio_medicamento', $criteria3);
+        $principioativo_id->style = "text-transform: uppercase;";
+        $principioativo_id->setProperty('placeholder', 'SELECIONE O MEDICAMENTO');
+        $principioativo_id->setMinLength(1);
+        $principioativo_id->setMaxSize(1);
+
 
         $fk = filter_input( INPUT_GET, "fk" );
         $did = filter_input( INPUT_GET, "did" );
 
         $bau_id->setValue ($fk);
         $paciente_id->setValue ($did);
-        $profissional_id->setValue ('1');
-        //$profissional_id  ALTERAR PARA O DA SESSSAAAAOOOOO
+        $profissional_id->setValue('1');
+        //$profissional_id->setValue ($_SESSION['profissional_id']);
 
         try {
 
@@ -75,30 +84,39 @@ class PrescreverMedicacaoDetail extends TWindow
         $destinoobito_id         ->setSize( "38%" );
         $declaracaoobitomedico_id->setSize( "38%" );
         */
+        $posologia->addItems( [ 
+            "4" => "6x ao Dia",
+            "6" => "4x ao Dia",
+            "8" => "3x ao Dia",
+            "12" => "2x ao Dia",
+            "24" => "1x ao Dia",
+            "25" => "Após da Refeição",
+            "26" => "Antes da Refeição" ] );
 
         $principioativo_id  ->setDefaultOption( "..::SELECIONE::.." );
-        $medicamento_id     ->setDefaultOption( "..::SELECIONE::.." );
+        //$medicamento_id     ->setDefaultOption( "..::SELECIONE::.." );
+        $posologia          ->setDefaultOption( "..::SELECIONE::.." );
 
         $dataprescricao     ->setMask( "dd/mm/yyyy" );
         $dataprescricao     ->setDatabaseMask("yyyy-mm-dd");
 
-        $dataprescricao->setValue( date( "d/m/Y" ) );
+        $dataprescricao     ->setValue( date( "d/m/Y" ) );
         $dataprescricao     ->setEditable( false );
         $paciente_nome      ->setEditable( false );
 
-        $principioativo_id->addValidation( TextFormat::set( "Princípio Ativo" ), new TRequiredValidator );
-        $medicamento_id->addValidation( TextFormat::set( "Medicamento" ), new TRequiredValidator );
+        $principioativo_id->addValidation( TextFormat::set( "Medicamento" ), new TRequiredValidator );
+        //$medicamento_id->addValidation( TextFormat::set( "Medicamento" ), new TRequiredValidator );
         $dosagem->addValidation( TextFormat::set( "Dosagem" ), new TRequiredValidator );
         $posologia->addValidation( TextFormat::set( "Posologia" ), new TRequiredValidator );
 
         $this->form->addFields( [ new TLabel( "Nome do Paciente:" ) ], [ $paciente_nome ] );
         $this->form->addFields( [ new TLabel( "Data Prescrição:" ) ], [ $dataprescricao ] );
-        $this->form->addFields( [ new TLabel( "Princípio Ativo:{$redstar}" ) ], [ $principioativo_id ] );
-        $this->form->addFields( [ new TLabel( "Medicamento:{$redstar}" ) ], [ $medicamento_id ] );
+        $this->form->addFields( [ new TLabel( "Medicamento:{$redstar}" ) ], [ $principioativo_id ] );
+        //$this->form->addFields( [ new TLabel( "Medicamento:{$redstar}" ) ], [ $medicamento_id ] );
         $this->form->addFields( [ new TLabel( "Dosagem:{$redstar}" ) ], [ $dosagem ] );
         $this->form->addFields( [ new TLabel( "Posologia:{$redstar}" ) ], [ $posologia ] );
         $this->form->addFields( [ new TLabel( "Observação" ) ], [ $observacao ] );
-        $this->form->addFields( [ $id, $paciente_id, $profissional_id, $bau_id ] );
+        $this->form->addFields( [ $id, $paciente_id, $profissional_id, $bau_id, $medicamento_id ] );
 
         $onSave   = new TAction( [ $this, "onSave" ] );
         $onSave->setParameter( "fk", $fk );
@@ -167,12 +185,13 @@ class PrescreverMedicacaoDetail extends TWindow
         try {
 
             $this->form->validate();
-
             $object = $this->form->getData( "BauUsoMedicacoesRecord" );
+            $object->medicamento_id = key($object->principioativo_id);
 
             TTransaction::open( "database" );
 
             unset($object->paciente_nome);
+            unset($object->principioativo_id);
             //$object->situacao = "OBITO";
             $object->store();
 
