@@ -95,8 +95,6 @@ class PacienteList extends TPage
         $container->add( TPanelGroup::pack( NULL, $this->datagrid ) );
         $container->add( $this->pageNavigation );
 
-        var_dump( $_SESSION );
-
         parent::add( $container );
     }
 

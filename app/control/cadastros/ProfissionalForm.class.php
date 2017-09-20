@@ -30,7 +30,6 @@ class ProfissionalForm extends TWindow
         $email = new TEntry("email");
         $situacao = new TCombo('situacao');
 
-
         //$nomeprofissional->forceUpperCase();
         //$numeroconselho->setMask( "A!" );
 
@@ -67,8 +66,8 @@ class ProfissionalForm extends TWindow
         $uf->setValue( "RN" );
 
         $numerocpf->setMask( "999.999.999-99" );
-        $telefone1->setMask( "(99)9999-9999" );
-        $telefone2->setMask( "(99)9999-9999" );
+        $telefone1->setMask( "(99)99999-9999" );
+        $telefone2->setMask( "(99)99999-9999" );
 
         $nomeprofissional->forceUpperCase();
         $numeroconselho->forceUpperCase();

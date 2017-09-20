@@ -73,13 +73,13 @@ class LoginForm extends TPage
         try {
 
             TTransaction::open( 'database' );
-            
+
             $this->form->validate();
 
             $data = $this->form->getData( 'StdClass' );
 
             $user = SystemUser::authenticate( $data->login, $data->password );
-            
+
             if ( $user ) {
 
                 TSession::regenerate();
@@ -95,28 +95,28 @@ class LoginForm extends TPage
                 TSession::setValue( 'frontpage', '' );
                 TSession::setValue( 'programs', $programs );
                 TSession::setValue( 'profissionalid', $user->profissional_id );
-                TSession::setValue( 'tipoprofissionalid', $user->tipoprofissional );
+                TSession::setValue( 'tipoprofissionalid', $user->tipoprofissional_id );
 
                 if ( !empty( $user->unit ) ) {
                     TSession::setValue( 'userunitid',$user->unit->id );
                 }
 
                 $frontpage = $user->frontpage;
-                
+
                 SystemAccessLog::registerLogin();
-                
+
                 if ( $frontpage instanceof SystemProgram AND $frontpage->controller ) {
-                    
+
                     AdiantiCoreApplication::gotoPage( $frontpage->controller ); // reload
 
                     TSession::setValue( 'frontpage', $frontpage->controller );
-                
+
                 } else {
-                    
+
                     AdiantiCoreApplication::gotoPage( 'DashBoardCreate' ); // reload
 
                     TSession::setValue( 'frontpage', 'DashBoardCreate' );
-                
+
                 }
             }
 
@@ -129,7 +129,7 @@ class LoginForm extends TPage
             TSession::setValue( 'logged', FALSE );
 
             TTransaction::rollback();
-        
+
         }
     }
 
@@ -139,7 +139,7 @@ class LoginForm extends TPage
 
             TTransaction::open('database');
             $user = SystemUser::newFromLogin( TSession::getValue('login') );
-            
+
             if ($user) {
 
                 $programs = $user->getPrograms();
@@ -161,7 +161,7 @@ class LoginForm extends TPage
         } catch (Exception $e) {
 
             new TMessage('error', $e->getMessage());
-        
+
         }
     }
 

@@ -30,16 +30,16 @@ class SystemUser extends TRecord
         if( empty( $this->profissional ) ) {
             $this->profissional = new ProfissionalRecord( $this->profissional_id );
         }
-        
+
         return $this->profissional->nomeprofissional;
     }
 
-    public function get_tipoprofissional()
+    public function get_tipoprofissional_id()
     {
         if( empty( $this->profissional ) ) {
             $this->profissional = new ProfissionalRecord( $this->profissional_id );
         }
-        
+
         return $this->profissional->tipoprofissional_id;
     }
 
@@ -57,7 +57,7 @@ class SystemUser extends TRecord
         if ( empty( $this->frontpage ) ) {
             $this->frontpage = new SystemProgram( $this->frontpage_id );
         }
-        
+
         return $this->frontpage;
     }
 
@@ -86,7 +86,7 @@ class SystemUser extends TRecord
         $criteria = new TCriteria;
         $criteria->add( new TFilter( 'system_user_id', '=', $this->id ) );
         $objects = $repository->load( $criteria );
-        
+
         if ( $objects ) {
             foreach ( $objects as $object ) {
                 $groups[] = new SystemGroup( $object->system_group_id );
@@ -208,7 +208,7 @@ class SystemUser extends TRecord
         $criteria = new TCriteria;
         $criteria->add(new TFilter( 'login', '=', $login ) );
         $objects = $repos->load( $criteria );
-        
+
         if ( isset( $objects[0] ) ) {
             return $objects[0];
         }
@@ -276,7 +276,7 @@ class SystemUser extends TRecord
                 }
             }
         }
-        
+
         return $collection;
     }
 }
