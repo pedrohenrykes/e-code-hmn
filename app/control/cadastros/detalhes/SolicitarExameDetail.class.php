@@ -1,13 +1,13 @@
 <?php
 
-class PrescreverMedicacaoDetail extends TWindow
+class SolicitarExameDetail extends TWindow
 {
     private $form;
 
     public function __construct()
     {
         parent::__construct();
-        parent::setTitle( "Prescrever Medicação" );
+        parent::setTitle( "Solicitar Exames" );
         parent::setSize( 0.600, 0.800 );
 
         $redstar = '<font color="red"><b>*</b></font>';

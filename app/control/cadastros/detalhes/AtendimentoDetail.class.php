@@ -73,28 +73,32 @@ class AtendimentoDetail extends TPage
         $this->form->addFields( [ new TLabel( "Paciente: {$redstar}" ) ], [ $paciente_nome ] );
         $this->form->addFields([ new TLabel( "Data do Atendimento: {$redstar}" ) ], [ $dataclassificacao , $horaclassificacao ] );
 
-        $this->form->addFields( [ new TLabel( "Exame Clinico:" ) ], [ $exameclinico ] );
-
-        $this->form->addFields( [ new TLabel( "Exames Complementares:" ) ], [ $examescomplementares ] );
-        //$this->form->addFields( [ new TLabel( "Diagnóstico:" ) ], [ $diagnosticomedico ] );
-        $this->form->addFields( [ new TLabel( "Descrição do Tratamento:" ) ], [ $descricaotratamento ] );
-
-        /*--- frame de comorbidades ---*/
+        /*--- frame de Diagnostico ---*/
         $frame1 = new TFrame;
         $frame1->setLegend( "Diagnóstico" );
         $frame1->style .= ';margin:0%;width:90%';
+
+        $criteria3 = new TCriteria;
+        $cid_codigo = new TDBMultiSearch('cid_id', 'database', 'VwCidRecord', 'id', 'nomecid', 'nomecid', $criteria3);
+        $cid_codigo->style = "text-transform: uppercase;";
+        $cid_codigo->setProperty('placeholder', '..............::::::: DIGITE A DOENÇA OU CID :::::::..............');
+        $cid_codigo->setMinLength(1);
+        $cid_codigo->setMaxSize(1);
+
+        /*
         $cid_id     = new THidden( "cid_id" );
-        $cid_codigo = new TDBSeekButton(
-            "cid_codigo", "database", "form_list_atendimento",
-            "VwCidRecord", "nomecid", "cid_id", "cid_codigo"
-        );
+        $cid_codigo = new TDBSeekButton("cid_codigo", "database", "form_list_atendimento","VwCidRecord", "nomecid", "cid_id", "cid_codigo");
+        */
+
         $add_button1 = TButton::create(
             "add1", [ $this,"onError" ], null, null
-        );
+            );
         $onSaveFrame1 = new TAction( [ $this, "onSaveFrames" ] );
         $onSaveFrame1->setParameter( "fk", $fk );
         $onSaveFrame1->setParameter( "did", $did );
         $onSaveFrame1->setParameter( "frm", 1 );
+
+        $cid_codigo->setSize("100%");
         $add_button1->setAction( $onSaveFrame1 );
         $add_button1->setLabel( "Adicionar" );
         $add_button1->setImage( "fa:plus green" );
@@ -124,10 +128,9 @@ class AtendimentoDetail extends TPage
         $vbox1->add( $this->framegrid1 );
         $frame1->add( $vbox1 );
         /*--------------------------------------*/
-
-        /*--- frame de comorbidades ---*/
+        /*--- frame de Direcionamento ---*/
         $frame2 = new TFrame;
-        $frame2->setLegend( "Direcionamento" );
+        $frame2->setLegend( "Ações para o Paciente" );
         $frame2->style .= ';margin:0%;width:90%';
 
         $add_button2 = TButton::create("buttonmed", [ $this,"onError" ], null, null);
@@ -136,32 +139,57 @@ class AtendimentoDetail extends TPage
         $onSaveFrame2->setParameter( "did", $did );
         $onSaveFrame2->setParameter( "frm", 1 );
         $add_button2->setAction( $onSaveFrame2 );
+
         $add_button2->setLabel( "Prescrever Medicação" );
+        $add_button2->class = 'btn btn-success';
         $add_button2->setImage( "fa:plus green" );
 
-        $add_button3 = TButton::create("buttonalt", [ $this,"onError" ], null, null);
-        $onSaveFrame3 = new TAction( [ 'PacientesAltaHospitalarList', "onReload" ] );
+        $add_button3 = TButton::create("buttonexam", [ $this,"onError" ], null, null);
+        $onSaveFrame3 = new TAction( [ 'SolicitarExameDetail', "onReload" ] );
         $onSaveFrame3->setParameter( "fk", $fk );
         $onSaveFrame3->setParameter( "did", $did );
         $onSaveFrame3->setParameter( "frm", 1 );
         $add_button3->setAction( $onSaveFrame3 );
-        $add_button3->setLabel( "Alta Hospitalar" );
+
+        $add_button3->setLabel( "Solicitar Exame" );
+        $add_button3->class = 'btn btn-success';
         $add_button3->setImage( "fa:plus green" );
+
+        $add_button4 = TButton::create("buttonalt", [ $this,"onError" ], null, null);
+        $onSaveFrame4 = new TAction( [ 'PacientesAltaHospitalarList', "onReload" ] );
+        $onSaveFrame4->setParameter( "fk", $fk );
+        $onSaveFrame4->setParameter( "did", $did );
+        $onSaveFrame4->setParameter( "frm", 1 );
+        $add_button4->setAction( $onSaveFrame4 );
+        
+        $add_button4->setLabel( "Alta Hospitalar" );
+        $add_button4->class = 'btn btn-success';
+        $add_button4->setImage( "fa:plus green" );
 
         $this->form->addField( $add_button2 );
         $this->form->addField( $add_button3 );
+        $this->form->addField( $add_button4 );
 
         $this->form->addContent( [ $frame2 ] );
         $hbox2 = new THBox;
         $hbox2->add( $add_button2 );
         $hbox2->add( $add_button3 );
+        $hbox2->add( $add_button4 );
         $hbox2->style = 'margin: 0%';
         $vbox2 = new TVBox;
         $vbox2->style='width:100%';
         $vbox2->add( $hbox2 );
         $frame2->add( $vbox2 );
         /*--------------------------------------*/
-        $this->form->addFields( [ $id, $bau_id, $paciente_id, $profissional_id, $cid_id ] );
+        $this->form->addFields( [ new TLabel( "Exame Clinico:" ) ], [ $exameclinico ] );
+        $this->form->addFields( [ new TLabel( "Exames Complementares:" ) ], [ $examescomplementares ] );
+        //$this->form->addFields( [ new TLabel( "Diagnóstico:" ) ], [ $diagnosticomedico ] );
+        $this->form->addFields( [ new TLabel( "Descrição do Tratamento:" ) ], [ $descricaotratamento ] );
+
+
+
+
+        $this->form->addFields( [ $id, $bau_id, $paciente_id, $profissional_id ] );
 
         $onSave = new TAction( [ $this, "onSave" ] );
         $onSave->setParameter( "fk", $fk );
@@ -220,7 +248,7 @@ class AtendimentoDetail extends TPage
         $container->add( $this->pageNavigation );
 
         parent::add( $container );
-        
+
     }
 
     public function onSave( $param = null )
@@ -230,6 +258,7 @@ class AtendimentoDetail extends TPage
         try {
 
             $this->form->validate();
+            $object->profissional_id = TSession::getValue('profissionalid');
             TTransaction::open( "database" );
             unset( $object->paciente_nome );
             $object->store();
@@ -287,9 +316,9 @@ class AtendimentoDetail extends TPage
         if( isset( $param[ "key" ] ) ) {
 
             $param = [
-                "key" => $param[ "key" ],
-                "fk"  => $param[ "fk" ],
-                "did"  => $param[ "did" ]
+            "key" => $param[ "key" ],
+            "fk"  => $param[ "fk" ],
+            "did"  => $param[ "did" ]
             ];
 
             $action1 = new TAction( [ $this, "Delete" ] );
@@ -331,8 +360,8 @@ class AtendimentoDetail extends TPage
             $repository = new TRepository( "BauAtendimentoRecord" );
 
             $properties = [
-                "order" => "dataatendimento",
-                "direction" => "asc"
+            "order" => "dataatendimento",
+            "direction" => "asc"
             ];
 
             $limit = 10;
@@ -397,6 +426,8 @@ class AtendimentoDetail extends TPage
         try {
 
             $object = $this->unSetFields( $param );
+
+            $object->cid_id = key($object->cid_id);
 
             TTransaction::open( "database" );
 
@@ -487,27 +518,27 @@ class AtendimentoDetail extends TPage
 
             case 1:
 
-                $object = $this->form->getData( "BauComorbidadesRecord" );
+            $object = $this->form->getData( "BauComorbidadesRecord" );
                 //unset( $object->medicamento_id );
                 //unset( $object->principioativo_id );
 
-                break;
+            break;
 
             case 2:
 
-                $object = $this->form->getData( "BauUsoMedicacoesRecord" );
-                unset( $object->cid_id );
-                unset( $object->principioativo_id );
+            $object = $this->form->getData( "BauUsoMedicacoesRecord" );
+            unset( $object->cid_id );
+            unset( $object->principioativo_id );
 
-                break;
+            break;
 
             case 3:
 
-                $object = $this->form->getData( "BauAlergiaMedicamentosaRecord" );
-                unset( $object->cid_id );
-                unset( $object->medicamento_id );
+            $object = $this->form->getData( "BauAlergiaMedicamentosaRecord" );
+            unset( $object->cid_id );
+            unset( $object->medicamento_id );
 
-                break;
+            break;
 
         }
 
@@ -537,16 +568,16 @@ class AtendimentoDetail extends TPage
         switch ( $param[ "frm" ] ) {
 
             case 1:
-                $object = new BauComorbidadesRecord( $param[ "key" ] );
-                break;
+            $object = new BauComorbidadesRecord( $param[ "key" ] );
+            break;
 
             case 2:
-                $object = new BauUsoMedicacoesRecord( $param[ "key" ] );
-                break;
+            $object = new BauUsoMedicacoesRecord( $param[ "key" ] );
+            break;
 
             case 3:
-                $object = new BauAlergiaMedicamentosaRecord( $param[ "key" ] );
-                break;
+            $object = new BauAlergiaMedicamentosaRecord( $param[ "key" ] );
+            break;
 
         }
 
