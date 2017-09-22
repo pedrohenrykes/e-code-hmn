@@ -12,44 +12,32 @@ class SolicitarExameDetail extends TWindow
 
         $redstar = '<font color="red"><b>*</b></font>';
 
-        $this->form = new BootstrapFormBuilder( "detail_prescricao_medicao" );
+        $this->form = new BootstrapFormBuilder( "detail_solicitar_exame" );
         $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 
         $id                 = new THidden("id");
         $bau_id             = new THidden("bau_id");
         $paciente_id        = new THidden( "paciente_id" );
-        $medicamento_id     = new THidden( "medicamento_id" );
+        $exame_id           = new THidden( "exame_id" );
         $paciente_nome      = new TEntry( "paciente_nome" );
         $profissional_id    = new THidden("profissional_id");
-        $dataprescricao     = new TDateTime("dataprescricao");
-        //$principioativo_id  = new TDBCombo("principioativo_id","database","PrincipioAtivoRecord","id","nomeprincipioativo");
-        //$medicamento_id     = new TDBCombo("medicamento_id","database","MedicamentoRecord","id","nomemedicamento");
-        $dosagem            = new TEntry("dosagem");
-        $posologia          = new TCombo("posologia");
+        $datasolicitacao     = new TDateTime("datasolicitacao");
         $observacao         = new TText("observacao");
 
         $criteria3 = new TCriteria;
-        /*if ($_SESSION['empresa_id'] == 1) {
-        $criteria3->add(new TFilter('empresa_id', '=', $_SESSION['empresa_id']));
-        }*/
-        //$criteria3->add($criteria_servidor);
+        $exame = new TDBMultiSearch('exame', 'database', 'VwTipoExameNomeRecord', 'exame_id', 'tipo_exame', 'tipo_exame', $criteria3);
 
-        $principioativo_id = new TDBMultiSearch('principioativo_id', 'database', 'VwPrincipioAtivoMedicamentoRecord', 'medicamento_id', 'principiomedicamento', 'principiomedicamento', $criteria3);
-        $principioativo_id->style = "text-transform: uppercase;";
-        $principioativo_id->setProperty('placeholder', 'DIGITE O NOME OU PRINCIPIO ATIVO');
-        $principioativo_id->setMinLength(1);
-        $principioativo_id->setMaxSize(1);
+        $exame->style = "text-transform: uppercase;";
+        $exame->setProperty('placeholder', 'DIGITE O EXAME OU TIPO DO EXAME');
+        $exame->setMinLength(1);
+        $exame->setMaxSize(1);
 
         $fk = filter_input( INPUT_GET, "fk" );
         $did = filter_input( INPUT_GET, "did" );
 
         $bau_id->setValue ($fk);
         $paciente_id->setValue ($did);
-        //$profissional_id->setValue('1');
-
-
-
 
         try {
 
@@ -73,50 +61,24 @@ class SolicitarExameDetail extends TWindow
 
         }
 
-        $dosagem->placeholder = 'Ex: 40 Gotas ou 1 Comp...';
-        $principioativo_id      ->setSize( "70%" );
-        $paciente_nome          ->setSize( "70%" );
-        $dataprescricao         ->setSize( "20%" );
-        $observacao               ->setSize( "70%" );
-        /*
+        $exame              ->setSize( "70%" );
+        $paciente_nome      ->setSize( "70%" );
+        $datasolicitacao    ->setSize( "20%" );
+        $observacao         ->setSize( "70%" );
+    
+        $datasolicitacao    ->setMask( "dd/mm/yyyy" );
+        $datasolicitacao    ->setDatabaseMask("yyyy-mm-dd");
+        $datasolicitacao    ->setValue( date( "d/m/Y" ) );
 
-        $declaracaoobitodata     ->setSize( "38%" );
-        $declaracaoobitohora     ->setSize( "38%" );
-        $destinoobito_id         ->setSize( "38%" );
-        $declaracaoobitomedico_id->setSize( "38%" );
-        */
-        $posologia->addItems( [
-            "4" => "6x ao Dia",
-            "6" => "4x ao Dia",
-            "8" => "3x ao Dia",
-            "12" => "2x ao Dia",
-            "24" => "1x ao Dia",
-            "25" => "Após da Refeição",
-            "26" => "Antes da Refeição" ] );
-
-        //$principioativo_id  ->setDefaultOption( "..::SELECIONE::.." );
-        //$medicamento_id     ->setDefaultOption( "..::SELECIONE::.." );
-        $posologia          ->setDefaultOption( "..::SELECIONE::.." );
-
-        $dataprescricao     ->setMask( "dd/mm/yyyy" );
-        $dataprescricao     ->setDatabaseMask("yyyy-mm-dd");
-
-        $dataprescricao     ->setValue( date( "d/m/Y" ) );
-        $dataprescricao     ->setEditable( false );
+        $datasolicitacao    ->setEditable( false );
         $paciente_nome      ->setEditable( false );
 
-        $principioativo_id->addValidation( TextFormat::set( "Medicamento" ), new TRequiredValidator );
-        //$medicamento_id->addValidation( TextFormat::set( "Medicamento" ), new TRequiredValidator );
-        $dosagem->addValidation( TextFormat::set( "Dosagem" ), new TRequiredValidator );
-        $posologia->addValidation( TextFormat::set( "Posologia" ), new TRequiredValidator );
+        //$principioativo_id->addValidation( TextFormat::set( "Medicamento" ), new TRequiredValidator );
 
-        $this->form->addFields( [ new TLabel( "Paciente:" ) ], [ $paciente_nome, $dataprescricao ] );
-        $this->form->addFields( [ new TLabel( "Medicamento:{$redstar}" ) ], [ $principioativo_id ] );
-        //$this->form->addFields( [ new TLabel( "Medicamento:{$redstar}" ) ], [ $medicamento_id ] );
-        $this->form->addFields( [ new TLabel( "Dosagem:{$redstar}" ) ], [ $dosagem ] );
-        $this->form->addFields( [ new TLabel( "Posologia:{$redstar}" ) ], [ $posologia ] );
+        $this->form->addFields( [ new TLabel( "Paciente:" ) ], [ $paciente_nome, $datasolicitacao ] );
+        $this->form->addFields( [ new TLabel( "Exame:{$redstar}" ) ], [ $exame ] );
         $this->form->addFields( [ new TLabel( "Observação" ) ], [ $observacao ] );
-        $this->form->addFields( [ $id, $paciente_id, $profissional_id, $bau_id, $medicamento_id ] );
+        $this->form->addFields( [ $id, $paciente_id, $profissional_id, $bau_id, $exame_id ] );
 
         $onSave   = new TAction( [ $this, "onSave" ] );
         $onSave->setParameter( "fk", $fk );
@@ -133,16 +95,10 @@ class SolicitarExameDetail extends TWindow
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( '100%' );
 
-        $column_1 = new TDataGridColumn( "posologia", "Posologia", "left" );
-        $column_2 = new TDataGridColumn( "dosagem", "Dosagem", "left" );
-        $column_3 = new TDataGridColumn( "medicamento_nome", "Medicamento", "left" );
-        //$column_4 = new TDataGridColumn( "dosagem", "Dosagem", "left" );
-        $column_5 = new TDataGridColumn( "dataprescricao", "Data Prescrição", "left" );
+        $column_1 = new TDataGridColumn( "exame_nome", "Exame", "left" );
+        $column_5 = new TDataGridColumn( "datasolicitacao", "Data da solicitação", "left" );
 
-        $this->datagrid->addColumn( $column_3 );
         $this->datagrid->addColumn( $column_1 );
-        $this->datagrid->addColumn( $column_2 );
-        //$this->datagrid->addColumn( $column_4 );
         $this->datagrid->addColumn( $column_5 );
 
         $action_edit = new CustomDataGridAction( [ $this, "onEdit" ] );
@@ -179,36 +135,30 @@ class SolicitarExameDetail extends TWindow
         parent::add( $container );
     }
 
-    public function onSave( $param = null )
-    {
-
+    public function onSave( $param = null ){
 
         try {
 
             $this->form->validate();
-            $object = $this->form->getData( "BauUsoMedicacoesRecord" );
-            $object->medicamento_id = key($object->principioativo_id);
+            $object = $this->form->getData( "BauExameRecord" );
+            $object->exame_id = key($object->exame);
             $object->profissional_id = TSession::getValue('profissionalid');
 
             TTransaction::open( "database" );
 
             unset($object->paciente_nome);
-            unset($object->principioativo_id);
-            //$object->situacao = "OBITO";
+            unset($object->exame);
             $object->store();
 
             TTransaction::close();
 
             $action = new TAction( [ $this, "onReload" ] );
             $action->setParameters( $param );
-            new TMessage( "info", "Medicação Prescrita com sucesso!", $action );
+            new TMessage( "info", "Exame Solicitado com sucesso!", $action );
 
         } catch ( Exception $ex ) {
 
             TTransaction::rollback();
-
-            // $this->form->setData( $object );
-
             new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
 
         }
@@ -220,9 +170,9 @@ class SolicitarExameDetail extends TWindow
             if ( isset( $param[ "key" ] ) ) {
                 TTransaction::open( "database" );
 
-                $object = new BauUsoMedicacoesRecord( $param[ "key" ] );
+                $object = new BauExameRecord( $param[ "key" ] );
 
-                $object->dataprescricao = TDate::date2br($object->dataprescricao);
+                $object->datasolicitacao = TDate::date2br($object->datasolicitacao);
 
                 $this->onReload( $param );
                 $this->form->setData( $object );
@@ -264,7 +214,7 @@ class SolicitarExameDetail extends TWindow
         try {
 
             TTransaction::open( "database" );
-            $object = new BauUsoMedicacoesRecord( $param[ "key" ] );
+            $object = new BauExameRecord( $param[ "key" ] );
             $object->delete();
             TTransaction::close();
 
@@ -284,8 +234,8 @@ class SolicitarExameDetail extends TWindow
         try {
 
             TTransaction::open( "database" );
-            $repository = new TRepository( "BauUsoMedicacoesRecord" );
-            $properties = [ "order" => "dataprescricao", "direction" => "desc" ];
+            $repository = new TRepository( "BauExameRecord" );
+            $properties = [ "order" => "datasolicitacao", "direction" => "desc" ];
             $limit = 10;
 
             $criteria = new TCriteria();
@@ -301,7 +251,7 @@ class SolicitarExameDetail extends TWindow
 
                 foreach ( $objects as $object ) {
 
-                    $object->dataprescricao = TDate::date2br($object->dataprescricao);
+                    $object->datasolicitacao = TDate::date2br($object->datasolicitacao);
                     $this->datagrid->addItem( $object );
 
                 }

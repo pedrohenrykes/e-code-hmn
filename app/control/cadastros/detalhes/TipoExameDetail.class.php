@@ -24,6 +24,7 @@ class TipoExameDetail extends TStandardList
         $id     = new THidden( "id" );
         $nome   = new TEntry( "nome" );
 
+        $nome->style = "text-transform: uppercase;";
         $id->setSize( "38%" );
         $nome->setSize( "38%" );
 

@@ -1,6 +1,6 @@
 <?php
 
-class BauExameDetail extends TStandardList
+class ExameDetail extends TStandardList
 {
 
     protected $form;
@@ -19,13 +19,14 @@ class BauExameDetail extends TStandardList
         $this->form->setFormTitle( "Cadastro de Exame" );
 
         parent::setDatabase('database');
-        parent::setActiveRecord('BauExameRecord');
+        parent::setActiveRecord('ExameRecord');
         parent::addFilterField('nome', 'like', 'nome');
 
         $id     = new THidden( "id" );
         $nome   = new TEntry( "nome" );
         $tipoexame = new TDBCombo("tipoexame_id", "database", "TipoExameRecord", "id", "nome", "nome");
 
+        $nome->style = "text-transform: uppercase;";
         $id->setSize( "38%" );
         $nome->setSize( "38%" );
         $tipoexame->setSize( "38%" );
@@ -36,7 +37,7 @@ class BauExameDetail extends TStandardList
         $this->form->addFields( [ $id ] );
 
         $this->form->addAction( "Buscar", new TAction( [ $this, "onSearch" ] ), "fa:search" );
-        $this->form->addAction( "Adicionars", new TAction( [ $this, "onSave" ] ), "bs:plus-sign green" );
+        $this->form->addAction( "Adicionar", new TAction( [ $this, "onSave" ] ), "bs:plus-sign green" );
 
         $this->datagrid = new BootstrapDatagridWrapper( new TDataGrid() );
         $this->datagrid->datatable = "true";
@@ -83,7 +84,7 @@ class BauExameDetail extends TStandardList
         try {
 
             $this->form->validate();
-            $object = $this->form->getData( "BauExameRecord" );
+            $object = $this->form->getData( "ExameRecord" );
 
             TTransaction::open( "database" );
             $object->store();
@@ -107,7 +108,7 @@ class BauExameDetail extends TStandardList
                 $key = $param['key'];
                 TTransaction::open('database');
 
-                $object = new BauExameRecord($key);
+                $object = new ExameRecord($key);
                 $this->form->setData($object);
 
                 TTransaction::close();

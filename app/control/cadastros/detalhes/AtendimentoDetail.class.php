@@ -426,7 +426,6 @@ class AtendimentoDetail extends TPage
         try {
 
             $object = $this->unSetFields( $param );
-
             $object->cid_id = key($object->cid_id);
 
             TTransaction::open( "database" );
