@@ -71,19 +71,15 @@ class PacienteList extends TPage
         $this->datagrid->addAction( $action_del );
 
         $action_bau = new CustomDataGridAction( [ "BauDetail", "onReload" ] );
-        $action_bau->setButtonClass( "btn btn-default" );
+        $action_bau->setButtonClass( "btn btn-primary" );
         $action_bau->setLabel( "B.A.U." );
-        $action_bau->setImage( "fa:clipboard green fa-lg" );
+        $action_bau->setImage( "fa:clipboard white fa-lg" );
         $action_bau->setField( "id" );
         $action_bau->setFk( "id" );
-
-        $action_group = new TDataGridActionGroup('Opções', 'bs:th');
-        $action_group->addAction( $action_bau );
-
-        $this->datagrid->addActionGroup( $action_group );
+        $action_bau->setUseButton(TRUE);
+        $this->datagrid->addQuickAction( "B.A.U.", $action_bau, 'id');
 
         $this->datagrid->createModel();
-        $this->datagrid->disableDefaultClick();
 
         $this->pageNavigation = new TPageNavigation();
         $this->pageNavigation->setAction( new TAction( [ $this, "onReload" ] ) );

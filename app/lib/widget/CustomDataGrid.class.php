@@ -1,12 +1,13 @@
 <?php
 
-use Adianti\Widget\Datagrid\TDataGrid;
+use Adianti\Widget\Wrapper\TQuickGrid;
 
-class CustomDataGrid extends TDataGrid
+class CustomDataGrid extends TQuickGrid
 {
     public function __construct()
     {
         parent::__construct();
+        parent::disableDefaultClick();
     }
 
     protected function prepareAction( TAction $action, $object )
@@ -41,8 +42,10 @@ class CustomDataGrid extends TDataGrid
             }
 
             $did = isset( $object->$fielddid ) ? $object->$fielddid : NULL;
-            
+
             $action->setParameter( 'did', $did );
         }
     }
+
+
 }

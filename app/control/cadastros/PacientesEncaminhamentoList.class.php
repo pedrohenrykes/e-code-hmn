@@ -47,13 +47,22 @@ class PacientesEncaminhamentoList extends TPage
         $this->datagrid->addColumn( $column_queixaprincipal );
 
         $action_internamento = new CustomDataGridAction( [ "EncaminhamentoDetail", "onReload" ] );
-        $action_internamento->setButtonClass( "btn btn-default" );
-        $action_internamento->setLabel( "Internamento" );
-        $action_internamento->setImage( "fa:arrow-circle-right green fa-lg" );
+        $action_internamento->setButtonClass( "btn btn-primary" );
+        $action_internamento->setImage( "fa:bed white fa-lg" );
         $action_internamento->setField( "bau_id" );
         $action_internamento->setFk( "bau_id" );
         $action_internamento->setDid( "paciente_id" );
-        $action_internamento->setParameter( "mode", "internamento" );
+        $action_internamento->setUseButton(TRUE);
+        $this->datagrid->addQuickAction( "Internamento", $action_internamento, 'bau_id');
+
+        $action_altahospitalar = new CustomDataGridAction( [ "AltaHospitalarDetail", "onReload" ] );
+        $action_altahospitalar->setButtonClass( "btn btn-default" );
+        $action_altahospitalar->setImage( "fa:arrow-circle-right green fa-lg" );
+        $action_altahospitalar->setField( "bau_id" );
+        $action_altahospitalar->setFk( "bau_id" );
+        $action_altahospitalar->setDid( "paciente_id" );
+        $action_altahospitalar->setUseButton(TRUE);
+        // $this->datagrid->addQuickAction( "Alta Hospitalar", $action_altahospitalar, 'bau_id');
 
         $action_remocao = new CustomDataGridAction( [ "EncaminhamentoDetail", "onReload" ] );
         $action_remocao->setButtonClass( "btn btn-default" );
@@ -74,11 +83,9 @@ class PacientesEncaminhamentoList extends TPage
         $action_transferencia->setParameter( "mode", "transferencia" );
 
         $action_group = new TDataGridActionGroup('Opções', 'bs:th');
-        $action_group->addAction( $action_internamento );
         $action_group->addAction( $action_remocao );
         $action_group->addAction( $action_transferencia );
-
-        $this->datagrid->addActionGroup( $action_group );
+        // $this->datagrid->addActionGroup( $action_group );
 
         $this->datagrid->createModel();
 

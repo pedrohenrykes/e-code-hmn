@@ -47,17 +47,13 @@ class PacientesAtendimentoList extends TPage
         $this->datagrid->addColumn( $column_queixaprincipal );
 
         $action_avaliacao = new CustomDataGridAction( [ "AtendimentoDetail", "onReload" ] );
-        $action_avaliacao->setButtonClass( "btn btn-default" );
-        $action_avaliacao->setLabel( "Atendimento Médico" );
-        $action_avaliacao->setImage( "fa:stethoscope green fa-lg" );
+        $action_avaliacao->setButtonClass( "btn btn-primary" );
+        $action_avaliacao->setImage( "fa:user-md white fa-lg" );
         $action_avaliacao->setField( "bau_id" );
         $action_avaliacao->setFk( "bau_id" );
         $action_avaliacao->setDid( "paciente_id" );
-
-        $action_group = new TDataGridActionGroup('Opções', 'bs:th');
-        $action_group->addAction( $action_avaliacao );
-
-        $this->datagrid->addActionGroup( $action_group );
+        $action_avaliacao->setUseButton(TRUE);
+        $this->datagrid->addQuickAction( "Atendimento", $action_avaliacao, 'bau_id');
 
         $this->datagrid->createModel();
 

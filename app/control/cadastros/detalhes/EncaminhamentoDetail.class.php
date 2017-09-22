@@ -1,6 +1,6 @@
 <?php
 
-class EncaminhamentoDetail extends TWindow
+class EncaminhamentoDetail extends TPage
 {
     private $form;
     private $datagrid;
@@ -11,8 +11,8 @@ class EncaminhamentoDetail extends TWindow
     public function __construct()
     {
         parent::__construct();
-        parent::setTitle( "Encaminhamento de Pacientes" );
-        parent::setSize( 0.600, 0.800 );
+        // parent::setTitle( "Encaminhamento de Pacientes" );
+        // parent::setSize( 0.600, 0.800 );
 
         $redstar = '<font color="red"><b>*</b></font>';
 
@@ -139,9 +139,9 @@ class EncaminhamentoDetail extends TWindow
     {
         if ( empty( filter_input( INPUT_GET, "mode" ) ) ) {
 
-            $action = new TAction( [ "PacientesEncaminhamentoList", "onReload" ] );
+            // $action = new TAction( [ "PacientesEncaminhamentoList", "onReload" ] );
 
-            $this->onError();
+            // $this->onError();
 
         }
     }
