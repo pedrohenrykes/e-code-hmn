@@ -15,9 +15,9 @@ class VwBauPacientesRecord extends TRecord
         }
 
         return (
-            '<table><tr><th><div style="border-style:solid;border-width:7px 17px;border-color:' .
+            '<table><tr><th style="padding:0 7px 0;"><div style="border-style:solid;border-width:7px 17px;border-color:' .
             $this->paciente->cortipoclassificacaorisco .
-            ';"></div></th><th><div style="font-size:14px;font-weight:bold;">' .
+            ';"></div></th><th style="padding:0;"><div style="font-size:14px;font-weight:bold;">' .
             $this->paciente->nomepaciente .
             '</div></th></tr></table>'
         );
