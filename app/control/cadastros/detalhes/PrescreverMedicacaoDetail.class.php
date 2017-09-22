@@ -35,7 +35,7 @@ class PrescreverMedicacaoDetail extends TWindow
         }*/
         //$criteria3->add($criteria_servidor);
 
-        $principioativo_id = new TDBMultiSearch('principioativo_id', 'database', 'Vw_Principio_MultiSearchRecord', 'medicamento_id', 'principio_medicamento', 'principio_medicamento', $criteria3);
+        $principioativo_id = new TDBMultiSearch('principioativo_id', 'database', 'VwPrincipioAtivoMedicamentoRecord', 'medicamento_id', 'principiomedicamento', 'principiomedicamento', $criteria3);
         $principioativo_id->style = "text-transform: uppercase;";
         $principioativo_id->setProperty('placeholder', 'DIGITE O NOME OU PRINCIPIO ATIVO');
         $principioativo_id->setMinLength(1);
@@ -47,9 +47,9 @@ class PrescreverMedicacaoDetail extends TWindow
         $bau_id->setValue ($fk);
         $paciente_id->setValue ($did);
         //$profissional_id->setValue('1');
-        
 
-        
+
+
 
         try {
 
@@ -85,7 +85,7 @@ class PrescreverMedicacaoDetail extends TWindow
         $destinoobito_id         ->setSize( "38%" );
         $declaracaoobitomedico_id->setSize( "38%" );
         */
-        $posologia->addItems( [ 
+        $posologia->addItems( [
             "4" => "6x ao Dia",
             "6" => "4x ao Dia",
             "8" => "3x ao Dia",
@@ -189,7 +189,7 @@ class PrescreverMedicacaoDetail extends TWindow
             $object = $this->form->getData( "BauUsoMedicacoesRecord" );
             $object->medicamento_id = key($object->principioativo_id);
             $object->profissional_id = TSession::getValue('profissionalid');
-            
+
             TTransaction::open( "database" );
 
             unset($object->paciente_nome);
