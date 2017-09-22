@@ -53,7 +53,7 @@ class PacientesAtendimentoList extends TPage
         $action_avaliacao->setFk( "bau_id" );
         $action_avaliacao->setDid( "paciente_id" );
         $action_avaliacao->setUseButton(TRUE);
-        $this->datagrid->addQuickAction( "Atendimento", $action_avaliacao, 'bau_id');
+        $this->datagrid->addQuickAction( "Atender", $action_avaliacao, 'bau_id');
 
         $this->datagrid->createModel();
 

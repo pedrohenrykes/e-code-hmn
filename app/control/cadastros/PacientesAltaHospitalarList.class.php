@@ -12,7 +12,7 @@ class PacientesAltaHospitalarList extends TPage
         parent::__construct();
 
         $this->form = new BootstrapFormBuilder( "list_alta_hospitalar" );
-        $this->form->setFormTitle( "Alta Hospitalar " );
+        $this->form->setFormTitle( "Alta Hospitalar" );
         $this->form->class = "tform";
 
         $opcao = new TCombo( "opcao" );
@@ -53,7 +53,7 @@ class PacientesAltaHospitalarList extends TPage
         $action_avaliacao->setFk( "bau_id" );
         $action_avaliacao->setDid( "paciente_id" );
         $action_avaliacao->setUseButton(TRUE);
-        $this->datagrid->addQuickAction( "Alta", $action_avaliacao, 'bau_id');
+        $this->datagrid->addQuickAction( "Conceder Alta", $action_avaliacao, 'bau_id');
 
         $this->datagrid->createModel();
 

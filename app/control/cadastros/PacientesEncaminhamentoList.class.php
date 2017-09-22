@@ -53,7 +53,7 @@ class PacientesEncaminhamentoList extends TPage
         $action_internamento->setFk( "bau_id" );
         $action_internamento->setDid( "paciente_id" );
         $action_internamento->setUseButton(TRUE);
-        $this->datagrid->addQuickAction( "Internamento", $action_internamento, 'bau_id');
+        $this->datagrid->addQuickAction( "Internar", $action_internamento, 'bau_id');
 
         $action_altahospitalar = new CustomDataGridAction( [ "AltaHospitalarDetail", "onReload" ] );
         $action_altahospitalar->setButtonClass( "btn btn-default" );

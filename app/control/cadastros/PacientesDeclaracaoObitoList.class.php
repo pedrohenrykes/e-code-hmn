@@ -53,7 +53,7 @@ class PacientesDeclaracaoObitoList extends TPage
         $action_obito->setFk( "bau_id" );
         $action_obito->setDid( "paciente_id" );
         $action_obito->setUseButton(TRUE);
-        $this->datagrid->addQuickAction( "Óbito", $action_obito, 'bau_id');
+        $this->datagrid->addQuickAction( "Declarar Óbito", $action_obito, 'bau_id');
 
         $this->datagrid->createModel();
 

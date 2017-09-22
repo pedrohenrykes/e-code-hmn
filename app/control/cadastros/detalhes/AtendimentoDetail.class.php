@@ -62,6 +62,7 @@ class AtendimentoDetail extends TPage
         $horaclassificacao->setMask( "hh:ii" );
 
         $dataclassificacao->setValue( date( "d/m/Y" ) );
+        $dataclassificacao->setEditable( false );
         $horaclassificacao->setValue( date( "H:i" ) );
         $horaclassificacao->setEditable( false );
 
@@ -72,6 +73,7 @@ class AtendimentoDetail extends TPage
 
         $this->form->addFields( [ new TLabel( "Paciente: {$redstar}" ) ], [ $paciente_nome ] );
         $this->form->addFields([ new TLabel( "Data do Atendimento: {$redstar}" ) ], [ $dataclassificacao , $horaclassificacao ] );
+        $this->form->addFields( [ new TLabel( "Exame Clinico:" ) ], [ $exameclinico ] );
 
         /*--- frame de Diagnostico ---*/
         $frame1 = new TFrame;
@@ -161,7 +163,7 @@ class AtendimentoDetail extends TPage
         $onSaveFrame4->setParameter( "did", $did );
         $onSaveFrame4->setParameter( "frm", 1 );
         $add_button4->setAction( $onSaveFrame4 );
-        
+
         $add_button4->setLabel( "Alta Hospitalar" );
         $add_button4->class = 'btn btn-success';
         $add_button4->setImage( "fa:plus green" );
@@ -181,10 +183,10 @@ class AtendimentoDetail extends TPage
         $vbox2->add( $hbox2 );
         $frame2->add( $vbox2 );
         /*--------------------------------------*/
-        $this->form->addFields( [ new TLabel( "Exame Clinico:" ) ], [ $exameclinico ] );
-        $this->form->addFields( [ new TLabel( "Exames Complementares:" ) ], [ $examescomplementares ] );
-        //$this->form->addFields( [ new TLabel( "Diagnóstico:" ) ], [ $diagnosticomedico ] );
-        $this->form->addFields( [ new TLabel( "Descrição do Tratamento:" ) ], [ $descricaotratamento ] );
+
+        // $this->form->addFields( [ new TLabel( "Exames Complementares:" ) ], [ $examescomplementares ] );
+        // $this->form->addFields( [ new TLabel( "Diagnóstico:" ) ], [ $diagnosticomedico ] );
+        // $this->form->addFields( [ new TLabel( "Descrição do Tratamento:" ) ], [ $descricaotratamento ] );
 
 
 

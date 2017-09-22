@@ -56,6 +56,7 @@ class PacienteList extends TPage
         $this->datagrid->addColumn( $column_numerocpf );
         $this->datagrid->addColumn( $column_telcelular );
 
+
         $action_edit = new CustomDataGridAction ( [ "PacienteForm", "onEdit" ] );
         $action_edit->setButtonClass ( "btn btn-default" );
         $action_edit->setLabel ( "Editar" );
@@ -71,13 +72,12 @@ class PacienteList extends TPage
         $this->datagrid->addAction( $action_del );
 
         $action_bau = new CustomDataGridAction( [ "BauDetail", "onReload" ] );
-        $action_bau->setButtonClass( "btn btn-primary" );
+        $action_bau->setButtonClass( "btn btn-dafault" );
         $action_bau->setLabel( "B.A.U." );
-        $action_bau->setImage( "fa:clipboard white fa-lg" );
+        $action_bau->setImage( "fa:clipboard green fa-lg" );
         $action_bau->setField( "id" );
         $action_bau->setFk( "id" );
-        $action_bau->setUseButton(TRUE);
-        $this->datagrid->addQuickAction( "B.A.U.", $action_bau, 'id');
+        $this->datagrid->addAction( $action_bau );
 
         $this->datagrid->createModel();
 

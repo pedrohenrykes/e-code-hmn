@@ -22,9 +22,10 @@ class TipoAltaHospitalarForm extends TWindow
         $situacao               = new TCombo('situacao');
         $nometipoaltahospitalar = new TEntry('nometipoaltahospitalar');
 
+        $nometipoaltahospitalar->forceUpperCase();
         $situacao->setDefaultOption('::..SELECIONE..::');
 
-        $situacao->addItems([ 'ATIVO'=>'ATIVO','INATIVO'=>'INATIVO']);
+        $situacao->addItems([ 'ATIVO'=>'ATIVO', 'INATIVO'=>'INATIVO']);
 
         $nometipoaltahospitalar->setProperty("title", "O campo e obrigatorio");
         $situacao ->setProperty("title", "O campo e obrigatorio");
