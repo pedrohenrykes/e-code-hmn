@@ -101,15 +101,6 @@ class SolicitarExameDetail extends TWindow
         $this->datagrid->addColumn( $column_1 );
         $this->datagrid->addColumn( $column_5 );
 
-        $action_edit = new CustomDataGridAction( [ $this, "onEdit" ] );
-        $action_edit->setButtonClass( "btn btn-default" );
-        $action_edit->setLabel( "Editar" );
-        $action_edit->setImage( "fa:pencil-square-o blue fa-lg" );
-        $action_edit->setField( "id" );
-        $action_edit->setParameter( "fk", $fk );
-        $action_edit->setParameter( "did", $did );
-        $this->datagrid->addAction( $action_edit );
-
         $action_del = new CustomDataGridAction( [ $this, "onDelete" ] );
         $action_del->setButtonClass( "btn btn-default" );
         $action_del->setLabel( "Deletar" );
@@ -163,31 +154,7 @@ class SolicitarExameDetail extends TWindow
 
         }
     }
-    public function onEdit( $param = null )
-    {
-        try {
-
-            if ( isset( $param[ "key" ] ) ) {
-                TTransaction::open( "database" );
-
-                $object = new BauExameRecord( $param[ "key" ] );
-
-                $object->datasolicitacao = TDate::date2br($object->datasolicitacao);
-
-                $this->onReload( $param );
-                $this->form->setData( $object );
-                TTransaction::close();
-
-            }
-
-        } catch ( Exception $ex ) {
-
-            TTransaction::rollback();
-
-            new TMessage( "error", "Ocorreu um erro ao tentar carregar o registro para edição!<br><br>" . $ex->getMessage() );
-
-        }
-    }
+   
 
     public function onDelete( $param = null )
     {

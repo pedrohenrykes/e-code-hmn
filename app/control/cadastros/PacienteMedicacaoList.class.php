@@ -1,6 +1,6 @@
 <?php
 
-class PacientesAtendimentoList extends TPage
+class PacienteMedicacaoList extends TPage
 {
     private $form;
     private $datagrid;
@@ -11,8 +11,8 @@ class PacientesAtendimentoList extends TPage
     {
         parent::__construct();
 
-        $this->form = new BootstrapFormBuilder( "list_pacientes_atendimento" );
-        $this->form->setFormTitle( "Atendimento " );
+        $this->form = new BootstrapFormBuilder( "list_pacientes_medicacao" );
+        $this->form->setFormTitle( "Medicação " );
         $this->form->class = "tform";
 
         $opcao = new TCombo( "opcao" );
@@ -34,9 +34,9 @@ class PacientesAtendimentoList extends TPage
         $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
         $this->datagrid->datatable = "true";
         $this->datagrid->style = "width: 100%";
-        $this->datagrid->setHeight( 320 );
+        $this->datagrid->setHeight( '20%' );
 
-        $column_paciente_nome   = new TDataGridColumn( "nomepacientecor", "Classificação/Paciente", "left" );
+        $column_paciente_nome   = new TDataGridColumn( "nomepacientecor", "Paciente", "left" );
         $column_dataentrada     = new TDataGridColumn( "dataentrada", "Data de Chegada", "left" );
         $column_horaentrada     = new TDataGridColumn( "horaentrada", "Hora de Chegada", "left" );
         $column_queixaprincipal = new TDataGridColumn( "queixaprincipal", "Queixa Principal", "left" );
@@ -46,14 +46,14 @@ class PacientesAtendimentoList extends TPage
         $this->datagrid->addColumn( $column_horaentrada );
         $this->datagrid->addColumn( $column_queixaprincipal );
 
-        $action_avaliacao = new CustomDataGridAction( [ "AtendimentoDetail", "onReload" ] );
+        $action_avaliacao = new CustomDataGridAction( [ "MedicarPacienteDetail", "onReload" ] );
         $action_avaliacao->setButtonClass( "btn btn-primary" );
         $action_avaliacao->setImage( "fa:user-md white fa-lg" );
         $action_avaliacao->setField( "bau_id" );
         $action_avaliacao->setFk( "bau_id" );
         $action_avaliacao->setDid( "paciente_id" );
         $action_avaliacao->setUseButton(TRUE);
-        $this->datagrid->addQuickAction( "Atender", $action_avaliacao, 'bau_id');
+        $this->datagrid->addQuickAction( "Medicar", $action_avaliacao, 'bau_id');
 
         $this->datagrid->createModel();
 
@@ -76,7 +76,7 @@ class PacientesAtendimentoList extends TPage
 
             TTransaction::open( "database" );
 
-            $repository = new TRepository( "VwBauPacientesRecord" );
+            $repository = new TRepository( "VwMedicacaoPacienteRecord" );
 
 
             $properties = [
@@ -89,7 +89,7 @@ class PacientesAtendimentoList extends TPage
             $criteria = new TCriteria();
             $criteria->setProperties( $properties );
             $criteria->setProperty( "limit", $limit );
-            $criteria->add(new TFilter('situacao', '=', 'CLASSIFICADO'));
+            $criteria->add(new TFilter('status', '=', 'PRESCRITO'));
 
             $objects = $repository->load( $criteria, FALSE );
 
@@ -138,7 +138,7 @@ class PacientesAtendimentoList extends TPage
             if( !empty( $data->opcao ) && !empty( $data->dados ) ) {
 
                 TTransaction::open( "database" );
-                $repository = new TRepository( "VwBauPacientesRecord" );
+                $repository = new TRepository( "VwMedicacaoPacienteRecord" );
 
                 if ( empty( $param[ "order" ] ) ) {
                     $param[ "order" ] = "dataentrada";
@@ -150,8 +150,7 @@ class PacientesAtendimentoList extends TPage
                 $criteria = new TCriteria();
                 $criteria->setProperties( $param );
                 $criteria->setProperty( "limit", $limit );
-                $criteria->add(new TFilter('situacao', '=', 'CLASSIFICADO'));
-                $criteria->add(new TFilter('situacao', '=', 'RETORNO'));
+                $criteria->add(new TFilter('status', '=', 'PRESCRITO'));
 
                 switch( $data->opcao ) {
 
@@ -202,9 +201,7 @@ class PacientesAtendimentoList extends TPage
         } catch ( Exception $ex ) {
 
             TTransaction::rollback();
-
             $this->form->setData( $data );
-
             new TMessage( "erro", $ex->getMessage() );
         }
     }

@@ -557,7 +557,7 @@ class ClassificacaoRiscoDetail extends TPage
 
             TTransaction::close();
 
-            $this->onReloadFrames( $param );
+            $this->onReload( $param );
 
         } catch ( Exception $ex ) {
 
@@ -584,7 +584,7 @@ class ClassificacaoRiscoDetail extends TPage
 
             TTransaction::close();
 
-            $this->onReloadFrames( $param );
+            $this->onReload( $param );
 
         } catch ( Exception $ex ) {
 
