@@ -23,7 +23,6 @@ class AtendimentoDetail extends TPage
         $profissional_id        = new THidden( "profissional_id" ); // Deve ser capturado a partir da sessão
         $paciente_nome          = new TEntry( "paciente_nome" );
         $dataclassificacao      = new TDate( "dataatendimento" );
-        $horaclassificacao      = new TDateTime( "horaatendimento" );
         $exameclinico           = new TText( "exameclinico" );
         $examescomplementares   = new TText( "examescomplementares" );
         //$diagnosticomedico      = new TText( "diagnosticomedico" );
@@ -33,7 +32,6 @@ class AtendimentoDetail extends TPage
         $exameclinico->setSize("90%");
         $examescomplementares->setSize("90%");
         $descricaotratamento->setSize("90%");
-        $horaclassificacao->setSize("15%");
         $dataclassificacao->setSize("45%");
 
         $fk = filter_input( INPUT_GET, "fk" );
@@ -41,8 +39,6 @@ class AtendimentoDetail extends TPage
 
         $bau_id->setValue ($fk);
         $paciente_id->setValue ($did);
-        $profissional_id->setValue ($did);
-        //$profissional_id  ALTERAR PARA O DA SESSSAAAAOOOOO
 
         try {
             TTransaction::open( "database" );
@@ -57,14 +53,11 @@ class AtendimentoDetail extends TPage
         }
 
 
-        $dataclassificacao->setMask( "dd/mm/yyyy" );
-        $dataclassificacao->setDatabaseMask("yyyy-mm-dd");
-        $horaclassificacao->setMask( "hh:ii" );
+        $dataclassificacao->setMask( "dd/mm/yyyy h:i:s" );
+        $dataclassificacao->setDatabaseMask("yyyy-mm-dd h:i:s");
 
-        $dataclassificacao->setValue( date( "d/m/Y" ) );
+        $dataclassificacao->setValue( date( "d/m/Y h:i:s" ) );
         $dataclassificacao->setEditable( false );
-        $horaclassificacao->setValue( date( "H:i" ) );
-        $horaclassificacao->setEditable( false );
 
         $paciente_nome->setEditable( false );
         $paciente_nome->forceUpperCase();
@@ -72,8 +65,62 @@ class AtendimentoDetail extends TPage
         $dataclassificacao->addValidation( TextFormat::set( "Data da Avaliação" ), new TRequiredValidator );
 
         $this->form->addFields( [ new TLabel( "Paciente: {$redstar}" ) ], [ $paciente_nome ] );
-        $this->form->addFields([ new TLabel( "Data do Atendimento: {$redstar}" ) ], [ $dataclassificacao , $horaclassificacao ] );
-        $this->form->addFields( [ new TLabel( "Exame Clinico:" ) ], [ $exameclinico ] );
+        $this->form->addFields( [ new TLabel( "Data: {$redstar}" ) ], [ $dataclassificacao ] );
+        $this->form->addFields( [ new TLabel( "Avaliação Médica:" ) ], [ $exameclinico ] );
+
+         /*--- frame de Direcionamento ---*/
+        $frame2 = new TFrame;
+        $frame2->setLegend( "Ações para o Paciente" );
+        $frame2->style .= ';margin:0%;width:90%';
+
+        $add_button2 = TButton::create("buttonmed", [ $this,"onError" ], null, null);
+        $onSaveFrame2 = new TAction( [ 'PrescreverMedicacaoDetail', "onReload" ] );
+        $onSaveFrame2->setParameter( "fk", $fk );
+        $onSaveFrame2->setParameter( "did", $did );
+        $onSaveFrame2->setParameter( "frm", 1 );
+        $add_button2->setAction( $onSaveFrame2 );
+
+        $add_button2->setLabel( "Prescrever Medicação" );
+        $add_button2->class = 'btn btn-success';
+        $add_button2->setImage( "fa:plus white" );
+
+        $add_button3 = TButton::create("buttonexam", [ $this,"onError" ], null, null);
+        $onSaveFrame3 = new TAction( [ 'SolicitarExameDetail', "onReload" ] );
+        $onSaveFrame3->setParameter( "fk", $fk );
+        $onSaveFrame3->setParameter( "did", $did );
+        $onSaveFrame3->setParameter( "frm", 1 );
+        $add_button3->setAction( $onSaveFrame3 );
+
+        $add_button3->setLabel( "Solicitar Exame" );
+        $add_button3->class = 'btn btn-success';
+        $add_button3->setImage( "fa:plus white" );
+
+        $add_button4 = TButton::create("buttonalt", [ $this,"onError" ], null, null);
+        $onSaveFrame4 = new TAction( [ 'PacientesAltaHospitalarList', "onReload" ] );
+        $onSaveFrame4->setParameter( "fk", $fk );
+        $onSaveFrame4->setParameter( "did", $did );
+        $onSaveFrame4->setParameter( "frm", 1 );
+        $add_button4->setAction( $onSaveFrame4 );
+
+        $add_button4->setLabel( "Alta Hospitalar" );
+        $add_button4->class = 'btn btn-success';
+        $add_button4->setImage( "fa:plus white" );
+
+        $this->form->addField( $add_button2 );
+        $this->form->addField( $add_button3 );
+        $this->form->addField( $add_button4 );
+
+        $this->form->addContent( [ $frame2 ] );
+        $hbox2 = new THBox;
+        $hbox2->add( $add_button2 );
+        $hbox2->add( $add_button3 );
+        $hbox2->add( $add_button4 );
+        $hbox2->style = 'margin: 0%';
+        $vbox2 = new TVBox;
+        $vbox2->style='width:100%';
+        $vbox2->add( $hbox2 );
+        $frame2->add( $vbox2 );
+        /*--------------------------------------*/
 
         /*--- frame de Diagnostico ---*/
         $frame1 = new TFrame;
@@ -87,10 +134,8 @@ class AtendimentoDetail extends TPage
         $cid_codigo->setMinLength(1);
         $cid_codigo->setMaxSize(1);
 
-        /*
-        $cid_id     = new THidden( "cid_id" );
-        $cid_codigo = new TDBSeekButton("cid_codigo", "database", "form_list_atendimento","VwCidRecord", "nomecid", "cid_id", "cid_codigo");
-        */
+        //$cid_codigo->addValidation( TextFormat::set( "Diagnóstico" ), new TRequiredValidator );
+
 
         $add_button1 = TButton::create(
             "add1", [ $this,"onError" ], null, null
@@ -130,66 +175,6 @@ class AtendimentoDetail extends TPage
         $vbox1->add( $this->framegrid1 );
         $frame1->add( $vbox1 );
         /*--------------------------------------*/
-        /*--- frame de Direcionamento ---*/
-        $frame2 = new TFrame;
-        $frame2->setLegend( "Ações para o Paciente" );
-        $frame2->style .= ';margin:0%;width:90%';
-
-        $add_button2 = TButton::create("buttonmed", [ $this,"onError" ], null, null);
-        $onSaveFrame2 = new TAction( [ 'PrescreverMedicacaoDetail', "onReload" ] );
-        $onSaveFrame2->setParameter( "fk", $fk );
-        $onSaveFrame2->setParameter( "did", $did );
-        $onSaveFrame2->setParameter( "frm", 1 );
-        $add_button2->setAction( $onSaveFrame2 );
-
-        $add_button2->setLabel( "Prescrever Medicação" );
-        $add_button2->class = 'btn btn-success';
-        $add_button2->setImage( "fa:plus green" );
-
-        $add_button3 = TButton::create("buttonexam", [ $this,"onError" ], null, null);
-        $onSaveFrame3 = new TAction( [ 'SolicitarExameDetail', "onReload" ] );
-        $onSaveFrame3->setParameter( "fk", $fk );
-        $onSaveFrame3->setParameter( "did", $did );
-        $onSaveFrame3->setParameter( "frm", 1 );
-        $add_button3->setAction( $onSaveFrame3 );
-
-        $add_button3->setLabel( "Solicitar Exame" );
-        $add_button3->class = 'btn btn-success';
-        $add_button3->setImage( "fa:plus green" );
-
-        $add_button4 = TButton::create("buttonalt", [ $this,"onError" ], null, null);
-        $onSaveFrame4 = new TAction( [ 'PacientesAltaHospitalarList', "onReload" ] );
-        $onSaveFrame4->setParameter( "fk", $fk );
-        $onSaveFrame4->setParameter( "did", $did );
-        $onSaveFrame4->setParameter( "frm", 1 );
-        $add_button4->setAction( $onSaveFrame4 );
-
-        $add_button4->setLabel( "Alta Hospitalar" );
-        $add_button4->class = 'btn btn-success';
-        $add_button4->setImage( "fa:plus green" );
-
-        $this->form->addField( $add_button2 );
-        $this->form->addField( $add_button3 );
-        $this->form->addField( $add_button4 );
-
-        $this->form->addContent( [ $frame2 ] );
-        $hbox2 = new THBox;
-        $hbox2->add( $add_button2 );
-        $hbox2->add( $add_button3 );
-        $hbox2->add( $add_button4 );
-        $hbox2->style = 'margin: 0%';
-        $vbox2 = new TVBox;
-        $vbox2->style='width:100%';
-        $vbox2->add( $hbox2 );
-        $frame2->add( $vbox2 );
-        /*--------------------------------------*/
-
-        // $this->form->addFields( [ new TLabel( "Exames Complementares:" ) ], [ $examescomplementares ] );
-        // $this->form->addFields( [ new TLabel( "Diagnóstico:" ) ], [ $diagnosticomedico ] );
-        // $this->form->addFields( [ new TLabel( "Descrição do Tratamento:" ) ], [ $descricaotratamento ] );
-
-
-
 
         $this->form->addFields( [ $id, $bau_id, $paciente_id, $profissional_id ] );
 
@@ -208,15 +193,11 @@ class AtendimentoDetail extends TPage
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( '100%' );
 
-        $column_1 = new TDataGridColumn( "paciente_nome", "Paciente", "left" );
-        $column_2 = new TDataGridColumn( "enfermeiro_nome", "Responsável", "left" );
+        $column_2 = new TDataGridColumn( "responsavel_nome", "Responsável", "left" );
         $column_3 = new TDataGridColumn( "dataatendimento", "Data", "left" );
-        $column_4 = new TDataGridColumn( "horaatendimento", "Hora", "left" );
 
-        $this->datagrid->addColumn( $column_1 );
         $this->datagrid->addColumn( $column_2 );
         $this->datagrid->addColumn( $column_3 );
-        $this->datagrid->addColumn( $column_4 );
 
         $action_edit = new CustomDataGridAction( [ $this, "onEdit" ] );
         $action_edit->setButtonClass( "btn btn-default" );
@@ -258,13 +239,14 @@ class AtendimentoDetail extends TPage
         $object = $this->form->getData( "BauAtendimentoRecord" );
 
         try {
+            $object->profissional_id = TSession::getValue('profissionalid');
+            unset( $object->paciente_nome );
+            unset( $object->cid_id );
 
             $this->form->validate();
-            $object->profissional_id = TSession::getValue('profissionalid');
             TTransaction::open( "database" );
-            unset( $object->paciente_nome );
-            $object->store();
 
+            $object->store();
             TTransaction::close();
 
             $action = new TAction( [ "AtendimentoDetail", "onReload" ] );
@@ -289,14 +271,7 @@ class AtendimentoDetail extends TPage
                 TTransaction::open( "database" );
 
                 $object = new BauAtendimentoRecord( $param[ "key" ] );
-
-                //$dataclassificacao = new DateTime( $object->dataclassificacao );
-                //$object->dataclassificacao = $dataclassificacao->format("d/m/Y");
-
-                $object->dataatendimento = TDate::date2br($object->dataatendimento);
-
-                $horaclassificacao = new DateTime( $object->horaclassificacao );
-                $object->horaclassificacao = $horaclassificacao->format("H:i");
+                $object->dataatendimento = TDate::date2br($object->dataatendimento) . ' ' . substr($object->dataatendimento, 11, strlen($object->dataatendimento));
 
                 $this->onReload( $param );
                 $this->form->setData( $object );
@@ -363,7 +338,7 @@ class AtendimentoDetail extends TPage
 
             $properties = [
             "order" => "dataatendimento",
-            "direction" => "asc"
+            "direction" => "desc"
             ];
 
             $limit = 10;
@@ -381,13 +356,7 @@ class AtendimentoDetail extends TPage
 
                 foreach ( $objects as $object ) {
 
-                    //$dataclassificacao = new DateTime( $object->dataclassificacao );
-
-                    //$object->dataclassificacao = $dataclassificacao->format("d/m/Y");
-
-                    $object->dataatendimento = TDate::date2br($object->dataatendimento);
-                    $horaclassificacao = new DateTime( $object->horaclassificacao );
-                    $object->horaclassificacao = $horaclassificacao->format("H:i");
+                    $object->dataatendimento = TDate::date2br($object->dataatendimento) . ' ' . substr($object->dataatendimento, 11, strlen($object->dataatendimento));
 
                     $this->datagrid->addItem( $object );
 
@@ -403,9 +372,7 @@ class AtendimentoDetail extends TPage
             $this->pageNavigation->setProperties( $properties );
             $this->pageNavigation->setLimit( $limit );
 
-
             $this->onReloadFrames( $param );
-
             TTransaction::close();
 
             $this->loaded = true;
@@ -413,7 +380,6 @@ class AtendimentoDetail extends TPage
         } catch ( Exception $ex ) {
 
             TTransaction::rollback();
-
             new TMessage( "error", $ex->getMessage() );
         }
     }
@@ -440,7 +406,7 @@ class AtendimentoDetail extends TPage
 
             TTransaction::close();
 
-            $this->onReloadFrames( $param );
+            $this->onReload($param);
 
         } catch ( Exception $ex ) {
 
@@ -451,11 +417,11 @@ class AtendimentoDetail extends TPage
         }
     }
 
-    public function onDeleteFrames( $param = null )
-    {
+    public function onDeleteFrames( $param = null ){
         try {
 
             TTransaction::open( "database" );
+
 
             $object = $this->getFrameItem( $param );
 
@@ -467,7 +433,7 @@ class AtendimentoDetail extends TPage
 
             TTransaction::close();
 
-            $this->onReloadFrames( $param );
+            $this->onReload( $param );
 
         } catch ( Exception $ex ) {
 
@@ -491,16 +457,6 @@ class AtendimentoDetail extends TPage
                 foreach ( $object->getComorbidades() as $comorbidade ) {
                     $this->framegrid1->addItem( $comorbidade );
                 }
-
-                /*
-                foreach ( $object->getMedicacoes() as $medicacao ) {
-                    $this->framegrid2->addItem( $medicacao );
-                }
-
-                foreach ( $object->getAlergias() as $alergia ) {
-                    $this->framegrid3->addItem( $alergia );
-                }
-                */
 
             }
 
@@ -549,7 +505,6 @@ class AtendimentoDetail extends TPage
             unset( $object->profissional_id );
             unset( $object->paciente_nome );
             unset( $object->dataatendimento );
-            unset( $object->horaatendimento );
             unset( $object->exameclinico );
             unset( $object->examescomplementares );
             unset( $object->descricaotratamento );

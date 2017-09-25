@@ -8,7 +8,7 @@ class BauAtendimentoRecord extends TRecord
 
     private $paciente;
     private $tipoclassificacaorisco;
-    private $enfermeiro;
+    private $profissional;
 
     public function get_paciente_nome()
     {
@@ -28,12 +28,12 @@ class BauAtendimentoRecord extends TRecord
         return $this->tipoclassificacaorisco->nometipoclassificacaorisco;
     }
 
-    public function get_enfermeiro_nome()
+    public function get_responsavel_nome()
     {
-        if ( empty( $this->enfermeiro ) ) {
-            $this->enfermeiro = new ProfissionalRecord( $this->profissional_id );
+        if ( empty( $this->profissional ) ) {
+            $this->profissional = new ProfissionalRecord( $this->profissional_id );
         }
 
-        return $this->enfermeiro->nomeprofissional;
+        return $this->profissional->nomeprofissional;
     }
 }
