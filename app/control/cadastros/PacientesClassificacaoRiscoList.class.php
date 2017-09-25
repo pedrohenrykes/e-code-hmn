@@ -52,6 +52,7 @@ class PacientesClassificacaoRiscoList extends TPage
         $action_avaliacao->setField( "bau_id" );
         $action_avaliacao->setFk( "bau_id" );
         $action_avaliacao->setDid( "paciente_id" );
+        $action_avaliacao->setParameter( "page", __CLASS__ );
         $action_avaliacao->setUseButton(TRUE);
         $this->datagrid->addQuickAction( "Classificar", $action_avaliacao, 'bau_id');
 

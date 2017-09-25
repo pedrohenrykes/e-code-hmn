@@ -263,19 +263,15 @@ class BauDetail extends TPage
 
         $action_avaliacao = new CustomDataGridAction( [ "ClassificacaoRiscoDetail", "onReload" ] );
         $action_avaliacao->setButtonClass( "btn btn-default" );
-        $action_avaliacao->setLabel( "Avaliação" );
+        $action_avaliacao->setLabel( "Classificações" );
         $action_avaliacao->setImage( "fa:stethoscope green fa-lg" );
         $action_avaliacao->setField( "id" );
         $action_avaliacao->setFk( "id" );
         $action_avaliacao->setDid( "paciente_id" );
-
-        $action_group = new TDataGridActionGroup('Opções', 'bs:th');
-        $action_group->addAction( $action_avaliacao );
-
-        $this->datagrid->addActionGroup( $action_group );
+        $action_avaliacao->setParameter( "page", __CLASS__ );
+        $this->datagrid->addAction( $action_avaliacao );
 
         $this->datagrid->createModel();
-        $this->datagrid->disableDefaultClick();
 
         $onReload = new TAction( [ $this, "onReload" ] );
         $onReload->setParameter( "fk", $fk );
