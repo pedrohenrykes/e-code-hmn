@@ -49,11 +49,11 @@ class PacienteMedicacaoList extends TPage
         $action_avaliacao = new CustomDataGridAction( [ "MedicarPacienteDetail", "onReload" ] );
         $action_avaliacao->setButtonClass( "btn btn-primary" );
         $action_avaliacao->setImage( "fa:user-md white fa-lg" );
-        $action_avaliacao->setField( "bau_id" );
-        $action_avaliacao->setFk( "bau_id" );
+        $action_avaliacao->setField( "bauprescricao_id" );
+        $action_avaliacao->setFk( "medicamento_id" );
         $action_avaliacao->setDid( "paciente_id" );
         $action_avaliacao->setUseButton(TRUE);
-        $this->datagrid->addQuickAction( "Medicar", $action_avaliacao, 'bau_id');
+        $this->datagrid->addQuickAction( "Medicar", $action_avaliacao, 'bauprescricao_id');
 
         $this->datagrid->createModel();
 
@@ -89,7 +89,7 @@ class PacienteMedicacaoList extends TPage
             $criteria = new TCriteria();
             $criteria->setProperties( $properties );
             $criteria->setProperty( "limit", $limit );
-            $criteria->add(new TFilter('status', '=', 'PRESCRITO'));
+            //$criteria->add(new TFilter('status', '=', 'PRESCRITO'));
 
             $objects = $repository->load( $criteria, FALSE );
 
@@ -150,7 +150,7 @@ class PacienteMedicacaoList extends TPage
                 $criteria = new TCriteria();
                 $criteria->setProperties( $param );
                 $criteria->setProperty( "limit", $limit );
-                $criteria->add(new TFilter('status', '=', 'PRESCRITO'));
+                //$criteria->add(new TFilter('status', '=', 'PRESCRITO'));
 
                 switch( $data->opcao ) {
 

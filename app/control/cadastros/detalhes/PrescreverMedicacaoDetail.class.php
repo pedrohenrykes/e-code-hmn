@@ -20,6 +20,7 @@ class PrescreverMedicacaoDetail extends TWindow
         $bau_id             = new THidden("bau_id");
         $paciente_id        = new THidden( "paciente_id" );
         $medicamento_id     = new THidden( "medicamento_id" );
+        $bauatendimento_id  = new THidden( "bauatendimento_id" );
         $paciente_nome      = new TEntry( "paciente_nome" );
         $medico_id          = new THidden("medico_id");
         $data_prescricao    = new TDateTime("data_prescricao");
@@ -35,9 +36,11 @@ class PrescreverMedicacaoDetail extends TWindow
         $principioativo_id->setMinLength(1);
         $principioativo_id->setMaxSize(1);
 
+        $id2 = filter_input( INPUT_GET, "key" );
         $fk = filter_input( INPUT_GET, "fk" );
         $did = filter_input( INPUT_GET, "did" );
 
+        $bauatendimento_id->setValue ($id2);
         $bau_id->setValue ($fk);
         $paciente_id->setValue ($did);
 
@@ -96,7 +99,7 @@ class PrescreverMedicacaoDetail extends TWindow
         $this->form->addFields( [ new TLabel( "Dosagem:{$redstar}" ) ], [ $dosagem ] );
         $this->form->addFields( [ new TLabel( "Posologia:{$redstar}" ) ], [ $posologia ] );
         $this->form->addFields( [ new TLabel( "Observação" ) ], [ $observacao ] );
-        $this->form->addFields( [ $id, $paciente_id, $medico_id, $bau_id, $medicamento_id ] );
+        $this->form->addFields( [ $id, $paciente_id, $medico_id, $bauatendimento_id, $bau_id, $medicamento_id ] );
 
         $onSave   = new TAction( [ $this, "onSave" ] );
         $onSave->setParameter( "fk", $fk );

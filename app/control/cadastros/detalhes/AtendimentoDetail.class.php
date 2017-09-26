@@ -217,6 +217,15 @@ class AtendimentoDetail extends TPage
         $action_del->setParameter( "did", $did );
         $this->datagrid->addAction( $action_del );
 
+        $action_presc = new CustomDataGridAction( [ "PrescreverMedicacaoDetail", "onReload" ] );
+        $action_presc->setButtonClass( "btn btn-primary" );
+        $action_presc->setImage( "fa:user-md white fa-lg" );
+        $action_presc->setField( "id" );
+        $action_presc->setFk( "bau_id" );
+        $action_presc->setDid( "paciente_id" );
+        $action_presc->setUseButton(TRUE);
+        $this->datagrid->addQuickAction( "Prescrever Medicação", $action_presc, 'id');
+
         $this->datagrid->createModel();
 
         $this->pageNavigation = new TPageNavigation();
