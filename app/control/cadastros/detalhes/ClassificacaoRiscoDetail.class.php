@@ -291,7 +291,20 @@ class ClassificacaoRiscoDetail extends TPage
         $onSave->setParameter( "fk", $fk );
         $onSave->setParameter( "did", $did );
 
-        $onReload = new TAction( [ "PacientesClassificacaoRiscoList", "onReload" ] );
+        $page = filter_input( INPUT_GET, "page" );
+
+        switch ( $page ) {
+
+            case "PacientesClassificacaoRiscoList":
+                $onReload = new TAction( [ $page, "onReload" ] );
+                break;
+
+            case "BauDetail":
+                $onReload = new TAction( [ $page, "onReload" ] );
+                $onReload->setParameter( "fk", $did );
+                break;
+
+        }
 
         $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
         $this->form->addAction( "Voltar", $onReload, "fa:table blue" );
@@ -322,6 +335,7 @@ class ClassificacaoRiscoDetail extends TPage
         $action_edit->setField( "id" );
         $action_edit->setParameter( "fk", $fk );
         $action_edit->setParameter( "did", $did );
+        $action_edit->setParameter( "page", $page );
         $this->datagrid->addAction( $action_edit );
 
         $action_del = new CustomDataGridAction( [ $this, "onDelete" ] );
@@ -331,6 +345,7 @@ class ClassificacaoRiscoDetail extends TPage
         $action_del->setField( "id" );
         $action_del->setParameter( "fk", $fk );
         $action_del->setParameter( "did", $did );
+        $action_del->setParameter( "page", $page );
         $this->datagrid->addAction( $action_del );
 
         $this->datagrid->createModel();
@@ -421,13 +436,13 @@ class ClassificacaoRiscoDetail extends TPage
     public function onDelete( $param = null )
     {
         if( isset( $param[ "key" ] ) ) {
-
+/*
             $param = [
                 "key" => $param[ "key" ],
                 "fk"  => $param[ "fk" ],
                 "did"  => $param[ "did" ]
             ];
-
+*/
             $action1 = new TAction( [ $this, "Delete" ] );
             $action2 = new TAction( [ $this, "onReload" ] );
 
