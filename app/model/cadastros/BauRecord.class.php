@@ -16,4 +16,14 @@ class BauRecord extends TRecord
 
         return $this->paciente->nomepaciente;
     }
+    private $pacienteid;
+
+    public function get_paciente_id2()
+    {
+        if ( empty( $this->pacienteid ) ) {
+            $this->pacienteid = new PacienteRecord( $this->paciente_id );
+        }
+
+        return $this->pacienteid->id;
+    }
 }

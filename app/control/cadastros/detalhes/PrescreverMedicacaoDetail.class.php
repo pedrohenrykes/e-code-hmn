@@ -21,19 +21,13 @@ class PrescreverMedicacaoDetail extends TWindow
         $paciente_id        = new THidden( "paciente_id" );
         $medicamento_id     = new THidden( "medicamento_id" );
         $paciente_nome      = new TEntry( "paciente_nome" );
-        $profissional_id    = new THidden("profissional_id");
-        $dataprescricao     = new TDateTime("dataprescricao");
-        //$principioativo_id  = new TDBCombo("principioativo_id","database","PrincipioAtivoRecord","id","nomeprincipioativo");
-        //$medicamento_id     = new TDBCombo("medicamento_id","database","MedicamentoRecord","id","nomemedicamento");
+        $medico_id          = new THidden("medico_id");
+        $data_prescricao    = new TDateTime("data_prescricao");
         $dosagem            = new TEntry("dosagem");
         $posologia          = new TCombo("posologia");
         $observacao         = new TText("observacao");
 
         $criteria3 = new TCriteria;
-        /*if ($_SESSION['empresa_id'] == 1) {
-        $criteria3->add(new TFilter('empresa_id', '=', $_SESSION['empresa_id']));
-        }*/
-        //$criteria3->add($criteria_servidor);
 
         $principioativo_id = new TDBMultiSearch('principioativo_id', 'database', 'VwPrincipioAtivoMedicamentoRecord', 'medicamento_id', 'principiomedicamento', 'principiomedicamento', $criteria3);
         $principioativo_id->style = "text-transform: uppercase;";
@@ -46,10 +40,6 @@ class PrescreverMedicacaoDetail extends TWindow
 
         $bau_id->setValue ($fk);
         $paciente_id->setValue ($did);
-        //$profissional_id->setValue('1');
-
-
-
 
         try {
 
@@ -76,15 +66,9 @@ class PrescreverMedicacaoDetail extends TWindow
         $dosagem->placeholder = 'Ex: 40 Gotas ou 1 Comp...';
         $principioativo_id      ->setSize( "70%" );
         $paciente_nome          ->setSize( "70%" );
-        $dataprescricao         ->setSize( "20%" );
+        $data_prescricao         ->setSize( "20%" );
         $observacao               ->setSize( "70%" );
-        /*
 
-        $declaracaoobitodata     ->setSize( "38%" );
-        $declaracaoobitohora     ->setSize( "38%" );
-        $destinoobito_id         ->setSize( "38%" );
-        $declaracaoobitomedico_id->setSize( "38%" );
-        */
         $posologia->addItems( [
             "4" => "6x ao Dia",
             "6" => "4x ao Dia",
@@ -94,29 +78,25 @@ class PrescreverMedicacaoDetail extends TWindow
             "25" => "Após da Refeição",
             "26" => "Antes da Refeição" ] );
 
-        //$principioativo_id  ->setDefaultOption( "..::SELECIONE::.." );
-        //$medicamento_id     ->setDefaultOption( "..::SELECIONE::.." );
         $posologia          ->setDefaultOption( "..::SELECIONE::.." );
 
-        $dataprescricao     ->setMask( "dd/mm/yyyy" );
-        $dataprescricao     ->setDatabaseMask("yyyy-mm-dd");
+        $data_prescricao     ->setMask( "dd/mm/yyyy" );
+        $data_prescricao     ->setDatabaseMask("yyyy-mm-dd h:i:s");
 
-        $dataprescricao     ->setValue( date( "d/m/Y" ) );
-        $dataprescricao     ->setEditable( false );
+        $data_prescricao     ->setValue( date( "d/m/Y h:i:s" ) );
+        $data_prescricao     ->setEditable( false );
         $paciente_nome      ->setEditable( false );
 
         $principioativo_id->addValidation( TextFormat::set( "Medicamento" ), new TRequiredValidator );
-        //$medicamento_id->addValidation( TextFormat::set( "Medicamento" ), new TRequiredValidator );
         $dosagem->addValidation( TextFormat::set( "Dosagem" ), new TRequiredValidator );
         $posologia->addValidation( TextFormat::set( "Posologia" ), new TRequiredValidator );
 
-        $this->form->addFields( [ new TLabel( "Paciente:" ) ], [ $paciente_nome, $dataprescricao ] );
+        $this->form->addFields( [ new TLabel( "Paciente:" ) ], [ $paciente_nome, $data_prescricao ] );
         $this->form->addFields( [ new TLabel( "Medicamento:{$redstar}" ) ], [ $principioativo_id ] );
-        //$this->form->addFields( [ new TLabel( "Medicamento:{$redstar}" ) ], [ $medicamento_id ] );
         $this->form->addFields( [ new TLabel( "Dosagem:{$redstar}" ) ], [ $dosagem ] );
         $this->form->addFields( [ new TLabel( "Posologia:{$redstar}" ) ], [ $posologia ] );
         $this->form->addFields( [ new TLabel( "Observação" ) ], [ $observacao ] );
-        $this->form->addFields( [ $id, $paciente_id, $profissional_id, $bau_id, $medicamento_id ] );
+        $this->form->addFields( [ $id, $paciente_id, $medico_id, $bau_id, $medicamento_id ] );
 
         $onSave   = new TAction( [ $this, "onSave" ] );
         $onSave->setParameter( "fk", $fk );
@@ -136,15 +116,12 @@ class PrescreverMedicacaoDetail extends TWindow
         $column_1 = new TDataGridColumn( "posologia", "Posologia", "left" );
         $column_2 = new TDataGridColumn( "dosagem", "Dosagem", "left" );
         $column_3 = new TDataGridColumn( "medicamento_nome", "Medicamento", "left" );
-        //$column_4 = new TDataGridColumn( "dosagem", "Dosagem", "left" );
-        $column_5 = new TDataGridColumn( "dataprescricao", "Data Prescrição", "left" );
+        $column_5 = new TDataGridColumn( "data_prescricao", "Data Prescrição", "left" );
 
         $this->datagrid->addColumn( $column_3 );
         $this->datagrid->addColumn( $column_1 );
         $this->datagrid->addColumn( $column_2 );
-        //$this->datagrid->addColumn( $column_4 );
         $this->datagrid->addColumn( $column_5 );
-
 
         $action_del = new CustomDataGridAction( [ $this, "onDelete" ] );
         $action_del->setButtonClass( "btn btn-default" );
@@ -174,19 +151,17 @@ class PrescreverMedicacaoDetail extends TWindow
     public function onSave( $param = null )
     {
 
-
         try {
 
             $this->form->validate();
-            $object = $this->form->getData( "BauUsoMedicacoesRecord" );
+            $object = $this->form->getData( "BauPrescricaoRecord" );
             $object->medicamento_id = key($object->principioativo_id);
-            $object->profissional_id = TSession::getValue('profissionalid');
+            $object->medico_id = TSession::getValue('profissionalid');
 
             TTransaction::open( "database" );
 
             unset($object->paciente_nome);
             unset($object->principioativo_id);
-            //$object->situacao = "OBITO";
             $object->store();
 
             TTransaction::close();
@@ -199,13 +174,10 @@ class PrescreverMedicacaoDetail extends TWindow
 
             TTransaction::rollback();
 
-            // $this->form->setData( $object );
-
             new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
 
         }
     }
-    
 
     public function onDelete( $param = null )
     {
@@ -232,7 +204,7 @@ class PrescreverMedicacaoDetail extends TWindow
         try {
 
             TTransaction::open( "database" );
-            $object = new BauUsoMedicacoesRecord( $param[ "key" ] );
+            $object = new BauPrescricaoRecord( $param[ "key" ] );
             $object->delete();
             TTransaction::close();
 
@@ -252,8 +224,8 @@ class PrescreverMedicacaoDetail extends TWindow
         try {
 
             TTransaction::open( "database" );
-            $repository = new TRepository( "BauUsoMedicacoesRecord" );
-            $properties = [ "order" => "dataprescricao", "direction" => "desc" ];
+            $repository = new TRepository( "BauPrescricaoRecord" );
+            $properties = [ "order" => "data_prescricao", "direction" => "desc" ];
             $limit = 10;
 
             $criteria = new TCriteria();
@@ -269,7 +241,7 @@ class PrescreverMedicacaoDetail extends TWindow
 
                 foreach ( $objects as $object ) {
 
-                    $object->dataprescricao = TDate::date2br($object->dataprescricao);
+                    $object->data_prescricao = TDate::date2br($object->data_prescricao);
                     $this->datagrid->addItem( $object );
 
                 }
@@ -282,8 +254,6 @@ class PrescreverMedicacaoDetail extends TWindow
             $this->pageNavigation->setCount( $count );
             $this->pageNavigation->setProperties( $properties );
             $this->pageNavigation->setLimit( $limit );
-
-            //$this->onReloadFrames( $param );
 
             TTransaction::close();
 

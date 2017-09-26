@@ -20,8 +20,8 @@ class MedicarPacienteDetail extends TPage
         $id                     = new THidden( "id" );
         $paciente_id            = new THidden( "paciente_id" );
         $bau_id                 = new THidden( "bau_id" );
-        $profissional_id        = new THidden( "profissional_id" ); // Deve ser capturado a partir da sessão
-        //$paciente_nome          = new TEntry( "paciente_nome" );
+        $profissional_id        = new THidden( "profissional_id" ); 
+        $prescricao_id          = new THidden( "prescricao_id" );
         $dataaplicacao          = new TDate( "dataaplicacao" );
         //$exameclinico           = new TText( "exameclinico" );
         //$examescomplementares   = new TText( "examescomplementares" );
@@ -34,13 +34,14 @@ class MedicarPacienteDetail extends TPage
         //$descricaotratamento->setSize("90%");
         $dataaplicacao->setSize("45%");
 
+        $prescricao_id = filter_input( INPUT_GET, "key" );
         $fk = filter_input( INPUT_GET, "fk" );
         $did = filter_input( INPUT_GET, "did" );
 
         $bau_id->setValue ($fk);
         $paciente_id->setValue ($did);
 
-       /* try {
+        try {
             TTransaction::open( "database" );
             $paciente = new PacienteRecord($did);
             if( isset($paciente) ) {
@@ -51,7 +52,7 @@ class MedicarPacienteDetail extends TPage
             $action = new TAction(["PacientesEncaminhamentoList", "onReload"]);
             new TMessage("error", "Ocorreu um erro ao carregar as dependência do formulário.", $action);
         }
-*/
+
 
         $dataaplicacao->setMask( "dd/mm/yyyy h:i:s" );
         $dataaplicacao->setDatabaseMask("yyyy-mm-dd h:i:s");
@@ -59,12 +60,12 @@ class MedicarPacienteDetail extends TPage
         $dataaplicacao->setValue( date( "d/m/Y h:i:s" ) );
         $dataaplicacao->setEditable( false );
 
-        //$paciente_nome->setEditable( false );
-        //$paciente_nome->forceUpperCase();
+        $paciente_nome->setEditable( false );
+        $paciente_nome->forceUpperCase();
 
         $dataaplicacao->addValidation( TextFormat::set( "Data da Avaliação" ), new TRequiredValidator );
 
-        //$this->form->addFields( [ new TLabel( "Paciente: {$redstar}" ) ], [ $paciente_nome ] );
+        $this->form->addFields( [ new TLabel( "Paciente: {$redstar}" ) ], [ $paciente_nome ] );
         $this->form->addFields( [ new TLabel( "Data: {$redstar}" ) ], [ $dataaplicacao ] );
         //$this->form->addFields( [ new TLabel( "Observação:" ) ], [ $exameclinico ] );
         $this->form->addFields( [ $id, $bau_id, $paciente_id, $profissional_id ] );
@@ -136,7 +137,7 @@ class MedicarPacienteDetail extends TPage
         try {
             $object->enfermeiro_id = TSession::getValue('profissionalid');
             $object->status = 'MEDICADO';
-            //unset( $object->paciente_nome );
+            unset( $object->paciente_nome );
 
             $this->form->validate();
             TTransaction::open( "database" );
@@ -229,7 +230,7 @@ class MedicarPacienteDetail extends TPage
 
             TTransaction::open( "database" );
 
-            $repository = new TRepository( "BauUsoMedicacoesRecord" );
+            $repository = new TRepository( "BauPrescricaoRecord" );
 
             $properties = [
             "order" => "dataprescricao",
