@@ -1,20 +1,19 @@
 <?php
 
-class MedicarPacienteDetail extends TPage
+class AplicacaoMedicacaoDetail extends TWindow
 {
     private $form;
-    private $datagrid;
-    private $pageNavigation;
-    private $loaded;
 
     public function __construct()
     {
         parent::__construct();
+        parent::setTitle( "Prescrever Medicação" );
+        parent::setSize( 0.600, 0.800 );
 
         $redstar = '<font color="red"><b>*</b></font>';
 
-        $this->form = new BootstrapFormBuilder( "form_list_medicar" );
-        $this->form->setFormTitle( "Registro de Medicação" );
+        $this->form = new BootstrapFormBuilder( "detail_aplicacao_medicacao" );
+        $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 
         $id                     = new THidden( "id" );
@@ -25,6 +24,13 @@ class MedicarPacienteDetail extends TPage
         $data_aplicacao         = new TDate( "data_aplicacao" );
         $paciente_nome          = new TEntry( "paciente_nome" );
         $descricaotratamento    = new TText( "descricaotratamento" );
+
+
+        $medicamento_nome       = new TEntry( "medicamento_nome" );
+        $data_prescricao        = new TEntry( "data_prescricao" );
+        $posologia              = new TEntry( "posologia" );
+        $dosagem                = new TEntry( "dosagem" );
+        $observacao             = new TEntry( "observacao" );
 
         $paciente_nome->setSize("60%");
         $data_aplicacao->setSize("45%");
@@ -49,17 +55,45 @@ class MedicarPacienteDetail extends TPage
             new TMessage("error", "Ocorreu um erro ao carregar as dependência do formulário.", $action);
         }
 
+        try {
+            TTransaction::open( "database" );
+            $prescricao = new BauPrescricaoRecord($id2);
+            if( isset($prescricao) ) {
+                $medicamento_nome->setValue($prescricao->medicamento_nome);
+                $data_prescricao->setValue($prescricao->data_prescricao);
+                $posologia->setValue($prescricao->posologia);
+                $dosagem->setValue($prescricao->dosagem);
+                $observacao->setValue($prescricao->observacao);
+            }
+            TTransaction::close();
+        } catch (Exception $ex) {
+            $action = new TAction(["PacientesEncaminhamentoList", "onReload"]);
+            new TMessage("error", "Ocorreu um erro ao carregar as dependência do formulário.", $action);
+        }
+
         $data_aplicacao->setMask( "dd/mm/yyyy h:i:s" );
+        $data_prescricao->setMask( "dd/mm/yyyy h:i:s" );
         $data_aplicacao->setDatabaseMask("yyyy-mm-dd h:i:s");
-
         $data_aplicacao->setValue( date( "d/m/Y h:i:s" ) );
-        $data_aplicacao->setEditable( false );
 
+        $data_aplicacao->setEditable( false );
+        $data_aplicacao->setEditable( false );
         $paciente_nome->setEditable( false );
+        $medicamento_nome->setEditable( false );
+        $data_prescricao->setEditable( false );
+        $posologia->setEditable( false );
+        $dosagem->setEditable( false );
+        $observacao->setEditable( false );
+
         $paciente_nome->forceUpperCase();
 
         $this->form->addFields( [ new TLabel( "Paciente: {$redstar}" ) ], [ $paciente_nome ] );
-        $this->form->addFields( [ new TLabel( "Data: {$redstar}" ) ], [ $data_aplicacao ] );
+        $this->form->addFields( [ new TLabel( "Aplicação: {$redstar}" ) ], [ $data_aplicacao ] );
+        $this->form->addFields( [ new TLabel( "Prescrição: {$redstar}" ) ], [ $data_prescricao ] );
+        $this->form->addFields( [ new TLabel( "Medicação: {$redstar}" ) ], [ $medicamento_nome,"Dosagem", $dosagem ] );
+        //$this->form->addFields( [ new TLabel( "Dose: {$redstar}" ) ], [ $dosagem ] );
+        $this->form->addFields( [ new TLabel( "Posologia: {$redstar}" ) ], [ $posologia ] );
+        $this->form->addFields( [ new TLabel( "Observações Médicas: {$redstar}" ) ], [ $observacao ] );
         $this->form->addFields( [ $id, $paciente_id, $medicamento_id, $profissional_id, $bauprescricao_id ] );
 
         $onReload = new TAction( [ "PacienteMedicacaoList", "onReload" ] );
@@ -81,23 +115,17 @@ class MedicarPacienteDetail extends TPage
         $this->datagrid->addColumn( $column_2 );
         $this->datagrid->addColumn( $column_3 );
         $this->datagrid->addColumn( $column_4 );
-        
-        $action_avaliacao = new CustomDataGridAction( [ 'AplicacaoMedicacaoDetail' , "onReload" ] );
+        /*
+
+        $action_avaliacao = new CustomDataGridAction( [ $this , "onSave" ] );
         $action_avaliacao->setButtonClass( "btn btn-primary" );
         $action_avaliacao->setImage( "fa:user-md white fa-lg" );
-
-        $action_avaliacao->setParameter('id', '' . filter_input(INPUT_GET, 'id') . '');
-        $action_avaliacao->setParameter('fk', '' . filter_input(INPUT_GET, 'fk') . '');
-        $action_avaliacao->setParameter('did', '' . filter_input(INPUT_GET, 'did') . '');
-
-        /*
-        $action_avaliacao->setField( "bauprescricao_id" );
+        $action_avaliacao->setField( "id" );
         $action_avaliacao->setFk( "medicamento_id" );
         $action_avaliacao->setDid( "paciente_id" );
-        */
-        
         $action_avaliacao->setUseButton(TRUE);
         $this->datagrid->addQuickAction( "Confirmar AAplicação", $action_avaliacao, 'id');
+        */
 
         $this->datagrid->createModel();
 
@@ -122,12 +150,17 @@ class MedicarPacienteDetail extends TPage
 
         try {
             $object->profissional_id = TSession::getValue('profissionalid');
-            $object->paciente_id = $param['did'];
-            $object->medicamento_id = $param['fk'];
-            $object->bauprescricao_id = $param['key'];
+            //$object->paciente_id = $param['did'];
+            //$object->medicamento_id = $param['fk'];
+            //$object->bauprescricao_id = $param['key'];
 
             //$object->status = 'APlICADO';
             unset( $object->paciente_nome );
+            unset( $object->medicamento_nome );
+            unset( $object->data_prescricao );
+            unset( $object->posologia );
+            unset( $object->dosagem );
+            unset( $object->observacao );
 
             $this->form->validate();
             TTransaction::open( "database" );
@@ -157,10 +190,10 @@ class MedicarPacienteDetail extends TPage
 
             TTransaction::open( "database" );
 
-            $repository = new TRepository( "BauPrescricaoRecord" );
+            $repository = new TRepository( "BauAplicacaoRecord" );
 
             $properties = [
-            "order" => "data_prescricao",
+            "order" => "data_aplicacao",
             "direction" => "desc"
             ];
 
