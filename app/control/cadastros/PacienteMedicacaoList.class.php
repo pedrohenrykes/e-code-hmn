@@ -37,7 +37,7 @@ class PacienteMedicacaoList extends TPage
         $this->datagrid->setHeight( '20%' );
 
         $column_paciente_nome   = new TDataGridColumn( "nomepacientecor", "Paciente", "left" );
-        $column_dataentrada     = new TDataGridColumn( "dataentrada", "Data de Chegada", "left" );
+        $column_dataentrada     = new TDataGridColumn( "paciente_nome", "Paciente", "left" );
         $column_horaentrada     = new TDataGridColumn( "horaentrada", "Hora de Chegada", "left" );
         $column_queixaprincipal = new TDataGridColumn( "queixaprincipal", "Queixa Principal", "left" );
 
@@ -45,6 +45,7 @@ class PacienteMedicacaoList extends TPage
         $this->datagrid->addColumn( $column_dataentrada );
         $this->datagrid->addColumn( $column_horaentrada );
         $this->datagrid->addColumn( $column_queixaprincipal );
+        /*
 
         $action_avaliacao = new CustomDataGridAction( [ "MedicarPacienteDetail", "onReload" ] );
         $action_avaliacao->setButtonClass( "btn btn-primary" );
@@ -54,6 +55,7 @@ class PacienteMedicacaoList extends TPage
         $action_avaliacao->setDid( "paciente_id" );
         $action_avaliacao->setUseButton(TRUE);
         $this->datagrid->addQuickAction( "Medicar", $action_avaliacao, 'bauprescricao_id');
+        */
 
         $this->datagrid->createModel();
 
@@ -76,12 +78,12 @@ class PacienteMedicacaoList extends TPage
 
             TTransaction::open( "database" );
 
-            $repository = new TRepository( "VwMedicacaoPacienteRecord" );
+            $repository = new TRepository( "MedicarRecord" );
 
 
             $properties = [
-                "order" => "dataentrada",
-                "direction" => "desc"
+                "order" => "id",
+                "direction" => "asc"
             ];
 
             $limit = 10;
@@ -99,11 +101,6 @@ class PacienteMedicacaoList extends TPage
 
                 foreach ( $objects as $object ) {
 
-                    $dataentrada = new DateTime( $object->dataentrada );
-                    $horaentrada = new DateTime( $object->horaentrada );
-
-                    $object->dataentrada = $dataentrada->format("d/m/Y");
-                    $object->horaentrada = $horaentrada->format("H:i");
 
                     $this->datagrid->addItem( $object );
                 }
