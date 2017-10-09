@@ -36,26 +36,26 @@ class PacienteMedicacaoList extends TPage
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( '20%' );
 
-        $column_paciente_nome   = new TDataGridColumn( "nomepacientecor", "Paciente", "left" );
-        $column_dataentrada     = new TDataGridColumn( "paciente_nome", "Paciente", "left" );
-        $column_horaentrada     = new TDataGridColumn( "horaentrada", "Hora de Chegada", "left" );
-        $column_queixaprincipal = new TDataGridColumn( "queixaprincipal", "Queixa Principal", "left" );
+        $column_1       = new TDataGridColumn( "nomepacientecor", "Paciente", "left" );
+        $column_2       = new TDataGridColumn( "medicamento_nome", "Aplicação", "left" );
+        $column_3       = new TDataGridColumn( "horaentrada", "Hora de Chegada", "left" );
+        $column_4       = new TDataGridColumn( "queixaprincipal", "Queixa Principal", "left" );
 
-        $this->datagrid->addColumn( $column_paciente_nome );
-        $this->datagrid->addColumn( $column_dataentrada );
-        $this->datagrid->addColumn( $column_horaentrada );
-        $this->datagrid->addColumn( $column_queixaprincipal );
-        /*
+        $this->datagrid->addColumn( $column_1 );
+        $this->datagrid->addColumn( $column_2 );
+        $this->datagrid->addColumn( $column_3 );
+        $this->datagrid->addColumn( $column_4 );
+        
 
         $action_avaliacao = new CustomDataGridAction( [ "MedicarPacienteDetail", "onReload" ] );
         $action_avaliacao->setButtonClass( "btn btn-primary" );
         $action_avaliacao->setImage( "fa:user-md white fa-lg" );
-        $action_avaliacao->setField( "bauprescricao_id" );
-        $action_avaliacao->setFk( "medicamento_id" );
+        $action_avaliacao->setField( "bauatendimento_id" );
+        $action_avaliacao->setFk( "bau_id" );
         $action_avaliacao->setDid( "paciente_id" );
         $action_avaliacao->setUseButton(TRUE);
-        $this->datagrid->addQuickAction( "Medicar", $action_avaliacao, 'bauprescricao_id');
-        */
+        $this->datagrid->addQuickAction( "Medicar", $action_avaliacao, 'bauatendimento_id');
+        
 
         $this->datagrid->createModel();
 
@@ -78,12 +78,12 @@ class PacienteMedicacaoList extends TPage
 
             TTransaction::open( "database" );
 
-            $repository = new TRepository( "MedicarRecord" );
+            $repository = new TRepository( "VwMedicacaoPacienteRecord" );
 
 
             $properties = [
-                "order" => "id",
-                "direction" => "asc"
+                "order" => "dataentrada",
+                "direction" => "desc"
             ];
 
             $limit = 10;
@@ -100,8 +100,6 @@ class PacienteMedicacaoList extends TPage
                 $this->datagrid->clear();
 
                 foreach ( $objects as $object ) {
-
-
                     $this->datagrid->addItem( $object );
                 }
 

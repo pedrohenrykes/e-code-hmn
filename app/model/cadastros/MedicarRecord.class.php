@@ -6,20 +6,30 @@ class MedicarRecord extends TRecord
     const PRIMARYKEY = "id";
     const IDPOLICY   = "serial";
 
+    private $medicamento;
     private $paciente;
 
-    public function get_nomepacientecor()
-    {
-        if ( empty( $this->paciente ) ) {
-            $this->paciente = new VwBauPacientesRecord( $this->bau_id );
+    function get_paciente_nome(){
+        $atendimento = new BauAtendimentoRecord( $this->bauatendimento_id);
+        $paciente = new PacienteRecord( $atendimento->paciente_id);
+        //var_dump($paciente);
+        //exit();
+        if (!empty ($this->paciente)){
+            $this->paciente = new PacienteRecord($atendimento->paciente_id);
         }
 
-        return (
-            '<table><tr><th style="padding:0 7px 0;"><div style="border-style:solid;border-width:7px 17px;border-color:' .
-            $this->paciente->cortipoclassificacaorisco .
-            ';"></div></th><th style="padding:0;"><div style="font-size:14px;font-weight:bold;">' .
-            $this->paciente->nomepaciente .
-            '</div></th></tr></table>'
-        );
+        return $this->paciente['nomepaciente'];
     }
+    
+
+    function get_medicamento_nome(){
+
+        if (empty ($this->medicamento)){
+            $this->medicamento = new MedicamentoRecord($this->medicamento_id);
+        }
+        
+        return $this->medicamento->nomemedicamento;
+
+    }
+
 }
