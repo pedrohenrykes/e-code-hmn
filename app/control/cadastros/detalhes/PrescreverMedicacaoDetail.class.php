@@ -1,32 +1,39 @@
 <?php
 
-class PrescreverMedicacaoDetail extends TWindow
+class PrescreverMedicacaoDetail extends TPage
+//class PrescreverMedicacaoDetail extends TWindow
 {
     private $form;
+    private $datagrid;
+    private $pageNavigation;
+    private $loaded;
 
     public function __construct()
     {
         parent::__construct();
-        parent::setTitle( "Prescrever Medicação" );
-        parent::setSize( 0.600, 0.800 );
+        //parent::setTitle( "Prescrever Medicação" );
+        //parent::setSize( 0.600, 0.800 );
 
         $redstar = '<font color="red"><b>*</b></font>';
 
         $this->form = new BootstrapFormBuilder( "detail_prescricao_medicao" );
-        $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
+        
+        $this->form->setFormTitle( "Prescrição de Medicação" );
+        //$this->form->setcookie(name)FormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 
         $id                 = new THidden("id");
-        $bau_id             = new THidden("bau_id");
-        $paciente_id        = new THidden( "paciente_id" );
         $medicamento_id     = new THidden( "medicamento_id" );
         $bauatendimento_id  = new THidden( "bauatendimento_id" );
         $paciente_nome      = new TEntry( "paciente_nome" );
         $medico_id          = new THidden("medico_id");
         $data_prescricao    = new TDateTime("data_prescricao");
         $dosagem            = new TEntry("dosagem");
+        $qtd_dias           = new TEntry("qtd_dias");
         $posologia          = new TCombo("posologia");
         $observacao         = new TText("observacao");
+
+        $qtd_dias->setMask('99999999');
 
         $criteria3 = new TCriteria;
 
@@ -41,19 +48,15 @@ class PrescreverMedicacaoDetail extends TWindow
         $did = filter_input( INPUT_GET, "did" );
 
         $bauatendimento_id->setValue ($id2);
-        $bau_id->setValue ($fk);
-        $paciente_id->setValue ($did);
 
         try {
 
             TTransaction::open( "database" );
 
-            $bau = new BauRecord( $fk );
-            $paciente = new PacienteRecord( $did );
+            $paciente = new BauRecord( $did );
 
-            if( isset( $bau ) && isset( $paciente ) ) {
-                $paciente_id->setValue( $paciente->id );
-                $paciente_nome->setValue( $paciente->nomepaciente );
+            if( isset( $paciente ) ) {
+                $paciente_nome->setValue( $paciente->paciente_nome );
 
             }
 
@@ -97,16 +100,18 @@ class PrescreverMedicacaoDetail extends TWindow
         $this->form->addFields( [ new TLabel( "Paciente:" ) ], [ $paciente_nome, $data_prescricao ] );
         $this->form->addFields( [ new TLabel( "Medicamento:{$redstar}" ) ], [ $principioativo_id ] );
         $this->form->addFields( [ new TLabel( "Dosagem:{$redstar}" ) ], [ $dosagem ] );
+        $this->form->addFields( [ new TLabel( "Qtd Dias" ) ], [ $qtd_dias ] );
         $this->form->addFields( [ new TLabel( "Posologia:{$redstar}" ) ], [ $posologia ] );
         $this->form->addFields( [ new TLabel( "Observação" ) ], [ $observacao ] );
-        $this->form->addFields( [ $id, $paciente_id, $medico_id, $bauatendimento_id, $bau_id, $medicamento_id ] );
+        $this->form->addFields( [ $id, $medico_id, $bauatendimento_id, $medicamento_id ] );
 
         $onSave   = new TAction( [ $this, "onSave" ] );
         $onSave->setParameter( "fk", $fk );
         $onSave->setParameter( "did", $did );
+        $onSave->setParameter( "key", $id2 );
+
         $onReload = new TAction( [ "AtendimentoDetail", "onReload" ] );
-        $onReload->setParameter( "fk", $fk );
-        $onReload->setParameter( "did", $did );
+        $onReload->setParameter( "fk", $did );
 
         $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
         $this->form->addAction( "Voltar para Atendimento", $onReload, "fa:table blue" );
@@ -130,7 +135,7 @@ class PrescreverMedicacaoDetail extends TWindow
         $action_del->setButtonClass( "btn btn-default" );
         $action_del->setLabel( "Deletar" );
         $action_del->setImage( "fa:trash-o red fa-lg" );
-        $action_del->setField( "id" );
+        $action_del->setField( "id", $id2 );
         $action_del->setParameter( "fk", $fk );
         $action_del->setParameter( "did", $did );
         $this->datagrid->addAction( $action_del );
@@ -160,6 +165,7 @@ class PrescreverMedicacaoDetail extends TWindow
             $object = $this->form->getData( "BauPrescricaoRecord" );
             $object->medicamento_id = key($object->principioativo_id);
             $object->medico_id = TSession::getValue('profissionalid');
+            $object->status = 'PRESCRITO';
 
             TTransaction::open( "database" );
 
@@ -234,7 +240,7 @@ class PrescreverMedicacaoDetail extends TWindow
             $criteria = new TCriteria();
             $criteria->setProperties( $properties );
             $criteria->setProperty( "limit", $limit );
-            $criteria->add( new TFilter( "bau_id", "=", $param[ "fk" ] ) );
+            $criteria->add( new TFilter( "bauatendimento_id", "=", $param[ "key" ] ) );
 
             $objects = $repository->load( $criteria, FALSE );
 

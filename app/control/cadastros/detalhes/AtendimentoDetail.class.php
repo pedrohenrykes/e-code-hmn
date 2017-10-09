@@ -42,9 +42,9 @@ class AtendimentoDetail extends TPage
 
         try {
             TTransaction::open( "database" );
-            $paciente = new PacienteRecord($did);
+            $paciente = new BauRecord($fk);
             if( isset($paciente) ) {
-                $paciente_nome->setValue($paciente->nomepaciente);
+                $paciente_nome->setValue($paciente->paciente_nome);
             }
             TTransaction::close();
         } catch (Exception $ex) {
@@ -69,6 +69,7 @@ class AtendimentoDetail extends TPage
         $this->form->addFields( [ new TLabel( "Avaliação Médica:" ) ], [ $exameclinico ] );
 
          /*--- frame de Direcionamento ---*/
+         /*
         $frame2 = new TFrame;
         $frame2->setLegend( "Ações para o Paciente" );
         $frame2->style .= ';margin:0%;width:90%';
@@ -120,23 +121,28 @@ class AtendimentoDetail extends TPage
         $vbox2->style='width:100%';
         $vbox2->add( $hbox2 );
         $frame2->add( $vbox2 );
+        */
         /*--------------------------------------*/
 
         /*--- frame de Diagnostico ---*/
         $frame1 = new TFrame;
-        $frame1->setLegend( "Diagnóstico" );
+        $frame1->setLegend( "Comorbidades do Paciente" );
         $frame1->style .= ';margin:0%;width:90%';
 
+        /*
         $criteria3 = new TCriteria;
         $cid_codigo = new TDBMultiSearch('cid_id', 'database', 'VwCidRecord', 'id', 'nomecid', 'nomecid', $criteria3);
         $cid_codigo->style = "text-transform: uppercase;";
         $cid_codigo->setProperty('placeholder', '..............::::::: DIGITE A DOENÇA OU CID :::::::..............');
         $cid_codigo->setMinLength(1);
         $cid_codigo->setMaxSize(1);
+        $cid_codigo->setSize("100%");
+        */
 
         //$cid_codigo->addValidation( TextFormat::set( "Diagnóstico" ), new TRequiredValidator );
 
 
+        /*
         $add_button1 = TButton::create(
             "add1", [ $this,"onError" ], null, null
             );
@@ -145,29 +151,30 @@ class AtendimentoDetail extends TPage
         $onSaveFrame1->setParameter( "did", $did );
         $onSaveFrame1->setParameter( "frm", 1 );
 
-        $cid_codigo->setSize("100%");
         $add_button1->setAction( $onSaveFrame1 );
         $add_button1->setLabel( "Adicionar" );
         $add_button1->setImage( "fa:plus green" );
+        */
         $this->form->addContent( [ $frame1 ] );
-        $this->form->addField( $cid_codigo );
-        $this->form->addField( $add_button1 );
+        //$this->form->addField( $cid_codigo );
+        //$this->form->addField( $add_button1 );
         $this->framegrid1 = new TQuickGrid();
         $this->framegrid1->setHeight('0%');
         $this->framegrid1->makeScrollable();
         $this->framegrid1->style='width: 100%';
         $this->framegrid1->id = 'framegrid1';
         $this->framegrid1->disableDefaultClick();
-        $remove_action1 = new TDataGridAction( [ $this, "onDeleteFrames" ] );
+        /*$remove_action1 = new TDataGridAction( [ $this, "onDeleteFrames" ] );
         $remove_action1->setParameter( "fk", $fk );
         $remove_action1->setParameter( "did", $did );
         $remove_action1->setParameter( "frm", 1 );
         $this->framegrid1->addQuickAction( "Remover", $remove_action1, "id", "fa:trash red", "0%" );
-        $this->framegrid1->addQuickColumn( "Patologia", 'cid_codnome', 'left', '100%');
+        */
+        $this->framegrid1->addQuickColumn( "Patologia", 'cid_codnome', 'left', '50%');
         $this->framegrid1->createModel();
         $hbox1 = new THBox;
-        $hbox1->add( $cid_codigo );
-        $hbox1->add( $add_button1 );
+        //$hbox1->add( $cid_codigo );
+        //$hbox1->add( $add_button1 );
         $hbox1->style = 'margin: 0%';
         $vbox1 = new TVBox;
         $vbox1->style='width:100%';
@@ -221,8 +228,8 @@ class AtendimentoDetail extends TPage
         $action_presc->setButtonClass( "btn btn-primary" );
         $action_presc->setImage( "fa:user-md white fa-lg" );
         $action_presc->setField( "id" );
-        $action_presc->setFk( "bau_id" );
-        $action_presc->setDid( "paciente_id" );
+        $action_presc->setFk( "id" );
+        $action_presc->setDid( "bau_id" );
         $action_presc->setUseButton(TRUE);
         $this->datagrid->addQuickAction( "Prescrever Medicação", $action_presc, 'id');
 
@@ -459,11 +466,12 @@ class AtendimentoDetail extends TPage
 
             TTransaction::open('database');
 
-            $object = new PacienteRecord( $param[ "did" ] );
+            $object = new BauRecord( $param[ "fk" ] );
+            $paciente2 = new PacienteRecord( $object->paciente_id );
 
-            if ( isset( $object ) ) {
+            if ( isset( $paciente2 ) ) {
 
-                foreach ( $object->getComorbidades() as $comorbidade ) {
+                foreach ( $paciente2->getComorbidades() as $comorbidade ) {
                     $this->framegrid1->addItem( $comorbidade );
                 }
 
@@ -485,8 +493,6 @@ class AtendimentoDetail extends TPage
             case 1:
 
             $object = $this->form->getData( "BauComorbidadesRecord" );
-                //unset( $object->medicamento_id );
-                //unset( $object->principioativo_id );
 
             break;
 
