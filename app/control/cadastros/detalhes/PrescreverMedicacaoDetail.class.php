@@ -30,7 +30,7 @@ class PrescreverMedicacaoDetail extends TPage
         $data_prescricao    = new TDateTime("data_prescricao");
         $dosagem            = new TEntry("dosagem");
         $qtd_dias           = new TEntry("qtd_dias");
-        $posologia          = new TCombo("posologia");
+        $posologia          = new TDBCombo("tipoposologia_id", "database", "TipoPosologiaRecord", "id", "nometipoposologia", "nometipoposologia" );
         $observacao         = new TText("observacao");
 
         $qtd_dias->setMask('99999999');
@@ -75,14 +75,14 @@ class PrescreverMedicacaoDetail extends TPage
         $data_prescricao         ->setSize( "20%" );
         $observacao               ->setSize( "70%" );
 
-        $posologia->addItems( [
+        /*$posologia->addItems( [
             "4" => "6x ao Dia",
             "6" => "4x ao Dia",
             "8" => "3x ao Dia",
             "12" => "2x ao Dia",
             "24" => "1x ao Dia",
             "25" => "Após da Refeição",
-            "26" => "Antes da Refeição" ] );
+            "26" => "Antes da Refeição" ] );*/
 
         $posologia          ->setDefaultOption( "..::SELECIONE::.." );
 

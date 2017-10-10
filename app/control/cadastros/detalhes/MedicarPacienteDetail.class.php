@@ -69,7 +69,7 @@ class MedicarPacienteDetail extends TPage
 
         $column_1 = new TDataGridColumn( "medicamento_nome", "Medicação", "left" );
         $column_2 = new TDataGridColumn( "dosagem", "Dose", "left" );
-        $column_4 = new TDataGridColumn( "data_prescricao", "Data da Prescrição", "left" );
+        $column_4 = new TDataGridColumn( "data_previsao", "Previsão da Aplicação", "left" );
 
         $this->datagrid->addColumn( $column_1 );
         $this->datagrid->addColumn( $column_2 );
@@ -122,8 +122,8 @@ class MedicarPacienteDetail extends TPage
                 $object = new MedicarRecord($key);
 
                 $object->enfermeiro_id = TSession::getValue('profissionalid');
-                $object->status = 'APLICADO';
-                $object->data_aplicacao =  date("Y/m/d h:i:s");
+                $object->situacao = 'APLICADO';
+                $object->data_aplicacao =  date("Y/m/d H:i:s");
 
 
                 $object->store();
@@ -153,7 +153,7 @@ class MedicarPacienteDetail extends TPage
             $repository = new TRepository( "MedicarRecord" );
 
             $properties = [
-            "order" => "id",
+            "order" => "data_previsao",
             "direction" => "asc"
             ];
 
@@ -163,7 +163,7 @@ class MedicarPacienteDetail extends TPage
             $criteria->setProperties( $properties );
             $criteria->setProperty( "limit", $limit );
             $criteria->add( new TFilter( "bauatendimento_id", "=", $param[ "did" ] ) );
-            $criteria->add( new TFilter( "status", "=", 'PRESCRITO' ) );
+            $criteria->add( new TFilter( "situacao", "=", 'PRESCRITO' ) );
 
             $objects = $repository->load( $criteria, FALSE );
 
@@ -173,9 +173,9 @@ class MedicarPacienteDetail extends TPage
 
                 foreach ( $objects as $object ) {
 
-                    //$object->data_prescricao = TDate::date2br($object->data_prescricao) . ' ' . substr($object->data_prescricao, 11, strlen($object->data_prescricao));
+                    $object->data_previsao = TDate::date2br($object->data_previsao) . ' ' . substr($object->data_previsao, 11, -10);
 
-                    $object->data_prescricao = TDate::date2br($object->data_prescricao);
+                    //$object->data_previsao = TDate::date2br($object->data_previsao);
 
                     $this->datagrid->addItem( $object );
 
