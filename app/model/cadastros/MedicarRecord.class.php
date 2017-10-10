@@ -7,21 +7,8 @@ class MedicarRecord extends TRecord
     const IDPOLICY   = "serial";
 
     private $medicamento;
-    private $paciente;
-
-    function get_paciente_nome(){
-        $atendimento = new BauAtendimentoRecord( $this->bauatendimento_id);
-        $paciente = new PacienteRecord( $atendimento->paciente_id);
-        //var_dump($paciente);
-        //exit();
-        if (!empty ($this->paciente)){
-            $this->paciente = new PacienteRecord($atendimento->paciente_id);
-        }
-
-        return $this->paciente['nomepaciente'];
-    }
+    private $datap;
     
-
     function get_medicamento_nome(){
 
         if (empty ($this->medicamento)){
@@ -29,6 +16,17 @@ class MedicarRecord extends TRecord
         }
         
         return $this->medicamento->nomemedicamento;
+
+    }    
+    
+    function get_data_prescricao(){
+
+        if (empty ($this->datap)){
+            $this->datap = new BauPrescricaoRecord($this->bauprescricao_id);
+
+        }
+        
+        return $this->datap->data_prescricao;
 
     }
 

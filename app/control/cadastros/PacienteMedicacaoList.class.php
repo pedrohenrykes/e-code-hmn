@@ -52,7 +52,7 @@ class PacienteMedicacaoList extends TPage
         $action_avaliacao->setImage( "fa:user-md white fa-lg" );
         $action_avaliacao->setField( "bauatendimento_id" );
         $action_avaliacao->setFk( "bau_id" );
-        $action_avaliacao->setDid( "paciente_id" );
+        $action_avaliacao->setDid( "bauatendimento_id" );
         $action_avaliacao->setUseButton(TRUE);
         $this->datagrid->addQuickAction( "Medicar", $action_avaliacao, 'bauatendimento_id');
         
