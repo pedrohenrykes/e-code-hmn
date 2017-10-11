@@ -1,6 +1,6 @@
 <?php
 
-use FDPF;
+//use FDPF;
 use Adianti\Database\TTransaction;
 use Adianti\Database\TRepository;
 use Adianti\Database\TCriteria;
@@ -8,101 +8,91 @@ use Adianti\Database\TFilter;
 
 class RelatorioBauAtendidoPDF extends FPDF {
 
-
-    //Page header
     function Header() {
-    
-        $this->Image("app/images/logo_sic.jpg", 8, 11, 26, 18);
+
+        $this->Image("app/images/sponsors/hmn.jpg", 8, 15, 28, 10);
 
         $this->SetFont('Arial', 'B', 12);
-        $this->SetY("22");
-        $this->SetX("25");
-        $this->Cell(0, 5, utf8_decode("RELATORIO DE MEDICAMENTOS MAIS UTILIZADOS POR ANO"), 0, 1, 'C');
+        $this->SetY("15");
+        $this->SetX("35");
+        $this->Cell(0, 5, utf8_decode("RELATÓRIO DE PACIENTES POR DATA"), 0, 1, 'L');
+        $this->SetX("35");
+        $this->Cell(0, 5, utf8_decode("HOSPITAL MUNICIPAL DE NATAL"), 0, 1, 'L');
 
-                
-        $this->Ln(3); // Ln <<< PULAR LINHAS
+
+        $this->Ln(6);
 
         $this->ColumnHeader();
     }
 
     function ColumnHeader() {
-     
+
         $this->SetFont('Arial', 'B', 10);
-
-
-        $this->Cell(20 , 20, utf8_decode("Ano"), 0, 0, 'L');
-
+        $this->Cell(80 , 5, utf8_decode("PACIENTE"), 1, 0, 'L');
+        $this->Cell(35 , 5, utf8_decode("ENTRADA"), 1, 0, 'L');
+        $this->Cell(35 , 5, utf8_decode("SITUAÇÃO"), 1, 0, 'L');
+        $this->Cell(41 , 5, utf8_decode("CLASSIFICAÇÃO"), 1, 1, 'L');
 
     }
 
     function ColumnDetail() {
 
-     
         $ano =  $_REQUEST['ano'];
-        $this->SetX("20");
+        $total = 0;
 
-        TTransaction::open('dbsic');
-
+        TTransaction::open('database');
         $repository = new TRepository('VwBauPacientesRecord');
         
         $criteria = new TCriteria;
-        $criteria->add(new TFilter('ano', '=', $ano ));
 
-      /*  if($ano){
-            
-        }*/
+        $criteria->setProperty('order', 'dataentrada', 'asc');
+        //$criteria->add(new TFilter('ano', '=', $ano ));
 
         $rows = $repository->load($criteria);
 
-                if ($rows) {
-                    
-                    foreach ($rows as $row) {
+        if ($rows) {
 
-                        $this->SetFont('Arial', '', 9);
+            foreach ($rows as $row) {
 
-                        $this->SetX("5");
-                        $this->Cell(0, 5, utf8_decode($row->ano), 0, 1, 'L');
+                $this->SetFont('Arial', '', 8);
+                $this->Cell(80, 5, utf8_decode($row->nomepaciente), 0, 0, 'L'); 
+                $this->Cell(35, 5, utf8_decode($row->dataentrada), 0, 0, 'L'); 
+                $this->Cell(35, 5, utf8_decode($row->situacao), 0, 0, 'L'); 
+                $this->Cell(40, 5, utf8_decode($row->nometipoclassificacaorisco), 0, 1, 'L');
+                $this->Cell(0, 0, '', 1, 1, 'L'); 
 
-                 
-                        $this->Ln(5);
-
-                    }
-
-                }
-
-
-            TTransaction::close();
-        }
-    
-
-            //Page footer
-            function Footer() 
-            {
-            
-                $this->SetY(-15);
-            
-                $this->SetFont('Arial', 'I', 8);
-            
-                $data = date("d/m/Y H:i:s");
-                $conteudo = "impresso em " . $data;
-                $texto = "http://sic.educacao.ws/sistema";
-            
-                $this->Cell(0, 0, '', 1, 1, 'L');
-
-                $this->Cell(0, 5, $texto, 0, 0, 'L');
-                $this->Cell(0, 5, $conteudo, 0, 0, 'R');
-                $this->Ln();
+                $total++;
             }
+
+            $this->SetFont('Arial', 'B', 10);
+            $this->Cell(40, 5, utf8_decode('Total:  ' .$total . ' Pacientes'), 0, 1, 'L');
+
+
         }
 
+        TTransaction::close();
+    }
+    
+    function Footer() {
 
-//Instanciation of inherited class
+        $this->SetY(-15);
+        $this->SetFont('Arial', 'I', 8);
+
+        $data = date("d/m/Y H:i:s");
+        $conteudo = "impresso em " . $data;
+        $texto = "http://sic.educacao.ws/sistema";
+
+        $this->Cell(0, 0, '', 1, 1, 'L');
+
+        $this->Cell(0, 5, $texto, 0, 0, 'L');
+        $this->Cell(0, 5, $conteudo, 0, 0, 'R');
+        $this->Ln();
+    }
+}
+
+
 $pdf = new RelatorioBauAtendidoPDF("P", "mm", "A4");
-
-//define o titulo
 $pdf->SetTitle("Relatorio de Medicamentos Mais Utulizados por Ano - RBSIC");
-
-//assunto
 $pdf->SetSubject("Relatorio de Medicamentos Mais Utulizados por Ano - RBSIC");
 
 

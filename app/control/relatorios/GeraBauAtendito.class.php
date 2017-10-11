@@ -2,7 +2,7 @@
 
 
 
-class  GeraBauAtendido  extends TPage
+class  GeraBauAtendito  extends TPage
 {
     private $form;
     private $datagrid;
@@ -24,7 +24,7 @@ class  GeraBauAtendido  extends TPage
         $repository = new TRepository('VwBauPacientesRecord');
 
         $criteria = new TCriteria;
-        $criteria->setProperty('order', 'ano');
+        //$criteria->setProperty('order', 'ano');
         
         $cadastros = $repository->load($criteria);
   
