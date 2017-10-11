@@ -37,7 +37,7 @@ class PacienteMedicacaoList extends TPage
         $this->datagrid->setHeight( '20%' );
 
         $column_1       = new TDataGridColumn( "nomepacientecor", "Paciente", "left" );
-        $column_2       = new TDataGridColumn( "medicamento_nome", "Aplicação", "left" );
+        $column_2       = new TDataGridColumn( "proximaaplicacao", "Proxima Aplicação", "left" );
         $column_3       = new TDataGridColumn( "horaentrada", "Hora de Chegada", "left" );
         $column_4       = new TDataGridColumn( "queixaprincipal", "Queixa Principal", "left" );
 
@@ -100,6 +100,8 @@ class PacienteMedicacaoList extends TPage
                 $this->datagrid->clear();
 
                 foreach ( $objects as $object ) {
+
+                    $object->proximaaplicacao = TDate::date2br($object->proximaaplicacao) . ' ' . substr($object->proximaaplicacao, 11, strlen($object->proximaaplicacao));
                     $this->datagrid->addItem( $object );
                 }
 
