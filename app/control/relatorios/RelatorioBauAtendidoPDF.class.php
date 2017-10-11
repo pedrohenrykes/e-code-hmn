@@ -37,7 +37,7 @@ class RelatorioBauAtendidoPDF extends FPDF {
 
     function ColumnDetail() {
 
-        $ano =  $_REQUEST['ano'];
+        $situacao =  $_REQUEST['situacao'];
         $total = 0;
 
         TTransaction::open('database');
@@ -46,7 +46,9 @@ class RelatorioBauAtendidoPDF extends FPDF {
         $criteria = new TCriteria;
 
         $criteria->setProperty('order', 'dataentrada', 'asc');
-        //$criteria->add(new TFilter('ano', '=', $ano ));
+        if ($situacao != 'TODOS'){
+            $criteria->add(new TFilter('situacao', '=', $situacao ));
+        }
 
         $rows = $repository->load($criteria);
 
@@ -79,8 +81,8 @@ class RelatorioBauAtendidoPDF extends FPDF {
         $this->SetFont('Arial', 'I', 8);
 
         $data = date("d/m/Y H:i:s");
-        $conteudo = "impresso em " . $data;
-        $texto = "http://sic.educacao.ws/sistema";
+        $conteudo = "< E-CODE > Software House - impresso em " . $data;
+        $texto = "http://kironsaude.educacao.ws";
 
         $this->Cell(0, 0, '', 1, 1, 'L');
 
@@ -92,8 +94,8 @@ class RelatorioBauAtendidoPDF extends FPDF {
 
 
 $pdf = new RelatorioBauAtendidoPDF("P", "mm", "A4");
-$pdf->SetTitle("Relatorio de Medicamentos Mais Utulizados por Ano - RBSIC");
-$pdf->SetSubject("Relatorio de Medicamentos Mais Utulizados por Ano - RBSIC");
+$pdf->SetTitle("RELATÓRIO DE PACIENTES POR DATA - HMN");
+$pdf->SetSubject("RELATÓRIO DE PACIENTES POR DATA - HMN");
 
 
 $pdf->AliasNbPages();
