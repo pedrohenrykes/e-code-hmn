@@ -100,10 +100,10 @@ class PacientesDeclaracaoObitoList extends TPage
 
                 foreach ( $objects as $object ) {
 
-                    $dataentrada = new DateTime( $object->dataentrada );
+                    //$dataentrada = new DateTime( $object->dataentrada );
                     $horaentrada = new DateTime( $object->horaentrada );
 
-                    $object->dataentrada = $dataentrada->format("d/m/Y");
+                    //$object->dataentrada = $dataentrada->format("d/m/Y");
                     $object->horaentrada = $horaentrada->format("H:i");
 
                     $this->datagrid->addItem( $object );
