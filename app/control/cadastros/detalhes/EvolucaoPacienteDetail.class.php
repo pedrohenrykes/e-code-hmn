@@ -1,53 +1,43 @@
 <?php
 
-class PrescreverMedicacaoDetail extends TPage
-//class PrescreverMedicacaoDetail extends TWindow
+class EvolucaoPacienteDetail extends TWindow
 {
     private $form;
-    private $datagrid;
-    private $pageNavigation;
-    private $loaded;
 
     public function __construct()
     {
         parent::__construct();
-        //parent::setTitle( "Prescrever Medicação" );
-        //parent::setSize( 0.600, 0.800 );
+        parent::setTitle( "Evolução do Paciente" );
+        parent::setSize( 0.600, 0.800 );
 
         $redstar = '<font color="red"><b>*</b></font>';
 
-        $this->form = new BootstrapFormBuilder( "detail_prescricao_medicao" );
-        
-        $this->form->setFormTitle( "Prescrição de Medicação" );
-        //$this->form->setcookie(name)FormTitle( "({$redstar}) campos obrigatórios" );
+        $this->form = new BootstrapFormBuilder( "detail_solicitar_exame" );
+        $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 
         $id                 = new THidden("id");
-        $medicamento_id     = new THidden( "medicamento_id" );
-        $bauatendimento_id  = new THidden( "bauatendimento_id" );
+        $bau_id             = new THidden("bau_id");
         $paciente_nome      = new TEntry( "paciente_nome" );
-        $medico_id          = new THidden("medico_id");
-        $data_prescricao    = new TDateTime("data_prescricao");
-        $dosagem            = new TEntry("dosagem");
-        $qtd_dias           = new TEntry("qtd_dias");
-        $posologia          = new TDBCombo("tipoposologia_id", "database", "TipoPosologiaRecord", "id", "nometipoposologia", "nometipoposologia" );
+        $situacao           = new TCombo( "situacao" );
+        $profissional_id    = new THidden("profissional_id");
+        $datasolicitacao     = new TDateTime("data_evolucao");
         $observacao         = new TText("observacao");
 
-        $qtd_dias->setMask('99999999');
-
-        $criteria3 = new TCriteria;
-
-        $principioativo_id = new TDBMultiSearch('principioativo_id', 'database', 'VwPrincipioAtivoMedicamentoRecord', 'medicamento_id', 'principiomedicamento', 'principiomedicamento', $criteria3);
-        $principioativo_id->style = "text-transform: uppercase;";
-        $principioativo_id->setProperty('placeholder', 'DIGITE O NOME OU PRINCIPIO ATIVO');
-        $principioativo_id->setMinLength(1);
-        $principioativo_id->setMaxSize(1);
+        $situacao->setDefaultOption( "..::SELECIONE::.." );
+        $situacao->addItems( [ 
+            "ENCAMINHAR" => "ENCAMINHAR",
+            "INTERNAMENTO" => "INTERNAMENTO",
+            "REMOCAO" => "REMOÇÃO",
+            "ALTA MÉDICA" => "ALTA MÉDICA"
+        ] );
+        
 
         $id2 = filter_input( INPUT_GET, "key" );
         $fk = filter_input( INPUT_GET, "fk" );
         $did = filter_input( INPUT_GET, "did" );
 
-        $bauatendimento_id->setValue ($id2);
+        $bau_id->setValue ($did);
 
         try {
 
@@ -69,64 +59,47 @@ class PrescreverMedicacaoDetail extends TPage
 
         }
 
-        $dosagem->placeholder = 'Ex: 40 Gotas ou 1 Comp...';
-        $principioativo_id      ->setSize( "70%" );
-        $paciente_nome          ->setSize( "70%" );
-        $data_prescricao         ->setSize( "20%" );
-        $observacao               ->setSize( "70%" );
+        $paciente_nome      ->setSize( "70%" );
+        $datasolicitacao    ->setSize( "20%" );
+        $situacao           ->setSize( "70%" );
+        $observacao         ->setSize( "70%" );
+    
+        $datasolicitacao    ->setMask( "dd/mm/yyyy" );
+        $datasolicitacao    ->setDatabaseMask("yyyy-mm-dd");
+        $datasolicitacao    ->setValue( date( "d/m/Y" ) );
 
-        $posologia          ->setDefaultOption( "..::SELECIONE::.." );
-
-        $data_prescricao     ->setMask( "dd/mm/yyyy" );
-        $data_prescricao     ->setDatabaseMask("yyyy-mm-dd h:i:s");
-
-        $data_prescricao     ->setValue( date( "d/m/Y h:i:s" ) );
-        $data_prescricao     ->setEditable( false );
+        $datasolicitacao    ->setEditable( false );
         $paciente_nome      ->setEditable( false );
 
-        $principioativo_id->addValidation( TextFormat::set( "Medicamento" ), new TRequiredValidator );
-        $dosagem->addValidation( TextFormat::set( "Dosagem" ), new TRequiredValidator );
-        $posologia->addValidation( TextFormat::set( "Posologia" ), new TRequiredValidator );
+        //$principioativo_id->addValidation( TextFormat::set( "Medicamento" ), new TRequiredValidator );
 
-        $this->form->addFields( [ new TLabel( "Paciente:" ) ], [ $paciente_nome, $data_prescricao ] );
-        $this->form->addFields( [ new TLabel( "Medicamento:{$redstar}" ) ], [ $principioativo_id ] );
-        $this->form->addFields( [ new TLabel( "Dosagem:{$redstar}" ) ], [ $dosagem ] );
-        $this->form->addFields( [ new TLabel( "Qtd Dias" ) ], [ $qtd_dias ] );
-        $this->form->addFields( [ new TLabel( "Posologia:{$redstar}" ) ], [ $posologia ] );
+        $this->form->addFields( [ new TLabel( "Paciente:" ) ], [ $paciente_nome, $datasolicitacao ] );
+        $this->form->addFields( [ new TLabel( "Situação" ) ], [ $situacao ] );
         $this->form->addFields( [ new TLabel( "Observação" ) ], [ $observacao ] );
-        $this->form->addFields( [ $id, $medico_id, $bauatendimento_id, $medicamento_id ] );
+        $this->form->addFields( [ $id, $profissional_id, $bau_id ] );
 
         $onSave   = new TAction( [ $this, "onSave" ] );
         $onSave->setParameter( "fk", $fk );
         $onSave->setParameter( "did", $did );
-        $onSave->setParameter( "key", $id2 );
-
-        $onReload = new TAction( [ "AtendimentoDetail", "onReload" ] );
-        $onReload->setParameter( "fk", $did );
 
         $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
-        $this->form->addAction( "Voltar para Atendimento", $onReload, "fa:table blue" );
 
         $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
         $this->datagrid->datatable = "true";
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( '100%' );
 
-        $column_1 = new TDataGridColumn( "posologia", "Posologia", "left" );
-        $column_2 = new TDataGridColumn( "dosagem", "Dosagem", "left" );
-        $column_3 = new TDataGridColumn( "medicamento_nome", "Medicamento", "left" );
-        $column_5 = new TDataGridColumn( "data_prescricao", "Data Prescrição", "left" );
+        $column_1 = new TDataGridColumn( "situacao", "Situação", "left" );
+        $column_5 = new TDataGridColumn( "data_evolucao", "Data", "left" );
 
-        $this->datagrid->addColumn( $column_3 );
         $this->datagrid->addColumn( $column_1 );
-        $this->datagrid->addColumn( $column_2 );
         $this->datagrid->addColumn( $column_5 );
-
+        
         $action_del = new CustomDataGridAction( [ $this, "onDelete" ] );
         $action_del->setButtonClass( "btn btn-default" );
         $action_del->setLabel( "Deletar" );
         $action_del->setImage( "fa:trash-o red fa-lg" );
-        $action_del->setField( "id", $id2 );
+        $action_del->setField( "id" );
         $action_del->setParameter( "fk", $fk );
         $action_del->setParameter( "did", $did );
         $this->datagrid->addAction( $action_del );
@@ -134,7 +107,7 @@ class PrescreverMedicacaoDetail extends TPage
         $this->datagrid->createModel();
 
         $this->pageNavigation = new TPageNavigation();
-        $this->pageNavigation->setAction( new TAction( [ $this, "onReload" ] ) );
+        $this->pageNavigation->setAction( new TAction( [ $this, "onReload"] ) );
         $this->pageNavigation->setWidth( $this->datagrid->getWidth() );
 
         $container = new TVBox();
@@ -147,37 +120,33 @@ class PrescreverMedicacaoDetail extends TPage
         parent::add( $container );
     }
 
-    public function onSave( $param = null )
-    {
+    public function onSave( $param = null ){
 
         try {
 
             $this->form->validate();
-            $object = $this->form->getData( "BauPrescricaoRecord" );
-            $object->medicamento_id = key($object->principioativo_id);
-            $object->medico_id = TSession::getValue('profissionalid');
-            $object->status = 'PRESCRITO';
+            $object = $this->form->getData( "BauEvolucaoRecord" );
+            $object->profissional_id = TSession::getValue('profissionalid');
 
             TTransaction::open( "database" );
 
             unset($object->paciente_nome);
-            unset($object->principioativo_id);
             $object->store();
 
             TTransaction::close();
 
             $action = new TAction( [ $this, "onReload" ] );
             $action->setParameters( $param );
-            new TMessage( "info", "Medicação Prescrita com sucesso!", $action );
+            new TMessage( "info", "Registro gravado com sucesso!", $action );
 
         } catch ( Exception $ex ) {
 
             TTransaction::rollback();
-
             new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
 
         }
     }
+   
 
     public function onDelete( $param = null )
     {
@@ -204,7 +173,7 @@ class PrescreverMedicacaoDetail extends TPage
         try {
 
             TTransaction::open( "database" );
-            $object = new BauPrescricaoRecord( $param[ "key" ] );
+            $object = new BauEvolucaoRecord( $param[ "key" ] );
             $object->delete();
             TTransaction::close();
 
@@ -224,14 +193,14 @@ class PrescreverMedicacaoDetail extends TPage
         try {
 
             TTransaction::open( "database" );
-            $repository = new TRepository( "BauPrescricaoRecord" );
-            $properties = [ "order" => "data_prescricao", "direction" => "desc" ];
+            $repository = new TRepository( "BauEvolucaoRecord" );
+            $properties = [ "order" => "data_evolucao", "direction" => "desc" ];
             $limit = 10;
 
             $criteria = new TCriteria();
             $criteria->setProperties( $properties );
             $criteria->setProperty( "limit", $limit );
-            $criteria->add( new TFilter( "bauatendimento_id", "=", $param[ "key" ] ) );
+            $criteria->add( new TFilter( "bau_id", "=", $param[ "did" ] ) );
 
             $objects = $repository->load( $criteria, FALSE );
 
@@ -241,7 +210,7 @@ class PrescreverMedicacaoDetail extends TPage
 
                 foreach ( $objects as $object ) {
 
-                    $object->data_prescricao = TDate::date2br($object->data_prescricao);
+                    $object->data_evolucao = TDate::date2br($object->data_evolucao);
                     $this->datagrid->addItem( $object );
 
                 }

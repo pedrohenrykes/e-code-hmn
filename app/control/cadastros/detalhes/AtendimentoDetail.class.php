@@ -131,6 +131,13 @@ class AtendimentoDetail extends TPage
         $action4->setField( "id" );
         $action4->setFk( "id" );
         $action4->setDid( "bau_id" );
+
+        $action5 = new CustomDataGridAction(array('EvolucaoPacienteDetail', 'onReload'));
+        $action5->setLabel('Evolução');
+        $action5->setImage('fa:file-text blue');
+        $action5->setField( "id" );
+        $action5->setFk( "id" );
+        $action5->setDid( "bau_id" );
         
         $action2 = new CustomDataGridAction(array($this, 'onDelete'));
         $action2->setLabel('Deletar');
@@ -151,6 +158,7 @@ class AtendimentoDetail extends TPage
         $action_group->addHeader('Solicitações');
         $action_group->addAction($action1);
         $action_group->addAction($action4);
+        $action_group->addAction($action5);
         $action_group->addSeparator();
         $action_group->addHeader('Correções');
         $action_group->addAction($action2);
