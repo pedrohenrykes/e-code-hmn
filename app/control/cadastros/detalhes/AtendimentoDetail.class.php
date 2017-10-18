@@ -20,12 +20,11 @@ class AtendimentoDetail extends TPage
         $id                     = new THidden( "id" );
         $paciente_id            = new THidden( "paciente_id" );
         $bau_id                 = new THidden( "bau_id" );
-        $profissional_id        = new THidden( "profissional_id" ); // Deve ser capturado a partir da sessão
+        $profissional_id        = new THidden( "profissional_id" ); 
         $paciente_nome          = new TEntry( "paciente_nome" );
         $dataclassificacao      = new TDate( "dataatendimento" );
         $exameclinico           = new TText( "exameclinico" );
         $examescomplementares   = new TText( "examescomplementares" );
-        //$diagnosticomedico      = new TText( "diagnosticomedico" );
         $descricaotratamento    = new TText( "descricaotratamento" );
 
         $paciente_nome->setSize("60%");
@@ -68,113 +67,26 @@ class AtendimentoDetail extends TPage
         $this->form->addFields( [ new TLabel( "Data: {$redstar}" ) ], [ $dataclassificacao ] );
         $this->form->addFields( [ new TLabel( "Avaliação Médica:" ) ], [ $exameclinico ] );
 
-         /*--- frame de Direcionamento ---*/
-         /*
-        $frame2 = new TFrame;
-        $frame2->setLegend( "Ações para o Paciente" );
-        $frame2->style .= ';margin:0%;width:90%';
-
-        $add_button2 = TButton::create("buttonmed", [ $this,"onError" ], null, null);
-        $onSaveFrame2 = new TAction( [ 'PrescreverMedicacaoDetail', "onReload" ] );
-        $onSaveFrame2->setParameter( "fk", $fk );
-        $onSaveFrame2->setParameter( "did", $did );
-        $onSaveFrame2->setParameter( "frm", 1 );
-        $add_button2->setAction( $onSaveFrame2 );
-
-        $add_button2->setLabel( "Prescrever Medicação" );
-        $add_button2->class = 'btn btn-success';
-        $add_button2->setImage( "fa:plus white" );
-
-        $add_button3 = TButton::create("buttonexam", [ $this,"onError" ], null, null);
-        $onSaveFrame3 = new TAction( [ 'SolicitarExameDetail', "onReload" ] );
-        $onSaveFrame3->setParameter( "fk", $fk );
-        $onSaveFrame3->setParameter( "did", $did );
-        $onSaveFrame3->setParameter( "frm", 1 );
-        $add_button3->setAction( $onSaveFrame3 );
-
-        $add_button3->setLabel( "Solicitar Exame" );
-        $add_button3->class = 'btn btn-success';
-        $add_button3->setImage( "fa:plus white" );
-
-        $add_button4 = TButton::create("buttonalt", [ $this,"onError" ], null, null);
-        $onSaveFrame4 = new TAction( [ 'PacientesAltaHospitalarList', "onReload" ] );
-        $onSaveFrame4->setParameter( "fk", $fk );
-        $onSaveFrame4->setParameter( "did", $did );
-        $onSaveFrame4->setParameter( "frm", 1 );
-        $add_button4->setAction( $onSaveFrame4 );
-
-        $add_button4->setLabel( "Alta Hospitalar" );
-        $add_button4->class = 'btn btn-success';
-        $add_button4->setImage( "fa:plus white" );
-
-        $this->form->addField( $add_button2 );
-        $this->form->addField( $add_button3 );
-        $this->form->addField( $add_button4 );
-
-        $this->form->addContent( [ $frame2 ] );
-        $hbox2 = new THBox;
-        $hbox2->add( $add_button2 );
-        $hbox2->add( $add_button3 );
-        $hbox2->add( $add_button4 );
-        $hbox2->style = 'margin: 0%';
-        $vbox2 = new TVBox;
-        $vbox2->style='width:100%';
-        $vbox2->add( $hbox2 );
-        $frame2->add( $vbox2 );
-        */
-        /*--------------------------------------*/
 
         /*--- frame de Diagnostico ---*/
         $frame1 = new TFrame;
         $frame1->setLegend( "Comorbidades do Paciente" );
         $frame1->style .= ';margin:0%;width:90%';
 
-        /*
-        $criteria3 = new TCriteria;
-        $cid_codigo = new TDBMultiSearch('cid_id', 'database', 'VwCidRecord', 'id', 'nomecid', 'nomecid', $criteria3);
-        $cid_codigo->style = "text-transform: uppercase;";
-        $cid_codigo->setProperty('placeholder', '..............::::::: DIGITE A DOENÇA OU CID :::::::..............');
-        $cid_codigo->setMinLength(1);
-        $cid_codigo->setMaxSize(1);
-        $cid_codigo->setSize("100%");
-        */
-
-        //$cid_codigo->addValidation( TextFormat::set( "Diagnóstico" ), new TRequiredValidator );
-
-
-        /*
-        $add_button1 = TButton::create(
-            "add1", [ $this,"onError" ], null, null
-            );
-        $onSaveFrame1 = new TAction( [ $this, "onSaveFrames" ] );
-        $onSaveFrame1->setParameter( "fk", $fk );
-        $onSaveFrame1->setParameter( "did", $did );
-        $onSaveFrame1->setParameter( "frm", 1 );
-
-        $add_button1->setAction( $onSaveFrame1 );
-        $add_button1->setLabel( "Adicionar" );
-        $add_button1->setImage( "fa:plus green" );
-        */
+       
         $this->form->addContent( [ $frame1 ] );
-        //$this->form->addField( $cid_codigo );
-        //$this->form->addField( $add_button1 );
+       
         $this->framegrid1 = new TQuickGrid();
         $this->framegrid1->setHeight('0%');
         $this->framegrid1->makeScrollable();
         $this->framegrid1->style='width: 100%';
         $this->framegrid1->id = 'framegrid1';
         $this->framegrid1->disableDefaultClick();
-        /*$remove_action1 = new TDataGridAction( [ $this, "onDeleteFrames" ] );
-        $remove_action1->setParameter( "fk", $fk );
-        $remove_action1->setParameter( "did", $did );
-        $remove_action1->setParameter( "frm", 1 );
-        $this->framegrid1->addQuickAction( "Remover", $remove_action1, "id", "fa:trash red", "0%" );
-        */
+       
         $this->framegrid1->addQuickColumn( "Patologia", 'cid_codnome', 'left', '50%');
         $this->framegrid1->createModel();
         $hbox1 = new THBox;
-        //$hbox1->add( $cid_codigo );
-        //$hbox1->add( $add_button1 );
+        
         $hbox1->style = 'margin: 0%';
         $vbox1 = new TVBox;
         $vbox1->style='width:100%';
@@ -206,6 +118,47 @@ class AtendimentoDetail extends TPage
         $this->datagrid->addColumn( $column_2 );
         $this->datagrid->addColumn( $column_3 );
 
+        $action1 = new CustomDataGridAction(array('PrescreverMedicacaoDetail', 'onReload'));
+        $action1->setLabel('Prescrever Medicação');
+        $action1->setImage('fa:file-text blue');
+        $action1->setField( "id" );
+        $action1->setFk( "id" );
+        $action1->setDid( "bau_id" );
+
+        $action4 = new CustomDataGridAction(array('SolicitarExameDetail', 'onReload'));
+        $action4->setLabel('Solicitar Exame');
+        $action4->setImage('fa:file-text blue');
+        $action4->setField( "id" );
+        $action4->setFk( "id" );
+        $action4->setDid( "bau_id" );
+        
+        $action2 = new CustomDataGridAction(array($this, 'onDelete'));
+        $action2->setLabel('Deletar');
+        $action2->setImage('bs:remove red');
+        $action2->setField('id');
+        $action2->setParameter( "fk", $fk );
+        $action2->setParameter( "did", $did );
+        
+        $action3 = new CustomDataGridAction(array($this, 'onEdit'));
+        $action3->setLabel('Editar');
+        $action3->setImage('fa:pencil-square-o blue fa-lg');
+        $action3->setField('id');
+        $action3->setParameter( "fk", $fk );
+        $action3->setParameter( "did", $did );
+        
+        $action_group = new TDataGridActionGroup('Ações', 'bs:th');
+        
+        $action_group->addHeader('Solicitações');
+        $action_group->addAction($action1);
+        $action_group->addAction($action4);
+        $action_group->addSeparator();
+        $action_group->addHeader('Correções');
+        $action_group->addAction($action2);
+        $action_group->addAction($action3);
+        
+        $this->datagrid->addActionGroup($action_group);
+        /*
+
         $action_edit = new CustomDataGridAction( [ $this, "onEdit" ] );
         $action_edit->setButtonClass( "btn btn-default" );
         $action_edit->setLabel( "Editar" );
@@ -232,6 +185,7 @@ class AtendimentoDetail extends TPage
         $action_presc->setDid( "bau_id" );
         $action_presc->setUseButton(TRUE);
         $this->datagrid->addQuickAction( "Prescrever Medicação", $action_presc, 'id');
+        */
 
         $this->datagrid->createModel();
 

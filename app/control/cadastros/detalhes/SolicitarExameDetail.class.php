@@ -18,7 +18,6 @@ class SolicitarExameDetail extends TWindow
 
         $id                 = new THidden("id");
         $bau_id             = new THidden("bau_id");
-        $paciente_id        = new THidden( "paciente_id" );
         $exame_id           = new THidden( "exame_id" );
         $paciente_nome      = new TEntry( "paciente_nome" );
         $profissional_id    = new THidden("profissional_id");
@@ -33,22 +32,20 @@ class SolicitarExameDetail extends TWindow
         $exame->setMinLength(1);
         $exame->setMaxSize(1);
 
+        $id2 = filter_input( INPUT_GET, "key" );
         $fk = filter_input( INPUT_GET, "fk" );
         $did = filter_input( INPUT_GET, "did" );
 
-        $bau_id->setValue ($fk);
-        $paciente_id->setValue ($did);
+        $bau_id->setValue ($did);
 
         try {
 
             TTransaction::open( "database" );
 
-            $bau = new BauRecord( $fk );
-            $paciente = new PacienteRecord( $did );
+            $paciente = new BauRecord( $did );
 
-            if( isset( $bau ) && isset( $paciente ) ) {
-                $paciente_id->setValue( $paciente->id );
-                $paciente_nome->setValue( $paciente->nomepaciente );
+            if( isset( $paciente ) ) {
+                $paciente_nome->setValue( $paciente->paciente_nome );
 
             }
 
@@ -78,17 +75,13 @@ class SolicitarExameDetail extends TWindow
         $this->form->addFields( [ new TLabel( "Paciente:" ) ], [ $paciente_nome, $datasolicitacao ] );
         $this->form->addFields( [ new TLabel( "Exame:{$redstar}" ) ], [ $exame ] );
         $this->form->addFields( [ new TLabel( "Observação" ) ], [ $observacao ] );
-        $this->form->addFields( [ $id, $paciente_id, $profissional_id, $bau_id, $exame_id ] );
+        $this->form->addFields( [ $id, $profissional_id, $bau_id, $exame_id ] );
 
         $onSave   = new TAction( [ $this, "onSave" ] );
         $onSave->setParameter( "fk", $fk );
         $onSave->setParameter( "did", $did );
-        $onReload = new TAction( [ "AtendimentoDetail", "onReload" ] );
-        $onReload->setParameter( "fk", $fk );
-        $onReload->setParameter( "did", $did );
 
         $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
-        $this->form->addAction( "Voltar para Atendimento", $onReload, "fa:table blue" );
 
         $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
         $this->datagrid->datatable = "true";
@@ -208,7 +201,7 @@ class SolicitarExameDetail extends TWindow
             $criteria = new TCriteria();
             $criteria->setProperties( $properties );
             $criteria->setProperty( "limit", $limit );
-            $criteria->add( new TFilter( "bau_id", "=", $param[ "fk" ] ) );
+            $criteria->add( new TFilter( "bau_id", "=", $param[ "did" ] ) );
 
             $objects = $repository->load( $criteria, FALSE );
 
