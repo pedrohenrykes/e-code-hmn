@@ -27,7 +27,6 @@ class  GeraExamesRealizados  extends TPage{
       $items[$object->situacao] = $object->situacao;
     }
     $items['TODOS'] = 'TODOS';
-    
 
     $situacao->addItems($items);
     TTransaction::close(); 
@@ -47,7 +46,6 @@ class  GeraExamesRealizados  extends TPage{
     $container->add( $this->pageNavigation );
     parent::add( $container );
   }
-
 
   function onGenerate(){
 

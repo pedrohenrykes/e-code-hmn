@@ -30,10 +30,16 @@ class PrescreverMedicacaoDetail extends TPage
         $data_prescricao    = new TDateTime("data_prescricao");
         $dosagem            = new TEntry("dosagem");
         $qtd_dias           = new TEntry("qtd_dias");
+        $aplicacao           = new TRadioGroup('aplicacao');
         $posologia          = new TDBCombo("tipoposologia_id", "database", "TipoPosologiaRecord", "id", "nometipoposologia", "nometipoposologia" );
         $observacao         = new TText("observacao");
 
         $qtd_dias->setMask('99999999');
+
+        $aplicacao->addItems(array('IMEDIATA'=>'Imediata', 'POSTERIOR'=>'Pósterior'));
+        $aplicacao->setLayout('horizontal');
+
+        $aplicacao->setValue('IMEDIATA');
 
         $criteria3 = new TCriteria;
 
@@ -93,6 +99,7 @@ class PrescreverMedicacaoDetail extends TPage
         $this->form->addFields( [ new TLabel( "Dosagem:{$redstar}" ) ], [ $dosagem ] );
         $this->form->addFields( [ new TLabel( "Qtd Dias" ) ], [ $qtd_dias ] );
         $this->form->addFields( [ new TLabel( "Posologia:{$redstar}" ) ], [ $posologia ] );
+        $this->form->addFields( [ new TLabel( "Aplicação" ) ], [ $aplicacao ] );
         $this->form->addFields( [ new TLabel( "Observação" ) ], [ $observacao ] );
         $this->form->addFields( [ $id, $medico_id, $bauatendimento_id, $medicamento_id ] );
 
