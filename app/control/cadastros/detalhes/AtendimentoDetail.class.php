@@ -20,18 +20,18 @@ class AtendimentoDetail extends TPage
         $id                     = new THidden( "id" );
         $paciente_id            = new THidden( "paciente_id" );
         $bau_id                 = new THidden( "bau_id" );
-        $profissional_id        = new THidden( "profissional_id" ); 
+        $profissional_id        = new THidden( "profissional_id" );
         $paciente_nome          = new TEntry( "paciente_nome" );
         $dataclassificacao      = new TDate( "dataatendimento" );
         $exameclinico           = new TText( "exameclinico" );
         $examescomplementares   = new TText( "examescomplementares" );
         $descricaotratamento    = new TText( "descricaotratamento" );
 
-        $paciente_nome->setSize("60%");
+        $paciente_nome->setSize("45%");
+        $dataclassificacao->setSize("45%");
         $exameclinico->setSize("90%");
         $examescomplementares->setSize("90%");
         $descricaotratamento->setSize("90%");
-        $dataclassificacao->setSize("45%");
 
         $fk = filter_input( INPUT_GET, "fk" );
         $did = filter_input( INPUT_GET, "did" );
@@ -71,25 +71,25 @@ class AtendimentoDetail extends TPage
         /*--- frame de Diagnostico ---*/
         $frame1 = new TFrame;
         $frame1->setLegend( "Comorbidades do Paciente" );
-        $frame1->style .= ';margin:0%;width:90%';
+        $frame1->style .= 'margin-left:17%;width:73%;';
 
-       
+
         $this->form->addContent( [ $frame1 ] );
-       
+
         $this->framegrid1 = new TQuickGrid();
         $this->framegrid1->setHeight('0%');
         $this->framegrid1->makeScrollable();
         $this->framegrid1->style='width: 100%';
         $this->framegrid1->id = 'framegrid1';
         $this->framegrid1->disableDefaultClick();
-       
-        $this->framegrid1->addQuickColumn( "Patologia", 'cid_codnome', 'left', '50%');
+
+        $this->framegrid1->addQuickColumn( "Patologia", 'cid_codnome', 'left', '1%');
         $this->framegrid1->createModel();
+
         $hbox1 = new THBox;
-        
         $hbox1->style = 'margin: 0%';
         $vbox1 = new TVBox;
-        $vbox1->style='width:100%';
+        $vbox1->style = 'width:100%';
         $vbox1->add( $hbox1 );
         $vbox1->add( $this->framegrid1 );
         $frame1->add( $vbox1 );
@@ -138,23 +138,23 @@ class AtendimentoDetail extends TPage
         $action5->setField( "id" );
         $action5->setFk( "id" );
         $action5->setDid( "bau_id" );
-        
+
         $action2 = new CustomDataGridAction(array($this, 'onDelete'));
         $action2->setLabel('Deletar');
         $action2->setImage('bs:remove red');
         $action2->setField('id');
         $action2->setParameter( "fk", $fk );
         $action2->setParameter( "did", $did );
-        
+
         $action3 = new CustomDataGridAction(array($this, 'onEdit'));
         $action3->setLabel('Editar');
         $action3->setImage('fa:pencil-square-o blue fa-lg');
         $action3->setField('id');
         $action3->setParameter( "fk", $fk );
         $action3->setParameter( "did", $did );
-        
+
         $action_group = new TDataGridActionGroup('Ações', 'bs:th');
-        
+
         $action_group->addHeader('Solicitações');
         $action_group->addAction($action1);
         $action_group->addAction($action4);
@@ -163,7 +163,7 @@ class AtendimentoDetail extends TPage
         $action_group->addHeader('Correções');
         $action_group->addAction($action2);
         $action_group->addAction($action3);
-        
+
         $this->datagrid->addActionGroup($action_group);
         /*
 
