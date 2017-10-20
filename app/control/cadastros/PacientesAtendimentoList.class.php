@@ -17,29 +17,29 @@ class PacientesAtendimentoList extends TStandardList
         parent::setActiveRecord('VwBauPacientesRecord');
         parent::setCriteria($criteria);
 
-        parent::addFilterField('nomepaciente', 'like', 'nomepaciente');
+        //parent::addFilterField('nomepaciente', 'like', 'nomepaciente');
         //parent::addFilterField('dataentrada', 'like', 'nomepaciente');
         //parent::addFilterField('dataentrada', '=', 'nomepaciente'); // filter field, operator, form field
         
-        parent::setDefaultOrder('dataentrada', 'desc');
+        parent::setDefaultOrder('ordem, dataorganizar, horaentrada', 'asc');
         $this->setLimit(-1); // turn off limit for datagrid
 
         $this->form = new BootstrapFormBuilder( "list_pacientes_atendimento" );
         $this->form->setFormTitle( "Atendimento " );
         $this->form->class = "tform";
 
-        //$opcao = new TCombo( "opcao" );
-        $dados = new TEntry( "nomepaciente" );
+        $opcao = new TCombo( "opcao" );
+        $dados = new TEntry( "dados" );
 
-        //$opcao->setDefaultOption( "..::SELECIONE::.." );
+        $opcao->setDefaultOption( "..::SELECIONE::.." );
         $dados->setProperty ( "title", "Informe os dados referentes a opção" );
 
-        //$opcao->setSize( "38%" );
+        $opcao->setSize( "38%" );
         $dados->setSize( "38%" );
 
-        //$opcao->addItems( [ "nomepaciente" => "Paciente" ] );
+        $opcao->addItems( [ "nomepaciente" => "Paciente" ] );
 
-        //$this->form->addFields( [ new TLabel( "Opção de busca:" ) ], [ $opcao ] );
+        $this->form->addFields( [ new TLabel( "Opção de busca:" ) ], [ $opcao ] );
         $this->form->addFields( [ new TLabel( "Dados à buscar:" )  ], [ $dados ] );
 
         $this->form->addAction( "Buscar", new TAction( [ $this, "onSearch" ] ), "fa:search" );
@@ -85,6 +85,87 @@ class PacientesAtendimentoList extends TStandardList
         $container->add( $this->pageNavigation );
 
         parent::add( $container );
+    }
+     public function onSearch()
+    {
+        $data = $this->form->getData();
+
+        try {
+
+            if( !empty( $data->opcao ) && !empty( $data->dados ) ) {
+
+                TTransaction::open( "database" );
+
+                $repository = new TRepository( "VwBauPacientesRecord" );
+
+                if ( empty( $param[ "order" ] ) ) {
+                    $param[ "order" ] = "dataentrada";
+                    $param[ "direction" ] = "desc";
+                }
+
+                $limit = 10;
+
+                $criteria = new TCriteria();
+                $criteria->setProperties( $param );
+                $criteria->setProperty( "limit", $limit );
+                $criteria->add( new TFilter( "situacao", "=", "CLASSIFICADO") );
+
+                switch( $data->opcao ) {
+
+                    case "nomepaciente":
+
+                        $criteria->add( new TFilter( $data->opcao, "LIKE", $data->dados . "%" ) );
+
+                        break;
+
+                }
+
+                $objects = $repository->load( $criteria, FALSE );
+
+                $this->datagrid->clear();
+
+                if ( $objects ) {
+                    foreach ( $objects as $object ) {
+                        
+                        $horaentrada = new DateTime( $object->horaentrada );
+                        $object->horaentrada = $horaentrada->format("H:i");
+                        $this->datagrid->addItem( $object );
+                    }
+                } else {
+                  new TMessage( "info", "Não há dados cadastrados!" );
+                }
+
+                $criteria->resetProperties();
+
+                $count = $repository->count( $criteria );
+
+                $this->pageNavigation->setCount( $count );
+                $this->pageNavigation->setProperties( $param );
+                $this->pageNavigation->setLimit( $limit );
+
+                TTransaction::close();
+
+                $this->form->setData( $data );
+
+                $this->loaded = true;
+
+            } else {
+
+                $this->onReload();
+
+                $this->form->setData( $data );
+
+                new TMessage( "erro", "Selecione uma opção e informe os dados à buscar corretamente!" );
+            }
+
+        } catch ( Exception $ex ) {
+
+            TTransaction::rollback();
+
+            $this->form->setData( $data );
+
+            new TMessage( "erro", $ex->getMessage() );
+        }
     }
 
     public function show(){

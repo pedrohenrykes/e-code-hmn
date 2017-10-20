@@ -105,6 +105,7 @@ class AltaHospitalarDetail extends TWindow
             $object->situacao = "ALTA";
             $object->store();
 
+
             TTransaction::close();
 
             $action = new TAction( [ "PacientesAltaHospitalarList", "onReload" ] );
