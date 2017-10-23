@@ -25,8 +25,8 @@ class ClassificacaoRiscoDetail extends TPage
         $paciente_id               = new THidden( "paciente_id" );
         $bau_id                    = new THidden( "bau_id" );
         $enfermeiro_id             = new THidden( "enfermeiro_id" ); // Deve ser capturado a partir da sessão
-        $dataclassificacao         = new TDate( "dataclassificacao" );
-        $horaclassificacao         = new TDateTime( "horaclassificacao" );
+        $dataclassificacao         = new TEntry( "dataclassificacao" );
+        $horaclassificacao         = new TEntry( "horaclassificacao" );
         $paciente_nome             = new TEntry( "paciente_nome" );
         $pressaoarterial           = new TEntry( "pressaoarterial" );
         $frequenciacardiaca        = new TEntry( "frequenciacardiaca" );
@@ -87,9 +87,9 @@ class ClassificacaoRiscoDetail extends TPage
 
         }
 
-        $dataclassificacao        ->setSize("38%");
-        $horaclassificacao        ->setSize("38%");
-        $paciente_nome            ->setSize("38%");
+        $dataclassificacao        ->setSize("33%");
+        $horaclassificacao        ->setSize("15%");
+        $paciente_nome            ->setSize("48%");
         $pressaoarterial          ->setSize("38%");
         $frequenciacardiaca       ->setSize("38%");
         $frequenciarespiratoria   ->setSize("38%");
@@ -106,42 +106,17 @@ class ClassificacaoRiscoDetail extends TPage
         $tipoclassificacaorisco_id->setDefaultOption( "..::SELECIONE::.." );
         $tipoestadogeral_id       ->setDefaultOption( "..::SELECIONE::.." );
 
-        $dataclassificacao->setMask( "dd/mm/yyyy" );
-        $dataclassificacao->setDatabaseMask("yyyy-mm-dd");
-        $horaclassificacao->setMask( "hh:ii" );
-
         $dataclassificacao->setValue( date( "d/m/Y" ) );
         $horaclassificacao->setValue( date( "H:i" ) );
 
         $paciente_nome->setEditable( false );
+        $dataclassificacao->setEditable( false );
+        $horaclassificacao->setEditable( false );
+
         $paciente_nome->forceUpperCase();
 
         $paciente_id      ->addValidation( TextFormat::set( "Nome do Paciente" ), new TRequiredValidator );
         $dataclassificacao->addValidation( TextFormat::set( "Data da Avaliação" ), new TRequiredValidator );
-
-        $page1 = new TLabel( "Sinais Vitais", "#7D78B6", 12, "bi");
-        $page1->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
-        $this->form->appendPage( "Sinais Vitais" );
-        $this->form->addContent( [ $page1 ] );
-        $this->form->addFields( [ new TLabel( "Paciente: {$redstar}" ) ], [ $paciente_nome ] );
-        $this->form->addFields( [ new TLabel( "Data da Avaliação: {$redstar}" ) ], [ $dataclassificacao ] );
-        $this->form->addFields( [ new TLabel( "Hora da Avaliação:" ) ], [ $horaclassificacao ] );
-        $this->form->addFields( [ new TLabel( "Pressão Arterial:" ) ], [ $pressaoarterial ] );
-        $this->form->addFields( [ new TLabel( "Frequência Cardíaca:" ) ], [ $frequenciacardiaca ] );
-        $this->form->addFields( [ new TLabel( "Frequência Respiratória:" ) ], [ $frequenciarespiratoria ] );
-        $this->form->addFields( [ new TLabel( "Temperatura:" ) ], [ $temperatura ] );
-        $this->form->addFields( [ new TLabel( "SPO2:" ) ], [ $spo2 ] );
-        $this->form->addFields( [ new TLabel( "HTG:" ) ], [ $htg ] );
-
-        $page3 = new TLabel( "Estado Geral", "#7D78B6", 12, "bi");
-        $page3->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
-        $this->form->appendPage( "Estado Geral" );
-        $this->form->addContent( [ $page3 ] );
-        $this->form->addFields( [ new TLabel( "Escala de Dor:" ) ], [ $dor ] );
-        $this->form->addFields( [ new TLabel( "Estado Geral:" ) ], [ $tipoestadogeral_id ] );
-        $this->form->addFields( [ new TLabel( "Queixa Principal:" ) ], [ $queixaprincipal ] );
-        $this->form->addFields( [ new TLabel( "Observações:" ) ], [ $observacoes ] );
-        $this->form->addFields( [ new TLabel( "Classificação: {$redstar}" ) ], [ $tipoclassificacaorisco_id ] );
 
         $page2 = new TLabel( "Histórico Patológico", "#7D78B6", 12, "bi");
         $page2->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
@@ -286,6 +261,72 @@ class ClassificacaoRiscoDetail extends TPage
         $vbox3->add( $this->framegrid3 );
         $frame3->add( $vbox3 );
         /*--------------------------------------*/
+        $page1 = new TLabel( "Sinais Vitais", "#7D78B6", 12, "bi");
+        $page1->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
+        $this->form->appendPage( "Sinais Vitais" );
+        $this->form->addContent( [ $page1 ] );
+        $this->form->addFields( [ new TLabel( "Data da Avaliação: {$redstar}" ) ], [ $dataclassificacao, $horaclassificacao ] );
+        $this->form->addFields( [ new TLabel( "Paciente: {$redstar}" ) ], [ $paciente_nome ] );
+        // $this->form->addFields( [ new TLabel( "Hora da Avaliação:" ) ], [ $horaclassificacao ] );
+        $this->form->addFields( [ new TLabel( "Pressão Arterial:" ) ], [ $pressaoarterial ] );
+        $this->form->addFields( [ new TLabel( "Frequência Cardíaca:" ) ], [ $frequenciacardiaca ] );
+        $this->form->addFields( [ new TLabel( "Frequência Respiratória:" ) ], [ $frequenciarespiratoria ] );
+        $this->form->addFields( [ new TLabel( "Temperatura:" ) ], [ $temperatura ] );
+        $this->form->addFields( [ new TLabel( "SPO2:" ) ], [ $spo2 ] );
+        $this->form->addFields( [ new TLabel( "HTG:" ) ], [ $htg ] );
+
+        $page3 = new TLabel( "Estado Geral", "#7D78B6", 12, "bi");
+        $page3->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
+        $this->form->appendPage( "Estado Geral" );
+        $this->form->addContent( [ $page3 ] );
+        $this->form->addFields( [ new TLabel( "Escala de Dor:" ) ], [ $dor ] );
+        $this->form->addFields( [ new TLabel( "Estado Geral:" ) ], [ $tipoestadogeral_id ] );
+        $this->form->addFields( [ new TLabel( "Queixa Principal:" ) ], [ $queixaprincipal ] );
+        $this->form->addFields( [ new TLabel( "Observações:" ) ], [ $observacoes ] );
+        // $this->form->addFields( [ new TLabel( "Classificação: {$redstar}" ) ], [ $tipoclassificacaorisco_id ] );
+
+        /*--- frame de uso de medicacoes -------*/
+        $frame4 = new TFrame;
+        $frame4->setLegend( "Classificação" );
+        $frame4->style = 'margin: 0 auto 0 17%; width: 73%;';
+        $tipoclassificacaorisco_id = new THidden( "tipoclassificacaorisco_id" );
+        $onSaveFrame4 = new TAction( [ $this, "onSave" ] );
+        $onSaveFrame4->setParameter( "fk", $fk );
+        $onSaveFrame4->setParameter( "did", $did );
+        $onSaveFrame4->setParameter( "page", $page );
+        $add_button4 = TButton::create( "add4", [ $this,"onError" ], null, null );
+        $add_button5 = TButton::create( "add5", [ $this,"onError" ], null, null );
+        $add_button6 = TButton::create( "add6", [ $this,"onError" ], null, null );
+        $add_button7 = TButton::create( "add7", [ $this,"onError" ], null, null );
+        $add_button4->setAction( $onSaveFrame4 );
+        $add_button4->setLabel( "AZUL" );
+        $add_button4->style = "background-color:blue;width:100%;";
+        $add_button5->setAction( $onSaveFrame4 );
+        $add_button5->setLabel( "VERDE" );
+        $add_button5->style = "background-color:green;width:100%;";
+        $add_button6->setAction( $onSaveFrame4 );
+        $add_button6->setLabel( "AMARELO" );
+        $add_button6->style = "background-color:yellow;width:100%;";
+        $add_button7->setAction( $onSaveFrame4 );
+        $add_button7->setLabel( "VERMELHO" );
+        $add_button7->style = "background-color:red;width:100%;";
+        $this->form->addContent( [ $frame4 ] );
+        $this->form->addField( $add_button4 );
+        $this->form->addField( $add_button5 );
+        $this->form->addField( $add_button6 );
+        $this->form->addField( $add_button7 );
+        $hbox4 = new THBox;
+        $hbox4->add( $add_button4 );
+        $hbox4->add( $add_button5 );
+        $hbox4->add( $add_button6 );
+        $hbox4->add( $add_button7 );
+        $hbox4->style = 'margin:4px;';
+        $vbox4 = new TVBox;
+        $vbox4->style='width:100%';
+        $vbox4->add( $hbox4 );
+        $frame4->add( $vbox4 );
+        /*--------------------------------------*/
+
         $this->form->addFields( [ $id, $paciente_id, $bau_id, $enfermeiro_id, $cid_id, $medicamento_id, $principioativo_id ] );
 
         $onSave = new TAction( [ $this, "onSave" ] );
@@ -306,7 +347,7 @@ class ClassificacaoRiscoDetail extends TPage
 
         }
 
-        $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
+        // $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
         $this->form->addAction( "Voltar", $onReload, "fa:table blue" );
 
         $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
@@ -365,7 +406,6 @@ class ClassificacaoRiscoDetail extends TPage
 
     public function onSave( $param = null )
     {
-
         try {
 
             $this->form->validate();
