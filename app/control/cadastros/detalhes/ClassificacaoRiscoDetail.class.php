@@ -291,6 +291,7 @@ class ClassificacaoRiscoDetail extends TPage
         $onSave = new TAction( [ $this, "onSave" ] );
         $onSave->setParameter( "fk", $fk );
         $onSave->setParameter( "did", $did );
+        $onSave->setParameter( "page", $page );
 
         switch ( $page ) {
 
