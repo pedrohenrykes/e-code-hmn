@@ -25,8 +25,8 @@ class ClassificacaoRiscoDetail extends TPage
         $paciente_id               = new THidden( "paciente_id" );
         $bau_id                    = new THidden( "bau_id" );
         $enfermeiro_id             = new THidden( "enfermeiro_id" ); // Deve ser capturado a partir da sessão
-        $dataclassificacao         = new TEntry( "dataclassificacao" );
-        $horaclassificacao         = new TEntry( "horaclassificacao" );
+        $dataclassificacao         = new TDate( "dataclassificacao" );
+        $horaclassificacao         = new TDateTime( "horaclassificacao" );
         $paciente_nome             = new TEntry( "paciente_nome" );
         $pressaoarterial           = new TEntry( "pressaoarterial" );
         $frequenciacardiaca        = new TEntry( "frequenciacardiaca" );
@@ -87,9 +87,22 @@ class ClassificacaoRiscoDetail extends TPage
 
         }
 
-        $dataclassificacao        ->setSize("33%");
-        $horaclassificacao        ->setSize("15%");
-        $paciente_nome            ->setSize("48%");
+        switch ( $page ) {
+
+            case "PacientesClassificacaoRiscoList":
+                $onReload = new TAction( [ $page, "onReload" ] );
+                break;
+
+            case "BauDetail":
+                $onReload = new TAction( [ $page, "onReload" ] );
+                $onReload->setParameter( "fk", $did );
+                break;
+
+        }
+
+        $dataclassificacao        ->setSize("39.4%");
+        $horaclassificacao        ->setSize("10%");
+        $paciente_nome            ->setSize("49.4%");
         $pressaoarterial          ->setSize("38%");
         $frequenciacardiaca       ->setSize("38%");
         $frequenciarespiratoria   ->setSize("38%");
@@ -97,8 +110,8 @@ class ClassificacaoRiscoDetail extends TPage
         $spo2                     ->setSize("38%");
         $htg                      ->setSize("38%");
         $dor                      ->setSize("38%");
-        $observacoes              ->setSize("38%");
-        $queixaprincipal          ->setSize("38%");
+        $observacoes              ->setSize("78%");
+        $queixaprincipal          ->setSize("78%");
         $tipoclassificacaorisco_id->setSize("38%");
         $tipoestadogeral_id       ->setSize("38%");
 
@@ -106,8 +119,12 @@ class ClassificacaoRiscoDetail extends TPage
         $tipoclassificacaorisco_id->setDefaultOption( "..::SELECIONE::.." );
         $tipoestadogeral_id       ->setDefaultOption( "..::SELECIONE::.." );
 
-        $dataclassificacao->setValue( date( "d/m/Y" ) );
+        $horaclassificacao->setMask( "hh:ii" );
+        $dataclassificacao->setMask( "dd/mm/yyyy" );
+        $dataclassificacao->setDatabaseMask( "yyyy-mm-dd" );
+
         $horaclassificacao->setValue( date( "H:i" ) );
+        $dataclassificacao->setValue( date( "d/m/Y" ) );
 
         $paciente_nome->setEditable( false );
         $dataclassificacao->setEditable( false );
@@ -123,7 +140,7 @@ class ClassificacaoRiscoDetail extends TPage
         $this->form->appendPage( "Histórico Patológico" );
         $this->form->addContent( [ $page2 ] );
 
-        /*----------- frame de comorbidades -----------*/
+        /*-------------------------- frame de comorbidades -------------------*/
         $frame1 = new TFrame;
         $frame1->setLegend( "Comorbidades" );
         $frame1->style .= ';margin:0px;width:95%';
@@ -133,7 +150,7 @@ class ClassificacaoRiscoDetail extends TPage
             "VwCidRecord", "nomecid", "cid_id", "cid_codigo"
         );
         $add_button1 = TButton::create(
-            "add1", [ $this,"onError" ], null, null
+            "add1", [ $this,"throwbackToPage" ], null, null
         );
         $onSaveFrame1 = new TAction( [ $this, "onSaveFrames" ] );
         $onSaveFrame1->setParameter( "fk", $fk );
@@ -168,8 +185,9 @@ class ClassificacaoRiscoDetail extends TPage
         $vbox1->add( $hbox1 );
         $vbox1->add( $this->framegrid1 );
         $frame1->add( $vbox1 );
-        /*--------------------------------------*/
-        /*--- frame de uso de medicacoes -------*/
+        /*--------------------------------------------------------------------*/
+
+        /*--------------------- frame de uso de medicacoes -------------------*/
         $frame2 = new TFrame;
         $frame2->setLegend( "Uso de Medicações" );
         $frame2->style .= ';margin:0px;width:95%';
@@ -179,7 +197,7 @@ class ClassificacaoRiscoDetail extends TPage
             "MedicamentoRecord", "nomemedicamento", "medicamento_id", "medicamento_nome"
         );
         $add_button2 = TButton::create(
-            "add2", [ $this,"onError" ], null, null
+            "add2", [ $this,"throwbackToPage" ], null, null
         );
         $onSaveFrame2 = new TAction( [ $this, "onSaveFrames" ] );
         $onSaveFrame2->setParameter( "fk", $fk );
@@ -214,8 +232,9 @@ class ClassificacaoRiscoDetail extends TPage
         $vbox2->add( $hbox2 );
         $vbox2->add( $this->framegrid2 );
         $frame2->add( $vbox2 );
-        /*--------------------------------------*/
-        /*--- frame de alergia medicamentosa ---*/
+        /*--------------------------------------------------------------------*/
+
+        /*----------------------- frame de alergia medicamentosa -------------*/
         $frame3 = new TFrame;
         $frame3->setLegend( "Alergia Medicamentosa" );
         $frame3->style .= ';margin:0px;width:95%';
@@ -225,7 +244,7 @@ class ClassificacaoRiscoDetail extends TPage
             "PrincipioAtivoRecord", "nomeprincipioativo", "principioativo_id", "principioativo_nome"
         );
         $add_button3 = TButton::create(
-            "add3", [ $this,"onError" ], null, null
+            "add3", [ $this,"throwbackToPage" ], null, null
         );
         $onSaveFrame3 = new TAction( [ $this, "onSaveFrames" ] );
         $onSaveFrame3->setParameter( "fk", $fk );
@@ -260,14 +279,14 @@ class ClassificacaoRiscoDetail extends TPage
         $vbox3->add( $hbox3 );
         $vbox3->add( $this->framegrid3 );
         $frame3->add( $vbox3 );
-        /*--------------------------------------*/
+        /*--------------------------------------------------------------------*/
+
         $page1 = new TLabel( "Sinais Vitais", "#7D78B6", 12, "bi");
         $page1->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
         $this->form->appendPage( "Sinais Vitais" );
         $this->form->addContent( [ $page1 ] );
-        $this->form->addFields( [ new TLabel( "Data da Avaliação: {$redstar}" ) ], [ $dataclassificacao, $horaclassificacao ] );
         $this->form->addFields( [ new TLabel( "Paciente: {$redstar}" ) ], [ $paciente_nome ] );
-        // $this->form->addFields( [ new TLabel( "Hora da Avaliação:" ) ], [ $horaclassificacao ] );
+        $this->form->addFields( [ new TLabel( "Data da Avaliação: {$redstar}" ) ], [ $dataclassificacao, $horaclassificacao ] );
         $this->form->addFields( [ new TLabel( "Pressão Arterial:" ) ], [ $pressaoarterial ] );
         $this->form->addFields( [ new TLabel( "Frequência Cardíaca:" ) ], [ $frequenciacardiaca ] );
         $this->form->addFields( [ new TLabel( "Frequência Respiratória:" ) ], [ $frequenciarespiratoria ] );
@@ -283,71 +302,65 @@ class ClassificacaoRiscoDetail extends TPage
         $this->form->addFields( [ new TLabel( "Estado Geral:" ) ], [ $tipoestadogeral_id ] );
         $this->form->addFields( [ new TLabel( "Queixa Principal:" ) ], [ $queixaprincipal ] );
         $this->form->addFields( [ new TLabel( "Observações:" ) ], [ $observacoes ] );
-        // $this->form->addFields( [ new TLabel( "Classificação: {$redstar}" ) ], [ $tipoclassificacaorisco_id ] );
 
-        /*--- frame de uso de medicacoes -------*/
+        /*---------------- frame dos botoes de classificacao -----------------*/
         $frame4 = new TFrame;
+        $hbox4  = new THBox;
+        $vbox4  = new TVBox;
         $frame4->setLegend( "Classificação" );
-        $frame4->style = 'margin: 0 auto 0 17%; width: 73%;';
-        $tipoclassificacaorisco_id = new THidden( "tipoclassificacaorisco_id" );
-        $onSaveFrame4 = new TAction( [ $this, "onSave" ] );
-        $onSaveFrame4->setParameter( "fk", $fk );
-        $onSaveFrame4->setParameter( "did", $did );
-        $onSaveFrame4->setParameter( "page", $page );
-        $add_button4 = TButton::create( "add4", [ $this,"onError" ], null, null );
-        $add_button5 = TButton::create( "add5", [ $this,"onError" ], null, null );
-        $add_button6 = TButton::create( "add6", [ $this,"onError" ], null, null );
-        $add_button7 = TButton::create( "add7", [ $this,"onError" ], null, null );
-        $add_button4->setAction( $onSaveFrame4 );
-        $add_button4->setLabel( "AZUL" );
-        $add_button4->style = "background-color:blue;width:100%;";
-        $add_button5->setAction( $onSaveFrame4 );
-        $add_button5->setLabel( "VERDE" );
-        $add_button5->style = "background-color:green;width:100%;";
-        $add_button6->setAction( $onSaveFrame4 );
-        $add_button6->setLabel( "AMARELO" );
-        $add_button6->style = "background-color:yellow;width:100%;";
-        $add_button7->setAction( $onSaveFrame4 );
-        $add_button7->setLabel( "VERMELHO" );
-        $add_button7->style = "background-color:red;width:100%;";
-        $this->form->addContent( [ $frame4 ] );
-        $this->form->addField( $add_button4 );
-        $this->form->addField( $add_button5 );
-        $this->form->addField( $add_button6 );
-        $this->form->addField( $add_button7 );
-        $hbox4 = new THBox;
-        $hbox4->add( $add_button4 );
-        $hbox4->add( $add_button5 );
-        $hbox4->add( $add_button6 );
-        $hbox4->add( $add_button7 );
+        $frame4->style = 'margin: 0 auto 0 17%; width: 62%;';
         $hbox4->style = 'margin:4px;';
-        $vbox4 = new TVBox;
-        $vbox4->style='width:100%';
-        $vbox4->add( $hbox4 );
-        $frame4->add( $vbox4 );
-        /*--------------------------------------*/
+        $vbox4->style = 'width:100%';
+        $this->form->addContent( [ $frame4 ] );
+        $tipoclassificacaorisco_id = new THidden( "tipoclassificacaorisco_id" );
+        $button_style = "width:108px; color:#FFF !important; font-weight: bold;";
+        $save_parameters = [ "fk" => $fk, "did" => $did, "page" => $page ];
 
-        $this->form->addFields( [ $id, $paciente_id, $bau_id, $enfermeiro_id, $cid_id, $medicamento_id, $principioativo_id ] );
+        try {
 
-        $onSave = new TAction( [ $this, "onSave" ] );
-        $onSave->setParameter( "fk", $fk );
-        $onSave->setParameter( "did", $did );
-        $onSave->setParameter( "page", $page );
+            TTransaction::open( "database" );
 
-        switch ( $page ) {
+            $repository = new TRepository( "TipoClassificacaoRiscoRecord" );
 
-            case "PacientesClassificacaoRiscoList":
-                $onReload = new TAction( [ $page, "onReload" ] );
-                break;
+            $criteria = new TCriteria();
+            $criteria->setProperty( "order", "ordem" );
 
-            case "BauDetail":
-                $onReload = new TAction( [ $page, "onReload" ] );
-                $onReload->setParameter( "fk", $did );
-                break;
+            $objects = $repository->load( $criteria );
+
+            if ( !empty( $objects ) ) {
+
+                foreach ( $objects as $object ) {
+
+                    $onSave = new TAction( [ $this, "onSave" ] );
+                    $onSave->setParameters( $save_parameters );
+                    $onSave->setParameter( "priority", $object->ordem );
+
+                    $add_button = TButton::create( "priority{$object->ordem}", [ $this,"throwbackToPage" ], null, null );
+                    $add_button->setAction( $onSave );
+                    $add_button->setLabel( $object->nometipoclassificacaorisco );
+                    $add_button->style = "background-color:{$object->cortipoclassificacaorisco};{$button_style}";
+
+                    $this->form->addField( $add_button );
+                    $hbox4->add( $add_button );
+
+                }
+
+            }
+
+            TTransaction::close();
+
+        } catch (Exception $e) {
+
+            $this->throwbackToPage();
 
         }
 
-        // $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
+        $vbox4->add( $hbox4 );
+        $frame4->add( $vbox4 );
+        /*--------------------------------------------------------------------*/
+
+        $this->form->addFields( [ $id, $paciente_id, $bau_id, $enfermeiro_id, $cid_id, $medicamento_id, $principioativo_id ] );
+
         $this->form->addAction( "Voltar", $onReload, "fa:table blue" );
 
         $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
@@ -422,14 +435,24 @@ class ClassificacaoRiscoDetail extends TPage
             unset( $object->principioativo_nome );
             unset( $object->paciente_nome );
 
+            if ( isset( $param[ "priority" ] ) ) {
+
+                $criteria = new TCriteria();
+                $criteria->add( new TFilter( "ordem", "=", $param[ "priority" ] ) );
+                $rows = TipoClassificacaoRiscoRecord::getObjects( $criteria );
+
+                foreach ( $rows as $row ) {
+                    $object->tipoclassificacaorisco_id = $row->id;
+                    break;
+                }
+
+            }
+
             $object->store();
 
             TTransaction::close();
 
-            $action = new TAction( [ "ClassificacaoRiscoDetail", "onReload" ] );
-            $action->setParameters( $param );
-
-            new TMessage( "info", "Registro salvo com sucesso!", $action );
+            new TMessage( "info", "Registro salvo com sucesso!" );
 
         } catch ( Exception $ex ) {
 
@@ -438,6 +461,8 @@ class ClassificacaoRiscoDetail extends TPage
             new TMessage( "error", "Ocorreu um erro ao tentar salvar o registro!<br><br><br><br>" . $ex->getMessage() );
 
         }
+
+        $this->onReload( $param );
     }
 
     public function onEdit( $param = null )
@@ -456,8 +481,6 @@ class ClassificacaoRiscoDetail extends TPage
                 $object->dataclassificacao = $dataclassificacao->format("d/m/Y");
                 $object->horaclassificacao = $horaclassificacao->format("H:i");
 
-                $this->onReload( $param );
-
                 $this->form->setData( $object );
 
                 TTransaction::close();
@@ -471,6 +494,8 @@ class ClassificacaoRiscoDetail extends TPage
             new TMessage( "error", "Ocorreu um erro ao tentar carregar o registro para edição!<br><br>" . $ex->getMessage() );
 
         }
+
+        $this->onReload( $param );
     }
 
     public function onDelete( $param = null )
@@ -499,8 +524,6 @@ class ClassificacaoRiscoDetail extends TPage
 
             TTransaction::close();
 
-            $this->onReload( $param );
-
             new TMessage( "info", "O Registro foi apagado com sucesso!" );
 
         } catch ( Exception $ex ) {
@@ -510,6 +533,8 @@ class ClassificacaoRiscoDetail extends TPage
             new TMessage( "error", $ex->getMessage() );
 
         }
+
+        $this->onReload( $param );
     }
 
     public function onReload( $param = null )
@@ -586,12 +611,11 @@ class ClassificacaoRiscoDetail extends TPage
             if ( !empty( $object ) ) {
                 $object->store();
             } else {
-                $this->onError();
+                $this->throwbackToPage();
             }
 
             TTransaction::close();
 
-            $this->onReload( $param );
 
         } catch ( Exception $ex ) {
 
@@ -600,6 +624,8 @@ class ClassificacaoRiscoDetail extends TPage
             new TMessage( "error", $ex->getMessage() );
 
         }
+
+        $this->onReload( $param );
     }
 
     public function onDeleteFrames( $param = null )
@@ -613,12 +639,11 @@ class ClassificacaoRiscoDetail extends TPage
             if ( !empty( $object ) ) {
                 $object->delete();
             } else {
-                $this->onError();
+                $this->throwbackToPage();
             }
 
             TTransaction::close();
 
-            $this->onReload( $param );
 
         } catch ( Exception $ex ) {
 
@@ -627,6 +652,8 @@ class ClassificacaoRiscoDetail extends TPage
             new TMessage( "error", $ex->getMessage() );
 
         }
+
+        $this->onReload( $param );
     }
 
     public function onReloadFrames( $param = null )
@@ -749,7 +776,7 @@ class ClassificacaoRiscoDetail extends TPage
         return !empty( $object ) ? $object : null;
     }
 
-    public function onError()
+    public function throwbackToPage()
     {
         $action = new TAction( [ "PacientesClassificacaoRiscoList", "onReload" ] );
 
