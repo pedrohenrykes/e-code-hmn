@@ -17,7 +17,7 @@ class PrescreverMedicacaoDetail extends TPage
         $redstar = '<font color="red"><b>*</b></font>';
 
         $this->form = new BootstrapFormBuilder( "detail_prescricao_medicao" );
-        
+
         $this->form->setFormTitle( "Prescrição de Medicação" );
         //$this->form->setcookie(name)FormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
@@ -30,7 +30,7 @@ class PrescreverMedicacaoDetail extends TPage
         $data_prescricao    = new TDateTime("data_prescricao");
         $dosagem            = new TEntry("dosagem");
         $qtd_dias           = new TEntry("qtd_dias");
-        $aplicacao           = new TRadioGroup('aplicacao');
+        $aplicacao          = new TRadioGroup('aplicacao');
         $posologia          = new TDBCombo("tipoposologia_id", "database", "TipoPosologiaRecord", "id", "nometipoposologia", "nometipoposologia" );
         $observacao         = new TText("observacao");
 

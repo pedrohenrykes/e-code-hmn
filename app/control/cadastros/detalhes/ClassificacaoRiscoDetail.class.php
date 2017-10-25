@@ -144,11 +144,12 @@ class ClassificacaoRiscoDetail extends TPage
         $frame1 = new TFrame;
         $frame1->setLegend( "Comorbidades" );
         $frame1->style .= ';margin:0px;width:95%';
-        $cid_id     = new THidden( "cid_id" );
-        $cid_codigo = new TDBSeekButton(
-            "cid_codigo", "database", "detail_classificacao_risco",
-            "VwCidRecord", "nomecid", "cid_id", "cid_codigo"
-        );
+        // $cid_id     = new THidden( "cid_id" );
+        $cid_id = new TDBMultiSearch ( 'cid_id', 'database', 'VwCidRecord', 'id', 'nomecid', 'nomecid' );
+        $cid_id->style = "text-transform:uppercase";
+        $cid_id->placeholder = "DIGITE O NOME OU CÓDIGO DO CID";
+        $cid_id->setMinLength(1);
+        $cid_id->setMaxSize(1);
         $add_button1 = TButton::create(
             "add1", [ $this,"throwbackToPage" ], null, null
         );
@@ -161,7 +162,7 @@ class ClassificacaoRiscoDetail extends TPage
         $add_button1->setLabel( "Adicionar" );
         $add_button1->setImage( "fa:plus green" );
         $this->form->addContent( [ $frame1 ] );
-        $this->form->addField( $cid_codigo );
+        $this->form->addField( $cid_id );
         $this->form->addField( $add_button1 );
         $this->framegrid1 = new TQuickGrid();
         $this->framegrid1->makeScrollable();
@@ -177,9 +178,9 @@ class ClassificacaoRiscoDetail extends TPage
         $this->framegrid1->addQuickColumn( "Patologia", 'cid_codnome', 'left', '100%');
         $this->framegrid1->createModel();
         $hbox1 = new THBox;
-        $hbox1->add( $cid_codigo );
+        $hbox1->add( $cid_id );
         $hbox1->add( $add_button1 );
-        $hbox1->style = 'margin: 4px';
+        $hbox1->style = 'margin: 10px';
         $vbox1 = new TVBox;
         $vbox1->style='width:100%';
         $vbox1->add( $hbox1 );
@@ -359,7 +360,7 @@ class ClassificacaoRiscoDetail extends TPage
         $frame4->add( $vbox4 );
         /*--------------------------------------------------------------------*/
 
-        $this->form->addFields( [ $id, $paciente_id, $bau_id, $enfermeiro_id, $cid_id, $medicamento_id, $principioativo_id ] );
+        $this->form->addFields( [ $id, $paciente_id, $bau_id, $enfermeiro_id, $medicamento_id, $principioativo_id ] );
 
         $this->form->addAction( "Voltar", $onReload, "fa:table blue" );
 
@@ -428,7 +429,7 @@ class ClassificacaoRiscoDetail extends TPage
             TTransaction::open( "database" );
 
             unset( $object->cid_id );
-            unset( $object->cid_codigo );
+            // unset( $object->cid_codigo );
             unset( $object->medicamento_id );
             unset( $object->medicamento_nome );
             unset( $object->principioativo_id );
@@ -696,6 +697,7 @@ class ClassificacaoRiscoDetail extends TPage
             case 1:
 
                 $object = $this->form->getData( "BauComorbidadesRecord" );
+                $object->cid_id = key( $object->cid_id );
                 unset( $object->medicamento_id );
                 unset( $object->principioativo_id );
 
@@ -704,6 +706,7 @@ class ClassificacaoRiscoDetail extends TPage
             case 2:
 
                 $object = $this->form->getData( "BauUsoMedicacoesRecord" );
+                $object->medicamento_id = key( $object->medicamento_id );
                 unset( $object->cid_id );
                 unset( $object->principioativo_id );
 
@@ -712,6 +715,7 @@ class ClassificacaoRiscoDetail extends TPage
             case 3:
 
                 $object = $this->form->getData( "BauAlergiaMedicamentosaRecord" );
+                $object->principioativo_id = key( $object->principioativo_id );
                 unset( $object->cid_id );
                 unset( $object->medicamento_id );
 
@@ -737,7 +741,7 @@ class ClassificacaoRiscoDetail extends TPage
             unset( $object->queixaprincipal );
             unset( $object->dor );
             unset( $object->observacoes );
-            unset( $object->cid_codigo );
+            // unset( $object->cid_codigo );
             unset( $object->medicamento_nome );
             unset( $object->principioativo_nome );
 
