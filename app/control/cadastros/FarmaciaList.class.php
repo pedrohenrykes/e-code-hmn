@@ -146,9 +146,37 @@ class FarmaciaList extends TPage
 
                 $limit = 10;
 
-                $criteria = new TCriteria();
+                  $criteria = new TCriteria();
                 $criteria->setProperties( $param );
                 $criteria->setProperty( "limit", $limit );
+
+                switch ( $data->opcao ) {
+
+                    case "nomemedicamento":
+                        $criteria->add( new TFilter( $data->opcao, "LIKE", "%" . $data->dados . "%" ) );
+                        break;
+                        
+                    case "unidadesaude_id":
+                            $repostiry2 = new TRepository('UnidadeDeSaudeRecord');
+                            $criteria2 = new TCriteria();
+                            $criteria2->add( new TFilter('nomeunidade', "LIKE", $data->dados. "%" ) );
+                            $ids = [];
+                           
+                            $objects2 = $repostiry2->load( $criteria2, FALSE );
+                            if ( $objects2 ) {
+                                foreach ( $objects2 as $object1 ) {
+                                    $ids[] = $object1->id;   
+                                }
+                                  $criteria->add( new TFilter( 'unidadesaude_id', "IN", $ids ));
+                            } else {
+                              new TMessage( "info", "Não há dados cadastrados!" );
+                            }
+                            break;
+                    default:
+                        $criteria->add( new TFilter( $data->opcao, "LIKE", $data->dados . "%" ) );
+                        break;
+
+                }
 
                 $objects = $repository->load( $criteria, FALSE );
 
