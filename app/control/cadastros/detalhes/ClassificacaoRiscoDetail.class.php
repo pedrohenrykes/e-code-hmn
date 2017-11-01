@@ -144,12 +144,10 @@ class ClassificacaoRiscoDetail extends TPage
         $frame1 = new TFrame;
         $frame1->setLegend( "Comorbidades" );
         $frame1->style .= ';margin:0px;width:95%';
-        // $cid_id     = new THidden( "cid_id" );
-        $cid_id = new TDBMultiSearch ( 'cid_id', 'database', 'VwCidRecord', 'id', 'nomecid', 'nomecid' );
-        $cid_id->style = "text-transform:uppercase";
-        $cid_id->placeholder = "DIGITE O NOME OU CÓDIGO DO CID";
-        $cid_id->setMinLength(1);
-        $cid_id->setMaxSize(1);
+        $cid_id = new TDBCombo ( 'cid_id', 'database', 'VwCidRecord', 'id', 'nomecid', 'nomecid' );
+        $cid_id->{'placeholder'} = "DIGITE O NOME OU CÓDIGO DO CID";
+        $cid_id->{'style'} = "text-transform:uppercase;width:100%;";
+        $cid_id->enableSearch();
         $add_button1 = TButton::create(
             "add1", [ $this,"throwbackToPage" ], null, null
         );
@@ -180,9 +178,9 @@ class ClassificacaoRiscoDetail extends TPage
         $hbox1 = new THBox;
         $hbox1->add( $cid_id );
         $hbox1->add( $add_button1 );
-        $hbox1->style = 'margin: 10px';
+        $hbox1->style = 'margin:10px';
         $vbox1 = new TVBox;
-        $vbox1->style='width:100%';
+        $vbox1->style = 'width:100%';
         $vbox1->add( $hbox1 );
         $vbox1->add( $this->framegrid1 );
         $frame1->add( $vbox1 );
@@ -192,11 +190,10 @@ class ClassificacaoRiscoDetail extends TPage
         $frame2 = new TFrame;
         $frame2->setLegend( "Uso de Medicações" );
         $frame2->style .= ';margin:0px;width:95%';
-        $medicamento_id = new THidden( "medicamento_id" );
-        $medicamento_nome = new TDBSeekButton(
-            "medicamento_nome", "database", "detail_classificacao_risco",
-            "MedicamentoRecord", "nomemedicamento", "medicamento_id", "medicamento_nome"
-        );
+        $medicamento_id = new TDBCombo ( 'medicamento_id', 'database', 'MedicamentoRecord', 'id', 'nomemedicamento', 'nomemedicamento' );
+        $medicamento_id->{'placeholder'} = "DIGITE O NOME OU PRINCÍPIO DO MEDICAMENTO";
+        $medicamento_id->{'style'} = "text-transform:uppercase;width:100%;";
+        $medicamento_id->enableSearch();
         $add_button2 = TButton::create(
             "add2", [ $this,"throwbackToPage" ], null, null
         );
@@ -209,7 +206,7 @@ class ClassificacaoRiscoDetail extends TPage
         $add_button2->setLabel( "Adicionar" );
         $add_button2->setImage( "fa:plus green" );
         $this->form->addContent( [ $frame2 ] );
-        $this->form->addField( $medicamento_nome );
+        $this->form->addField( $medicamento_id );
         $this->form->addField( $add_button2 );
         $this->framegrid2 = new TQuickGrid();
         $this->framegrid2->makeScrollable();
@@ -225,11 +222,11 @@ class ClassificacaoRiscoDetail extends TPage
         $this->framegrid2->addQuickColumn( "Medicamento", 'medicamento_nome', 'left', '100%');
         $this->framegrid2->createModel();
         $hbox2 = new THBox;
-        $hbox2->add( $medicamento_nome );
+        $hbox2->add( $medicamento_id );
         $hbox2->add( $add_button2 );
-        $hbox2->style = 'margin: 4px';
+        $hbox2->style = 'margin:4px';
         $vbox2 = new TVBox;
-        $vbox2->style='width:100%';
+        $vbox2->style = 'width:100%';
         $vbox2->add( $hbox2 );
         $vbox2->add( $this->framegrid2 );
         $frame2->add( $vbox2 );
@@ -239,11 +236,10 @@ class ClassificacaoRiscoDetail extends TPage
         $frame3 = new TFrame;
         $frame3->setLegend( "Alergia Medicamentosa" );
         $frame3->style .= ';margin:0px;width:95%';
-        $principioativo_id = new THidden( "principioativo_id" );
-        $principioativo_nome = new TDBSeekButton(
-            "principioativo_nome", "database", "detail_classificacao_risco",
-            "PrincipioAtivoRecord", "nomeprincipioativo", "principioativo_id", "principioativo_nome"
-        );
+        $principioativo_id = new TDBCombo ( 'principioativo_id', 'database', 'PrincipioAtivoRecord', 'id', 'nomeprincipioativo', 'nomeprincipioativo' );
+        $principioativo_id->{'placeholder'} = "DIGITE O NOME OU PRINCÍPIO DO MEDICAMENTO";
+        $principioativo_id->{'style'} = "text-transform:uppercase;width:100%;";
+        $principioativo_id->enableSearch();
         $add_button3 = TButton::create(
             "add3", [ $this,"throwbackToPage" ], null, null
         );
@@ -256,7 +252,7 @@ class ClassificacaoRiscoDetail extends TPage
         $add_button3->setLabel( "Adicionar" );
         $add_button3->setImage( "fa:plus green" );
         $this->form->addContent( [ $frame3 ] );
-        $this->form->addField( $principioativo_nome );
+        $this->form->addField( $principioativo_id );
         $this->form->addField( $add_button3 );
         $this->framegrid3 = new TQuickGrid();
         $this->framegrid3->makeScrollable();
@@ -272,11 +268,11 @@ class ClassificacaoRiscoDetail extends TPage
         $this->framegrid3->addQuickColumn( "Principio Ativo", 'principioativo_nome', 'left', '100%');
         $this->framegrid3->createModel();
         $hbox3 = new THBox;
-        $hbox3->add( $principioativo_nome );
+        $hbox3->add( $principioativo_id );
         $hbox3->add( $add_button3 );
-        $hbox3->style = 'margin: 4px';
+        $hbox3->style = 'margin:4px';
         $vbox3 = new TVBox;
-        $vbox3->style='width:100%';
+        $vbox3->style = 'width:100%';
         $vbox3->add( $hbox3 );
         $vbox3->add( $this->framegrid3 );
         $frame3->add( $vbox3 );
@@ -360,7 +356,7 @@ class ClassificacaoRiscoDetail extends TPage
         $frame4->add( $vbox4 );
         /*--------------------------------------------------------------------*/
 
-        $this->form->addFields( [ $id, $paciente_id, $bau_id, $enfermeiro_id, $medicamento_id, $principioativo_id ] );
+        $this->form->addFields( [ $id, $paciente_id, $bau_id, $enfermeiro_id ] );
 
         $this->form->addAction( "Voltar", $onReload, "fa:table blue" );
 
@@ -429,11 +425,8 @@ class ClassificacaoRiscoDetail extends TPage
             TTransaction::open( "database" );
 
             unset( $object->cid_id );
-            // unset( $object->cid_codigo );
             unset( $object->medicamento_id );
-            unset( $object->medicamento_nome );
             unset( $object->principioativo_id );
-            unset( $object->principioativo_nome );
             unset( $object->paciente_nome );
 
             if ( isset( $param[ "priority" ] ) ) {
@@ -697,7 +690,6 @@ class ClassificacaoRiscoDetail extends TPage
             case 1:
 
                 $object = $this->form->getData( "BauComorbidadesRecord" );
-                $object->cid_id = key( $object->cid_id );
                 unset( $object->medicamento_id );
                 unset( $object->principioativo_id );
 
@@ -706,7 +698,6 @@ class ClassificacaoRiscoDetail extends TPage
             case 2:
 
                 $object = $this->form->getData( "BauUsoMedicacoesRecord" );
-                $object->medicamento_id = key( $object->medicamento_id );
                 unset( $object->cid_id );
                 unset( $object->principioativo_id );
 
@@ -715,7 +706,6 @@ class ClassificacaoRiscoDetail extends TPage
             case 3:
 
                 $object = $this->form->getData( "BauAlergiaMedicamentosaRecord" );
-                $object->principioativo_id = key( $object->principioativo_id );
                 unset( $object->cid_id );
                 unset( $object->medicamento_id );
 
@@ -741,9 +731,6 @@ class ClassificacaoRiscoDetail extends TPage
             unset( $object->queixaprincipal );
             unset( $object->dor );
             unset( $object->observacoes );
-            // unset( $object->cid_codigo );
-            unset( $object->medicamento_nome );
-            unset( $object->principioativo_nome );
 
             return $object;
 
