@@ -49,6 +49,7 @@ class FarmaciaForm extends TWindow
         $this->form->addFields([new TLabel("Nome da Unidade de Saúde: $redstar")], [$unidadesaude_id]);
         $this->form->addFields([new TLabel("Tipo da Farmacia: $redstar")], [$tipofarmacia]);
         $this->form->addFields([new TLabel("Situação da Farmácia: $redstar")], [$situacao]);
+         $this->form->addFields([new TLabel("")], [$id]);
 
 
         $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );
