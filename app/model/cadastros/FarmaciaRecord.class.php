@@ -12,7 +12,7 @@ class FarmaciaRecord extends TRecord {
     public function get_nome_unidade()
     {
         if ( empty( $this->medicamento ) ) {
-            $this->unidade = new UnidadeSaudeRecord( $this->unidadesaude_id );
+            $this->unidade = new UnidadeDeSaudeRecord( $this->unidadesaude_id );
         }
 
         return $this->unidade->nomeunidade;
