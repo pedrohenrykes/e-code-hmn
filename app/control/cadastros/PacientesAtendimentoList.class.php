@@ -3,7 +3,7 @@
 class PacientesAtendimentoList extends TStandardList
 {
     protected $form;
-    protected $datagrid; 
+    protected $datagrid;
     protected $pageNavigation;
 
     public function __construct()
@@ -20,9 +20,9 @@ class PacientesAtendimentoList extends TStandardList
         //parent::addFilterField('nomepaciente', 'like', 'nomepaciente');
         //parent::addFilterField('dataentrada', 'like', 'nomepaciente');
         //parent::addFilterField('dataentrada', '=', 'nomepaciente'); // filter field, operator, form field
-        
+
         parent::setDefaultOrder('ordem, dataorganizar, horaentrada', 'asc');
-        $this->setLimit(-1); // turn off limit for datagrid
+        // $this->setLimit(-1); // turn off limit for datagrid
 
         $this->form = new BootstrapFormBuilder( "list_pacientes_atendimento" );
         $this->form->setFormTitle( "Atendimento " );
@@ -126,7 +126,7 @@ class PacientesAtendimentoList extends TStandardList
 
                 if ( $objects ) {
                     foreach ( $objects as $object ) {
-                        
+
                         $horaentrada = new DateTime( $object->horaentrada );
                         $object->horaentrada = $horaentrada->format("H:i");
                         $this->datagrid->addItem( $object );
