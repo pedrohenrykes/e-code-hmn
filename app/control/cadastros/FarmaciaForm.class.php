@@ -22,7 +22,7 @@ class FarmaciaForm extends TWindow
         $nomefarmacia = new TEntry('nomefarmacia');
         $situacao = new TCombo('situacao');
         $tipofarmacia = new TCombo('tipofarmacia');
-        $unidadesaude_id = new TDBCombo("unidadesaude_id", "database", "UnidadeSaudeRecord", "id", "nomeunidade", "nomeunidade" );
+        $unidadesaude_id = new TDBCombo("unidadesaude_id", "database", "UnidadeDeSaudeRecord", "id", "nomeunidade", "nomeunidade" );
 
 
         $situacao->setDefaultOption('::..SELECIONE..::');
