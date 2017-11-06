@@ -34,7 +34,7 @@ class  GeraBauAtendito  extends TPage{
 
     $situacao->setDefaultOption( "..::SELECIONE::.." );
 
-    $this->form->addFields([new TLabel("situacao") ],[$situacao]);
+    $this->form->addFields([new TLabel("Situação") ],[$situacao]);
     $this->form->addAction( "Gerar", new TAction( [ $this, "onGenerate" ] ), "fa:table blue" );
     $situacao->addValidation('situacao', new TRequiredValidator);
 

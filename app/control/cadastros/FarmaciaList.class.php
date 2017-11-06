@@ -47,7 +47,6 @@ class FarmaciaList extends TPage
         $this->datagrid->addColumn( $column_tipofarmacia );
         $this->datagrid->addColumn( $column_situacao );
 
-
         $action_edit = new TDataGridAction( [ "FarmaciaForm", "onEdit" ] );
         $action_edit->setButtonClass( "btn btn-default" );
         $action_edit->setLabel( "Editar" );
@@ -55,12 +54,20 @@ class FarmaciaList extends TPage
         $action_edit->setField( "id" );
         $this->datagrid->addAction( $action_edit );
 
+
         $action_del = new TDataGridAction( [ $this, "onDelete" ] );
         $action_del->setButtonClass( "btn btn-default" );
         $action_del->setLabel( "Deletar" );
         $action_del->setImage( "fa:trash-o red fa-lg" );
         $action_del->setField( "id" );
         $this->datagrid->addAction( $action_del );
+        
+        $action1 = new CustomDataGridAction(array('FarmaciaEntradaDetail', 'onReload'));
+        $action1->setLabel('Entrada');
+        $action1->setImage('fa:file-text blue');
+        $action1->setField( "id" );
+        //$action1->setFk( "id" );
+        $this->datagrid->addAction( $action1 );
 
         $this->datagrid->createModel();
 

@@ -15,9 +15,11 @@ class RelatorioBauAtendidoPDF extends FPDF {
         $this->SetFont('Arial', 'B', 12);
         $this->SetY("15");
         $this->SetX("35");
+        $this->Cell(0, 5, utf8_decode("HOSPITAL MUNICIPAL DE NATAL"), 0, 1, 'L');
+        $this->SetX("35");
         $this->Cell(0, 5, utf8_decode("RELATÓRIO DE PACIENTES POR DATA"), 0, 1, 'L');
         $this->SetX("35");
-        $this->Cell(0, 5, utf8_decode("HOSPITAL MUNICIPAL DE NATAL"), 0, 1, 'L');
+        $this->Cell(0, 5, utf8_decode("SITUAÇÃO"), 0, 1, 'L');
 
 
         $this->Ln(6);
@@ -94,8 +96,8 @@ class RelatorioBauAtendidoPDF extends FPDF {
 
 
 $pdf = new RelatorioBauAtendidoPDF("P", "mm", "A4");
-$pdf->SetTitle("RELATÓRIO DE PACIENTES POR DATA - HMN");
-$pdf->SetSubject("RELATÓRIO DE PACIENTES POR DATA - HMN");
+$pdf->SetTitle(utf8_decode("RELATÓRIO DE PACIENTES POR DATA - HMN"));
+$pdf->SetSubject(utf8_decode("RELATÓRIO DE PACIENTES POR DATA - HMN"));
 
 
 $pdf->AliasNbPages();
