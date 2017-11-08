@@ -75,11 +75,11 @@ class FarmaciaEntradaDetail extends TStandardList
         $action_del->setField( "id" );
         $this->datagrid->addAction( $action_del );
 
-        $action1 = new CustomDataGridAction(array('FarmaciaEntradaDetail', 'onReload'));
+        $action1 = new CustomDataGridAction(array('FarmaciaEntradaItemsDetail', 'onReload'));
         $action1->setLabel('Entrada');
         $action1->setImage('fa:file-text blue');
         $action1->setField( "id" );
-        $action1->setParameter( "did", $fk );
+        $action1->setParameter( "fk", $fk );
         $this->datagrid->addAction( $action1 );
 
         $this->datagrid->createModel();
@@ -107,7 +107,9 @@ class FarmaciaEntradaDetail extends TStandardList
             $object->store();
             TTransaction::close();
 
-            $action = new TAction( [ $this, "onSearch" ] );
+            $action = new TAction( [ "FarmaciaEntradaItemsDetail", "onReload" ] );
+            $action->setParameter( "fk", $param[ "fk" ] );
+
             new TMessage( "info", "Registro Salvo com sucesso!", $action );
 
         } catch ( Exception $ex ) {
