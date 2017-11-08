@@ -29,6 +29,10 @@ class FarmaciaEntradaDetail extends TStandardList
 
         $farmacia_id->setValue(filter_input( INPUT_GET, "id" ));
 
+        $fk = filter_input( INPUT_GET, "fk" );
+        $did = filter_input( INPUT_GET, "did" );
+        $page = filter_input( INPUT_GET, "page" );
+
         $dataentrada->setMask( "dd/mm/yyyy" );
         $dataentrada->setDatabaseMask("yyyy-mm-dd");
         $dataentrada->setValue( date( "d/m/Y" ) );
@@ -44,32 +48,39 @@ class FarmaciaEntradaDetail extends TStandardList
         $this->form->addAction( "Buscar", new TAction( [ $this, "onSearch" ] ), "fa:search" );
         $this->form->addAction( "Adicionar", new TAction( [ $this, "onSave" ] ), "bs:plus-sign green" );
 
-        $this->datagrid = new BootstrapDatagridWrapper( new TDataGrid() );
+        $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
         $this->datagrid->datatable = "true";
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
 
         $column_1 = new TDataGridColumn( "dataentrada", "Data da Entrada", "left" );
-        $column_2 = new TDataGridColumn( "documento", "Documentação", "left" );
+        $column_2 = new TDataGridColumn( "documento", "Documento Entrada", "left" );
         $column_3 = new TDataGridColumn( "nome_farmacia", "Farmácia", "left" );
 
         $this->datagrid->addColumn( $column_1 );
         $this->datagrid->addColumn( $column_2 );
         $this->datagrid->addColumn( $column_3 );
 
-        $action_edit = new TDataGridAction( [ $this, "onEdit" ] );
+        $action_edit = new CustomDataGridAction( [ $this, "onEdit" ] );
         $action_edit->setButtonClass( "btn btn-default" );
         $action_edit->setLabel( "Editar" );
         $action_edit->setImage( "fa:pencil-square-o blue fa-lg" );
         $action_edit->setField( "id" );
         $this->datagrid->addAction( $action_edit );
 
-        $action_del = new TDataGridAction( [ $this, "onDelete" ] );
+        $action_del = new CustomDataGridAction( [ $this, "onDelete" ] );
         $action_del->setButtonClass( "btn btn-default" );
         $action_del->setLabel( "Deletar" );
         $action_del->setImage( "fa:trash-o red fa-lg" );
         $action_del->setField( "id" );
         $this->datagrid->addAction( $action_del );
+
+        $action1 = new CustomDataGridAction(array('FarmaciaEntradaDetail', 'onReload'));
+        $action1->setLabel('Entrada');
+        $action1->setImage('fa:file-text blue');
+        $action1->setField( "id" );
+        $action1->setParameter( "did", $fk );
+        $this->datagrid->addAction( $action1 );
 
         $this->datagrid->createModel();
 
@@ -90,7 +101,7 @@ class FarmaciaEntradaDetail extends TStandardList
         try {
 
             $this->form->validate();
-            $object = $this->form->getData( "FarmarciaEntradaRecord" );
+            $object = $this->form->getData( "FarmaciaEntradaRecord" );
 
             TTransaction::open( "database" );
             $object->store();
@@ -114,7 +125,7 @@ class FarmaciaEntradaDetail extends TStandardList
                 $key = $param['key'];
                 TTransaction::open('database');
 
-                $object = new FarmarciaEntradaRecord($key);
+                $object = new FarmaciaEntradaRecord($key);
                 $this->form->setData($object);
 
                 TTransaction::close();
