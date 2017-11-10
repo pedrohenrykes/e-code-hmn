@@ -1,15 +1,21 @@
 <?php
 /**
- * SystemNotification Active Record
- * @author  <your-name-here>
+ * SystemNotification
+ *
+ * @version    1.0
+ * @package    model
+ * @subpackage communication
+ * @author     Pablo Dall'Oglio
+ * @copyright  Copyright (c) 2006 Adianti Solutions Ltd. (http://www.adianti.com.br)
+ * @license    http://www.adianti.com.br/framework-license
  */
 class SystemNotification extends TRecord
 {
-    const TABLENAME = 'notificacoes';
+    const TABLENAME = 'system_notification';
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'max'; // {max, serial}
-
-
+    
+    
     /**
      * Constructor method
      */
@@ -32,7 +38,7 @@ class SystemNotification extends TRecord
      */
     public static function register( $user_to, $subject, $message, $action, $label, $icon = null)
     {
-        TTransaction::open('database');
+        TTransaction::open('communication');
         $object = new self;
         $object->system_user_id    = TSession::getValue('userid');
         $object->system_user_to_id = $user_to;

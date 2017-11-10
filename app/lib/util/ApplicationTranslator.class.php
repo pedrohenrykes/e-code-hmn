@@ -1,15 +1,20 @@
 <?php
 /**
- * Translation utility class
- * Copyright (c) 2006-2010 Pablo Dall'Oglio
- * @author  Pablo Dall'Oglio <pablo [at] adianti.com.br>
- * @version 2.0, 2007-08-01
+ * ApplicationTranslator
+ *
+ * @version    5.0
+ * @package    util
+ * @author     Pablo Dall'Oglio
+ * @copyright  Copyright (c) 2006 Adianti Solutions Ltd. (http://www.adianti.com.br)
+ * @license    http://www.adianti.com.br/framework-license
  */
 class ApplicationTranslator
 {
     private static $instance; // singleton instance
+    private $messages;
+    private $enWords;
     private $lang;            // target language
-
+    
     /**
      * Class Constructor
      */
@@ -99,6 +104,7 @@ class ApplicationTranslator
         $this->messages['en'][] = 'Clear form';
         $this->messages['en'][] = 'Send';
         $this->messages['en'][] = 'Message';
+        $this->messages['en'][] = 'Messages';
         $this->messages['en'][] = 'Subject';
         $this->messages['en'][] = 'Message sent successfully';
         $this->messages['en'][] = 'Check as read';
@@ -109,6 +115,7 @@ class ApplicationTranslator
         $this->messages['en'][] = 'Checked';
         $this->messages['en'][] = 'Object ^1 not found in ^2';
         $this->messages['en'][] = 'Notification';
+        $this->messages['en'][] = 'Notifications';
         $this->messages['en'][] = 'Categories';
         $this->messages['en'][] = 'Send document';
         $this->messages['en'][] = 'My documents';
@@ -124,7 +131,7 @@ class ApplicationTranslator
         $this->messages['en'][] = 'Download';
         $this->messages['en'][] = 'Next';
         $this->messages['en'][] = 'Documents';
-        $this->messages['en'][] = 'permission';
+        $this->messages['en'][] = 'Permission';
         $this->messages['en'][] = 'Unit';
         $this->messages['en'][] = 'Units';
         $this->messages['en'][] = 'Add';
@@ -132,6 +139,7 @@ class ApplicationTranslator
         $this->messages['en'][] = 'Activate/Deactivate';
         $this->messages['en'][] = 'Inactive user';
         $this->messages['en'][] = 'Send message';
+        $this->messages['en'][] = 'Read messages';
         $this->messages['en'][] = 'An user with this login is already registered';
         $this->messages['en'][] = 'Access Stats';
         $this->messages['en'][] = 'Accesses';
@@ -153,7 +161,75 @@ class ApplicationTranslator
         $this->messages['en'][] = 'Archived';
         $this->messages['en'][] = 'Archive';
         $this->messages['en'][] = 'Recover';
-
+        $this->messages['en'][] = 'Value';
+        $this->messages['en'][] = 'View all';
+        $this->messages['en'][] = 'Reload';
+        $this->messages['en'][] = 'Back';
+        $this->messages['en'][] = 'Clear';
+        $this->messages['en'][] = 'View';
+        $this->messages['en'][] = 'No records found';
+        $this->messages['en'][] = 'Drawing successfully generated';
+        $this->messages['en'][] = 'QR Codes successfully generated';
+        $this->messages['en'][] = 'Barcodes successfully generated';
+        $this->messages['en'][] = 'Document successfully generated';
+        $this->messages['en'][] = 'Value';
+        $this->messages['en'][] = 'User';
+        $this->messages['en'][] = 'Password';
+        $this->messages['en'][] = 'Port';
+        $this->messages['en'][] = 'Database type';
+        $this->messages['en'][] = 'Root user';
+        $this->messages['en'][] = 'Root password';
+        $this->messages['en'][] = 'Create database/user';
+        $this->messages['en'][] = 'Test connection';
+        $this->messages['en'][] = 'Database name';
+        $this->messages['en'][] = 'Insert permissions/programs';
+        $this->messages['en'][] = 'Database and user created successfully';
+        $this->messages['en'][] = 'Permissions and programs successfully inserted';
+        $this->messages['en'][] = 'Update config';
+        $this->messages['en'][] = 'Configuration file: ^1 updated successfully';
+        $this->messages['en'][] = 'Connection successfully completed';
+        $this->messages['en'][] = "The database ^1 doesn't exists";
+        $this->messages['en'][] = 'Permissions/programs successfully inserted';
+        $this->messages['en'][] = 'Programs/permissions have already been inserted';
+        $this->messages['en'][] = 'Installing your application';
+        $this->messages['en'][] = 'PHP version verification and installed extensions';
+        $this->messages['en'][] = 'PHP verification';
+        $this->messages['en'][] = 'Directory verification';
+        $this->messages['en'][] = 'Database configuration/creation';
+        $this->messages['en'][] = 'Admin user';
+        $this->messages['en'][] = 'Admin password';
+        $this->messages['en'][] = 'Insert data';
+        $this->messages['en'][] = 'Of database:';
+        $this->messages['en'][] = 'Connecton to database ^1 failed';
+        $this->messages['en'][] = 'Install';
+        $this->messages['en'][] = 'Databases successfully installed';
+        $this->messages['en'][] = 'Databases have already been installed';
+        $this->messages['en'][] = 'Main unit';
+        $this->messages['en'][] = 'Time';
+        $this->messages['en'][] = 'Type';
+        $this->messages['en'][] = 'Failed to read error log (^1)';
+        $this->messages['en'][] = 'Error log (^1) is not writable by web server user, so the messages may be incomplete';
+        $this->messages['en'][] = 'Check the owner of the log file. He must be the same as the web user (usually www-data, www, etc)';
+        $this->messages['en'][] = 'Error log is empty or has not been configured correctly. Define the error log file, setting <b>error_log</b> at php.ini';
+        $this->messages['en'][] = 'Errors are not being logged. Please turn <b>log_errors = On</b> at php.ini';
+        $this->messages['en'][] = 'Errors are not currently being displayd because the <b>display_errors</b> is set to Off in php.ini';
+        $this->messages['en'][] = 'This configuration is usually recommended for production, not development purposes';
+        $this->messages['en'][] = 'The php.ini current location is <b>^1</b>';
+        $this->messages['en'][] = 'The error log current location is <b>^1</b>';
+        $this->messages['en'][] = 'PHP Log';
+        $this->messages['en'][] = 'Database explorer';
+        $this->messages['en'][] = 'Tables';
+        $this->messages['en'][] = 'Report generated. Please, enable popups';
+        $this->messages['en'][] = 'File saved';
+        $this->messages['en'][] = 'Edit page';
+        $this->messages['en'][] = 'Update page';
+        $this->messages['en'][] = 'Module';
+        $this->messages['en'][] = 'Directory';
+        $this->messages['en'][] = 'Source code';
+        $this->messages['en'][] = 'Invalid return';
+        $this->messages['en'][] = 'Page';
+        $this->messages['en'][] = 'Connection failed';
+        
         $this->messages['pt'][] = 'Arquivo não encontrado';
         $this->messages['pt'][] = 'Buscar';
         $this->messages['pt'][] = 'Cadastrar';
@@ -223,8 +299,8 @@ class ApplicationTranslator
         $this->messages['pt'][] = 'Operação';
         $this->messages['pt'][] = 'Valor antigo';
         $this->messages['pt'][] = 'Valor novo';
-        $this->messages['pt'][] = 'Database';
-        $this->messages['pt'][] = 'Profile';
+        $this->messages['pt'][] = 'Banco de dados';
+        $this->messages['pt'][] = 'Perfil';
         $this->messages['pt'][] = 'Mudar senha';
         $this->messages['pt'][] = 'Deixe vazio para manter a senha anterior';
         $this->messages['pt'][] = 'Resultados';
@@ -238,6 +314,7 @@ class ApplicationTranslator
         $this->messages['pt'][] = 'Limpar formulário';
         $this->messages['pt'][] = 'Enviar';
         $this->messages['pt'][] = 'Mensagem';
+        $this->messages['pt'][] = 'Mensagens';
         $this->messages['pt'][] = 'Assunto';
         $this->messages['pt'][] = 'Mensagem enviada com sucesso';
         $this->messages['pt'][] = 'Marcar como lida';
@@ -248,6 +325,7 @@ class ApplicationTranslator
         $this->messages['pt'][] = 'Verificado';
         $this->messages['pt'][] = 'Objeto ^1 não encontrado em ^2';
         $this->messages['pt'][] = 'Notificação';
+        $this->messages['pt'][] = 'Notificações';
         $this->messages['pt'][] = 'Categorias';
         $this->messages['pt'][] = 'Enviar documentos';
         $this->messages['pt'][] = 'Meus documentos';
@@ -271,6 +349,7 @@ class ApplicationTranslator
         $this->messages['pt'][] = 'Ativar/desativar';
         $this->messages['pt'][] = 'Usuário inativo';
         $this->messages['pt'][] = 'Envia mensagem';
+        $this->messages['pt'][] = 'Ler mensagens';
         $this->messages['pt'][] = 'Um usuário já está cadastrado com este login';
         $this->messages['pt'][] = 'Estatísticas de acesso';
         $this->messages['pt'][] = 'Acessos';
@@ -292,8 +371,82 @@ class ApplicationTranslator
         $this->messages['pt'][] = 'Arquivados';
         $this->messages['pt'][] = 'Arquivar';
         $this->messages['pt'][] = 'Recuperar';
+        $this->messages['pt'][] = 'Valor';
+        $this->messages['pt'][] = 'Ver todos';
+        $this->messages['pt'][] = 'Recarregar';
+        $this->messages['pt'][] = 'Voltar';
+        $this->messages['pt'][] = 'Limpar';
+        $this->messages['pt'][] = 'Visualizar';
+        $this->messages['pt'][] = 'Nenhum registro foi encontrado';
+        $this->messages['pt'][] = 'Desenho gerado com sucesso';
+        $this->messages['pt'][] = 'QR codes gerados com sucesso';
+        $this->messages['pt'][] = 'Códigos de barra gerados com sucesso';
+        $this->messages['pt'][] = 'Documento gerado com sucesso';
+        $this->messages['pt'][] = 'Valor';
+        $this->messages['pt'][] = 'Usuário';
+        $this->messages['pt'][] = 'Senha';
+        $this->messages['pt'][] = 'Porta';
+        $this->messages['pt'][] = 'Tipo da base de dados';
+        $this->messages['pt'][] = 'Usuário admin';
+        $this->messages['pt'][] = 'Senha do usuário admin';
+        $this->messages['pt'][] = 'Criar base de dados/usuário';
+        $this->messages['pt'][] = 'Testar conexão';
+        $this->messages['pt'][] = 'Nome da base de dados';
+        $this->messages['pt'][] = 'Inserir permissões/programas';
+        $this->messages['pt'][] = 'Base de dados e usuário criado com sucesso';
+        $this->messages['pt'][] = 'Permissões e programas inseridos com sucesso';
+        $this->messages['pt'][] = 'Atualizar config';
+        $this->messages['pt'][] = 'Arquivo de configuração: ^1 atualizado com sucesso';
+        $this->messages['pt'][] = 'Conexão realizada com sucesso';
+        $this->messages['pt'][] = 'A base de dados ^1 não existe';
+        $this->messages['pt'][] = 'Permissões/programas inseridos com sucesso';
+        $this->messages['pt'][] = 'Os programas/permissões já foram inseridos';
+        $this->messages['pt'][] = 'Instalando a sua aplicação';
+        $this->messages['pt'][] = 'Verificação da versão do PHP e extensões instaladas';
+        $this->messages['pt'][] = 'Verificação do PHP';
+        $this->messages['pt'][] = 'Verificação de diretórios';
+        $this->messages['pt'][] = 'Configuração/criação de base de dados';
+        $this->messages['pt'][] = 'Usuário admin';
+        $this->messages['pt'][] = 'Senha do usuário admin';
+        $this->messages['pt'][] = 'Inserir dados';
+        $this->messages['pt'][] = 'Da base de dados:';
+        $this->messages['pt'][] = 'A conexão com a base de dados ^1 falhou';
+        $this->messages['pt'][] = 'Instalar';
+        $this->messages['pt'][] = 'Bases de dados instaladas com sucesso';
+        $this->messages['pt'][] = 'As bases de dados já foram instaladas';
+        $this->messages['pt'][] = 'Unidade principal';
+        $this->messages['pt'][] = 'Hora';
+        $this->messages['pt'][] = 'Tipo';
+        $this->messages['pt'][] = 'Falha ao ler o log de erros (^1)';
+        $this->messages['pt'][] = 'O log de erros (^1) não permite escrita pelo usuário web, assim as mensagens devem estar incompletas';
+        $this->messages['pt'][] = 'Revise o proprietário do arquivo de log. Ele deve ser igual ao usuário web (geralmente www-data, www, etc)';
+        $this->messages['pt'][] = 'Log de erros está vazio ou não foi configurado corretamente. Defina o arquivo de log de erros, configurando <b>error_log</b> no php.ini';
+        $this->messages['pt'][] = 'Erros não estão sendo registrados. Por favor, mude <b>log_errors = On</b> no php.ini';
+        $this->messages['pt'][] = 'Erros não estão atualmente sendo exibidos por que <b>display_errors</b> está configurado para Off no php.ini';
+        $this->messages['pt'][] = 'Esta configuração normalmente é recomendada para produção, não para o propósito de desenvolvimento';
+        $this->messages['pt'][] = 'A localização atual do php.ini é <b>^1</b>';
+        $this->messages['pt'][] = 'A localização atual do log de erros é <b>^1</b>';
+        $this->messages['pt'][] = 'Log do PHP';
+        $this->messages['pt'][] = 'Database explorer';
+        $this->messages['pt'][] = 'Tabelas';
+        $this->messages['pt'][] = 'Relatório gerado. Favor, habilitar os popups';
+        $this->messages['pt'][] = 'Arquivo salvo';
+        $this->messages['pt'][] = 'Editar página';
+        $this->messages['pt'][] = 'Atualizar página';
+        $this->messages['pt'][] = 'Módulo';
+        $this->messages['pt'][] = 'Diretório';
+        $this->messages['pt'][] = 'Código-fonte';
+        $this->messages['pt'][] = 'Retorno inválido';
+        $this->messages['pt'][] = 'Página';
+        $this->messages['pt'][] = 'Falhas na conexão';
+        
+        $this->enWords = [];
+        foreach ($this->messages['en'] as $key => $value)
+        {
+            $this->enWords[$value] = $key;
+        }
     }
-
+    
     /**
      * Returns the singleton instance
      * @return  Instance of self
@@ -309,7 +462,7 @@ class ApplicationTranslator
         // returns the created instance
         return self::$instance;
     }
-
+    
     /**
      * Define the target language
      * @param $lang     Target language index
@@ -319,7 +472,7 @@ class ApplicationTranslator
         $instance = self::getInstance();
         $instance->lang = $lang;
     }
-
+    
     /**
      * Returns the target language
      * @return Target language index
@@ -329,25 +482,27 @@ class ApplicationTranslator
         $instance = self::getInstance();
         return $instance->lang;
     }
-
+    
     /**
      * Translate a word to the target language
      * @param $word     Word to be translated
      * @return          Translated word
      */
-    static public function translate($word, $param1 = NULL, $param2 = NULL, $param3 = NULL)
+    public static function translate($word, $param1 = NULL, $param2 = NULL, $param3 = NULL)
     {
         // get the self unique instance
         $instance = self::getInstance();
         // search by the numeric index of the word
-        $key = array_search($word, $instance->messages['en']);
-        if ($key !== FALSE)
+        
+        if (isset($instance->enWords[$word]) and !is_null($instance->enWords[$word]))
         {
+            $key = $instance->enWords[$word]; //$key = array_search($word, $instance->messages['en']);
+            
             // get the target language
             $language = self::getLanguage();
             // returns the translated word
             $message = $instance->messages[$language][$key];
-
+            
             if (isset($param1))
             {
                 $message = str_replace('^1', $param1, $message);
@@ -367,19 +522,22 @@ class ApplicationTranslator
             return 'Message not found: '. $word;
         }
     }
-
+    
     /**
      * Translate a template file
      */
-    static public function translateTemplate($template)
+    public static function translateTemplate($template)
     {
         // get the self unique instance
         $instance = self::getInstance();
-        // search by the numeric index of the word
-        foreach ($instance->messages['en'] as $word)
+        // search by translated words
+        if(preg_match_all( '!_t\{(.*?)\}!i', $template, $match ) > 0)
         {
-            $translated = _t($word);
-            $template = str_replace('_t{'.$word.'}', $translated, $template);
+            foreach($match[1] as $word)
+            {
+                $translated = _t($word);
+                $template = str_replace('_t{'.$word.'}', $translated, $template);
+            }
         }
         return $template;
     }

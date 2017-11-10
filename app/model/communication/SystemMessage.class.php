@@ -1,15 +1,21 @@
 <?php
 /**
- * SystemMessage Active Record
- * @author  <your-name-here>
+ * SystemMessage
+ *
+ * @version    1.0
+ * @package    model
+ * @subpackage communication
+ * @author     Pablo Dall'Oglio
+ * @copyright  Copyright (c) 2006 Adianti Solutions Ltd. (http://www.adianti.com.br)
+ * @license    http://www.adianti.com.br/framework-license
  */
 class SystemMessage extends TRecord
 {
-    const TABLENAME = 'mensagens';
+    const TABLENAME = 'system_message';
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'max'; // {max, serial}
-
-
+    
+    
     /**
      * Constructor method
      */
@@ -23,17 +29,17 @@ class SystemMessage extends TRecord
         parent::addAttribute('dt_message');
         parent::addAttribute('checked');
     }
-
+    
     public function get_user_from()
     {
-        return SystemUser::findInTransaction('database', $this->system_user_id);
+        return SystemUser::findInTransaction('permission', $this->system_user_id);
     }
-
+    
     public function get_user_to()
     {
-        return SystemUser::findInTransaction('database', $this->system_user_to_id);
+        return SystemUser::findInTransaction('permission', $this->system_user_to_id);
     }
-
+    
     public function get_user_mixed()
     {
         if ($this->system_user_id == TSession::getValue('userid'))

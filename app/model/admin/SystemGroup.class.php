@@ -1,15 +1,21 @@
 <?php
 /**
- * System_group Active Record
- * @author  <your-name-here>
+ * SystemGroup
+ *
+ * @version    1.0
+ * @package    model
+ * @subpackage admin
+ * @author     Pablo Dall'Oglio
+ * @copyright  Copyright (c) 2006 Adianti Solutions Ltd. (http://www.adianti.com.br)
+ * @license    http://www.adianti.com.br/framework-license
  */
 class SystemGroup extends TRecord
 {
-    const TABLENAME = 'grupos';
+    const TABLENAME = 'system_group';
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'max'; // {max, serial}
-
-
+    
+    
     private $system_programs = array();
 
     /**
@@ -33,7 +39,7 @@ class SystemGroup extends TRecord
         $object->system_group_id = $this->id;
         $object->store();
     }
-
+    
     /**
      * Method getSystem_programs
      * Return the System_group' System_program's
@@ -42,7 +48,7 @@ class SystemGroup extends TRecord
     public function getSystemPrograms()
     {
         $system_programs = array();
-
+        
         // load the related System_program objects
         $repository = new TRepository('SystemGroupProgram');
         $criteria = new TCriteria;
@@ -55,7 +61,7 @@ class SystemGroup extends TRecord
                 $system_programs[] = new SystemProgram( $system_group_system_program->system_program_id );
             }
         }
-
+        
         return $system_programs;
     }
 
@@ -70,7 +76,7 @@ class SystemGroup extends TRecord
         $repository = new TRepository('SystemGroupProgram');
         $repository->delete($criteria);
     }
-
+    
     /**
      * Delete the object and its aggregates
      * @param $id object ID
@@ -83,7 +89,7 @@ class SystemGroup extends TRecord
         $criteria = new TCriteria;
         $criteria->add(new TFilter('system_group_id', '=', $id));
         $repository->delete($criteria);
-
+        
         // delete the object itself
         parent::delete($id);
     }

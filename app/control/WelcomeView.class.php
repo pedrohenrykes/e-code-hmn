@@ -3,10 +3,9 @@
  * WelcomeView
  *
  * @version    1.0
- * @package    samples
- * @subpackage tutor
+ * @package    control
  * @author     Pablo Dall'Oglio
- * @copyright  Copyright (c) 2006-2012 Adianti Solutions Ltd. (http://www.adianti.com.br)
+ * @copyright  Copyright (c) 2006 Adianti Solutions Ltd. (http://www.adianti.com.br)
  * @license    http://www.adianti.com.br/framework-license
  */
 class WelcomeView extends TPage
@@ -19,9 +18,8 @@ class WelcomeView extends TPage
     {
         parent::__construct();
         
-        TPage::include_css('app/resources/styles.css');
-        $html1 = new THtmlRenderer('app/resources/welcome.html');
-        $html2 = new THtmlRenderer('app/resources/bemvindo.html');
+        $html1 = new THtmlRenderer('app/resources/system_welcome_en.html');
+        $html2 = new THtmlRenderer('app/resources/system_welcome_pt.html');
 
         // replace the main section variables
         $html1->enableSection('main', array());

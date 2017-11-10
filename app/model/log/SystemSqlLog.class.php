@@ -3,8 +3,14 @@
 use Adianti\Log\AdiantiLoggerInterface;
 
 /**
- * SystemSqllog Active Record
- * @author  <your-name-here>
+ * SystemSqlLog
+ *
+ * @version    1.0
+ * @package    model
+ * @subpackage log
+ * @author     Pablo Dall'Oglio
+ * @copyright  Copyright (c) 2006 Adianti Solutions Ltd. (http://www.adianti.com.br)
+ * @license    http://www.adianti.com.br/framework-license
  */
 class SystemSqlLog extends TRecord implements AdiantiLoggerInterface
 {
@@ -34,11 +40,11 @@ class SystemSqlLog extends TRecord implements AdiantiLoggerInterface
         $dbname = TTransaction::getDatabase();
         
         // avoid log of log
-        if ($dbname !== 'database' AND (in_array(substr($message,0,6), array('INSERT', 'UPDATE', 'DELETE') ) ) )
+        if ($dbname !== 'log' AND (in_array(substr($message,0,6), array('INSERT', 'UPDATE', 'DELETE') ) ) )
         {
             $time = date("Y-m-d H:i:s");
             
-            TTransaction::open('database');
+            TTransaction::open('log');
             $object = new self;
             $object->logdate = $time;
             $object->login = TSession::getValue('login');

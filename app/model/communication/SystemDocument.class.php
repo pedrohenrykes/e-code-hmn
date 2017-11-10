@@ -1,7 +1,13 @@
 <?php
 /**
- * SystemDocument Active Record
- * @author  <your-name-here>
+ * SystemDocument
+ *
+ * @version    1.0
+ * @package    model
+ * @subpackage communication
+ * @author     Pablo Dall'Oglio
+ * @copyright  Copyright (c) 2006 Adianti Solutions Ltd. (http://www.adianti.com.br)
+ * @license    http://www.adianti.com.br/framework-license
  */
 class SystemDocument extends TRecord
 {
@@ -38,7 +44,7 @@ class SystemDocument extends TRecord
      */
     public function get_system_user()
     {
-        TTransaction::open('database');
+        TTransaction::open('permission');
         $user = SystemUser::find($this->system_user_id);
         TTransaction::close();
         return $user;
@@ -118,7 +124,7 @@ class SystemDocument extends TRecord
         $document_groups = SystemDocumentGroup::where('document_id', '=', $this->id)->load();
         if ($document_groups)
         {
-            TTransaction::open('database');
+            TTransaction::open('permission');
             foreach ($document_groups as $document_group)
             {
                 $groups[] = new SystemGroup( $document_group->system_group_id );
@@ -139,7 +145,7 @@ class SystemDocument extends TRecord
         {
             foreach ($users as $user)
             {
-                $user_ids[$user->id] = $user->name;
+                $user_ids[] = $user->id;
             }
         }
         return $user_ids;
@@ -171,7 +177,7 @@ class SystemDocument extends TRecord
         $document_users = SystemDocumentUser::where('document_id', '=', $this->id)->load();
         if ($document_users)
         {
-            TTransaction::open('database');
+            TTransaction::open('permission');
             foreach ($document_users as $document_user)
             {
                 $users[] = new SystemUser( $document_user->system_user_id );
@@ -195,7 +201,7 @@ class SystemDocument extends TRecord
      */
     public function hasGroupAccess($usergroupids)
     {
-        return (SystemDocumentGroup::where('system_group_id','IN', "NOESC:({$usergroupids})")
+        return (SystemDocumentGroup::where('system_group_id','IN', $usergroupids)
                                    ->where('document_id', '=', $this->id)->count() >0);
     }
 }

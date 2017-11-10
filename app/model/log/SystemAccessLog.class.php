@@ -1,15 +1,21 @@
 <?php
 /**
- * SystemAccessLog Active Record
- * @author  <your-name-here>
+ * SystemAccessLog
+ *
+ * @version    1.0
+ * @package    model
+ * @subpackage log
+ * @author     Pablo Dall'Oglio
+ * @copyright  Copyright (c) 2006 Adianti Solutions Ltd. (http://www.adianti.com.br)
+ * @license    http://www.adianti.com.br/framework-license
  */
 class SystemAccessLog extends TRecord
 {
-    const TABLENAME = 'acessos';
+    const TABLENAME = 'system_access_log';
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'max'; // {max, serial}
-
-
+    
+    
     /**
      * Constructor method
      */
@@ -27,7 +33,7 @@ class SystemAccessLog extends TRecord
      */
     public static function registerLogin()
     {
-        TTransaction::open('database');
+        TTransaction::open('log');
         $object = new self;
         $object->login = TSession::getValue('login');
         $object->sessionid = session_id();
@@ -35,13 +41,13 @@ class SystemAccessLog extends TRecord
         $object->store();
         TTransaction::close();
     }
-
+    
     /**
      * Register logout
      */
     public static function registerLogout()
     {
-        TTransaction::open('database');
+        TTransaction::open('log');
         // get logs by session id
         $logs = self::where('sessionid', '=', session_id())->load();
         if (count($logs)>0)
@@ -55,17 +61,17 @@ class SystemAccessLog extends TRecord
         }
         TTransaction::close();
     }
-
+    
     /**
      *
      */
     public static function getStatsByDay()
     {
-        TTransaction::open('database');
+        TTransaction::open('log');
         // get logs by session id
         $logs = self::where('login_time', '>=', date('Y-m-01'))->where('login_time', '<=', date('Y-m-t'))->load();
         $accesses = array();
-
+        
         if (count($logs)>0)
         {
             $accesses = array();
@@ -82,7 +88,7 @@ class SystemAccessLog extends TRecord
                 }
             }
         }
-
+        
         TTransaction::close();
         return $accesses;
     }

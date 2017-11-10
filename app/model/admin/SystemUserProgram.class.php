@@ -1,15 +1,21 @@
 <?php
 /**
- * System_user_program Active Record
- * @author  <your-name-here>
+ * SystemUserProgram
+ *
+ * @version    1.0
+ * @package    model
+ * @subpackage admin
+ * @author     Pablo Dall'Oglio
+ * @copyright  Copyright (c) 2006 Adianti Solutions Ltd. (http://www.adianti.com.br)
+ * @license    http://www.adianti.com.br/framework-license
  */
 class SystemUserProgram extends TRecord
 {
-    const TABLENAME = 'usuarios_programas';
+    const TABLENAME = 'system_user_program';
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'max'; // {max, serial}
-
-
+    
+    
     /**
      * Constructor method
      */
@@ -20,4 +26,3 @@ class SystemUserProgram extends TRecord
         parent::addAttribute('system_program_id');
     }
 }
-?>

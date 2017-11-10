@@ -1,16 +1,26 @@
 <?php
+/**
+ * SystemProfileView
+ *
+ * @version    1.0
+ * @package    control
+ * @subpackage admin
+ * @author     Pablo Dall'Oglio
+ * @copyright  Copyright (c) 2006 Adianti Solutions Ltd. (http://www.adianti.com.br)
+ * @license    http://www.adianti.com.br/framework-license
+ */
 class SystemProfileView extends TPage
 {
     public function __construct()
     {
         parent::__construct();
         
-        $html = new THtmlRenderer('app/resources/profile.html');
+        $html = new THtmlRenderer('app/resources/system_profile.html');
         $replaces = array();
         
         try
         {
-            TTransaction::open('database');
+            TTransaction::open('permission');
             
             $user= SystemUser::newFromLogin(TSession::getValue('login'));
             $replaces = $user->toArray();
@@ -27,11 +37,7 @@ class SystemProfileView extends TPage
         $html->enableSection('main', $replaces);
         $html->enableTranslation();
         
-        $bc = new TBreadCrumb();
-        $bc->addHome();
-        $bc->addItem('Profile');
-        
-        $container = TVBox::pack($bc, $html);
+        $container = TVBox::pack($html);
         $container->style = 'width:80%';
         parent::add($container);
     }
