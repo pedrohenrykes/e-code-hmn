@@ -48,27 +48,18 @@ class BauDetail extends TPage
 
         }
 
-        $id                    = new THidden("id");
-        $paciente_id           = new THidden("paciente_id");
-        $paciente_nome         = new TEntry("paciente_nome");
-        $dataentrada           = new TDate("dataentrada");
-        $horaentrada           = new TDateTime("horaentrada");
-        $responsavel           = new TEntry("responsavel");
-        $convenio_id           = new TDBCombo("convenio_id", "database", "ConvenioRecord", "id", "nome", "nome");
-        $queixaprincipal       = new TText("queixaprincipal");
+        $paciente_nome->setSize( "38%" );
+        $dataentrada->setSize( "38%" );
+        $horaentrada->setSize( "38%" );
+        $responsavel->setSize( "38%" );
+        $convenio_id->setSize( "38%" );
+        $queixaprincipal->setSize( "38%" );
 
-        $paciente_nome           ->setSize( "38%" );
-        $dataentrada             ->setSize( "38%" );
-        $horaentrada             ->setSize( "38%" );
-        $responsavel             ->setSize( "38%" );
-        $convenio_id             ->setSize( "38%" );
-        $queixaprincipal         ->setSize( "38%" );
+        $convenio_id->setDefaultOption( "..::SELECIONE::.." );
 
-        $convenio_id             ->setDefaultOption( "..::SELECIONE::.." );
-
-        $horaentrada        ->setMask( "hh:ii" );
-        $dataentrada        ->setMask( "dd/mm/yyyy" );
-        $dataentrada        ->setDatabaseMask("yyyy-mm-dd");
+        $horaentrada->setMask( "hh:ii" );
+        $dataentrada->setMask( "dd/mm/yyyy" );
+        $dataentrada->setDatabaseMask("yyyy-mm-dd");
 
         $dataentrada->setValue( date( "d/m/Y" ) );
         $horaentrada->setValue( date( "H:i" ) );
