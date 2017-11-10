@@ -32,7 +32,7 @@ class FarmaciaEntradaItemsDetail extends TStandardList
         );
         $quantidadeentrada = new TEntry( "quantidadeentrada" );
 
-        $farmaciaentrada_id->setValue(filter_input( INPUT_GET, "id" ));
+        $farmaciaentrada_id->setValue(filter_input( INPUT_GET, "did" ));
 
         $key = filter_input( INPUT_GET, "id" );
         $fk = filter_input( INPUT_GET, "fk" );
@@ -45,9 +45,7 @@ class FarmaciaEntradaItemsDetail extends TStandardList
         $this->form->addFields( [ new TLabel( "Quantidade:" ) ], [ $quantidadeentrada ] );
         $this->form->addFields( [ $id, $farmaciaentrada_id ] );
 
-
         $onSave = new TAction( [ $this, "onSave" ] );
-        $onSave->setParameter( "id", $key );
         $onSave->setParameter( "fk", $fk );
         $onSave->setParameter( "did", $fk );
 
@@ -70,6 +68,8 @@ class FarmaciaEntradaItemsDetail extends TStandardList
         $action_edit->setLabel( "Editar" );
         $action_edit->setImage( "fa:pencil-square-o blue fa-lg" );
         $action_edit->setField( "id" );
+        $action_edit->setParameter( "fk", $fk );
+        $action_edit->setParameter( "did", $did );
         $this->datagrid->addAction( $action_edit );
 
         $action_del = new CustomDataGridAction( [ $this, "onDelete" ] );
@@ -77,6 +77,8 @@ class FarmaciaEntradaItemsDetail extends TStandardList
         $action_del->setLabel( "Deletar" );
         $action_del->setImage( "fa:trash-o red fa-lg" );
         $action_del->setField( "id" );
+        $action_del->setParameter( "fk", $fk );
+        $action_del->setParameter( "did", $did );
         $this->datagrid->addAction( $action_del );
 
         $this->datagrid->createModel();
@@ -94,7 +96,7 @@ class FarmaciaEntradaItemsDetail extends TStandardList
         parent::add( $container );
     }
 
-    public function onSave( $param = null ){
+    public function onSave( $param ){
         try {
 
             $this->form->validate();
@@ -104,7 +106,10 @@ class FarmaciaEntradaItemsDetail extends TStandardList
             $object->store();
             TTransaction::close();
 
-            $action = new TAction( [ $this, "onSearch" ] );
+            $action = new TAction( [ $this, "onReload" ] );
+
+            $action->setParameter( "fk", $param[ "fk" ] );
+            $action->setParameter( "did", $param[ "did" ] );
             new TMessage( "info", "Registro Salvo com sucesso!", $action );
 
         } catch ( Exception $ex ) {
@@ -154,7 +159,7 @@ class FarmaciaEntradaItemsDetail extends TStandardList
             TTransaction::close();
 
             $this->onReload( $param );
-            new TMessage('info', AdiantiCoreTranslator::translate('Record deleted'));
+            //new TMessage('info', AdiantiCoreTranslator::translate('Record deleted'));
         }
         catch (Exception $e){
             new TMessage('error', '<b>O Registro possui dependências! Não é permitido exclui-lo! </b>');
@@ -190,7 +195,7 @@ class FarmaciaEntradaItemsDetail extends TStandardList
             }
             $criteria->setProperties($param);
             $criteria->setProperty('limit', $limit);
-            $criteria->add( new TFilter( "farmaciaentrada_id", "=", $param[ "id" ] ) );
+            $criteria->add( new TFilter( "farmaciaentrada_id", "=", $param[ "did" ] ) );
             
             if ($this->formFilters)
             {

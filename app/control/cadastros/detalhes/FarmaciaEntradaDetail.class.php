@@ -27,7 +27,7 @@ class FarmaciaEntradaDetail extends TStandardList
         $dataentrada = new TDate( "dataentrada" );
         $documento = new TEntry( "documento" );
 
-        $farmacia_id->setValue(filter_input( INPUT_GET, "id" ));
+        $farmacia_id->setValue(filter_input( INPUT_GET, "fk" ));
 
         $fk = filter_input( INPUT_GET, "fk" );
         $did = filter_input( INPUT_GET, "did" );
@@ -45,8 +45,12 @@ class FarmaciaEntradaDetail extends TStandardList
         $this->form->addFields( [ new TLabel( "Documento:" ) ], [ $documento ] );
         $this->form->addFields( [ $id, $farmacia_id ] );
 
+        $onSave = new TAction( [ $this, "onSave" ] );
+        $onSave->setParameter( "fk", $fk );
+        //$onSave->setParameter( "did", $fk );
+
         $this->form->addAction( "Buscar", new TAction( [ $this, "onSearch" ] ), "fa:search" );
-        $this->form->addAction( "Adicionar", new TAction( [ $this, "onSave" ] ), "bs:plus-sign green" );
+        $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
 
         $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
         $this->datagrid->datatable = "true";
@@ -79,6 +83,7 @@ class FarmaciaEntradaDetail extends TStandardList
         $action1->setLabel('Entrada');
         $action1->setImage('fa:file-text blue');
         $action1->setField( "id" );
+        $action1->setDid( "id" );
         $action1->setParameter( "fk", $fk );
         $this->datagrid->addAction( $action1 );
 
@@ -107,7 +112,7 @@ class FarmaciaEntradaDetail extends TStandardList
             $object->store();
             TTransaction::close();
 
-            $action = new TAction( [ "FarmaciaEntradaItemsDetail", "onReload" ] );
+            $action = new TAction( [ $this, "onReload" ] );
             $action->setParameter( "fk", $param[ "fk" ] );
 
             new TMessage( "info", "Registro Salvo com sucesso!", $action );
