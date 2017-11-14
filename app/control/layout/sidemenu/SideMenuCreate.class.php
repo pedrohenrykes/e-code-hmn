@@ -65,7 +65,7 @@ class SideMenuCreate
                     {
 
                         $xml = $xml . "<menuitem label='" . $menu->name . "'><icon>" .
-                             $menu->icon . "</icon><menu>";
+                        str_replace( "fa-", "fa:", $menu->icon ) . "</icon><menu>";
 
                         foreach ( $objects as $submenu ) {
 
@@ -75,8 +75,8 @@ class SideMenuCreate
                             {
 
                                 $xml = $xml . "<menuitem label='" . $submenu->name . "'><icon>" .
-                                     $submenu->icon . "</icon><action>" .
-                                    $submenu->action_class . "</action></menuitem>";
+                                str_replace( "fa-", "fa:", $submenu->icon ) . "</icon><action>" .
+                                $submenu->action_class . "</action></menuitem>";
 
                             }
 

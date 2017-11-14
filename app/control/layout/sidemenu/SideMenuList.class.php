@@ -52,35 +52,35 @@ class SideMenuList extends TPage
 
         $column_icon->setTransformer( function($value, $object, $row)
         {
-
-            $div = new TImage( $value );
+            $div = new TElement('i');
+            $div->class = "fa fa-fw {$value}";
+            $div->style = "padding-right:4px";
 
             return $div;
-
         });
 
-        $action_edit = new TDataGridAction( [ "SideMenuForm", "onEdit" ] );
+        $action_edit = new CustomDataGridAction( [ "SideMenuForm", "onEdit" ] );
         $action_edit->setButtonClass( "btn btn-default" );
         $action_edit->setLabel( "Editar" );
         $action_edit->setImage( "fa:pencil-square-o blue fa-lg" );
         $action_edit->setField( "id" );
         $this->datagrid->addAction( $action_edit );
 
-        $action_del = new TDataGridAction( [ $this, "onDelete" ] );
+        $action_del = new CustomDataGridAction( [ $this, "onDelete" ] );
         $action_del->setButtonClass( "btn btn-default" );
         $action_del->setLabel( "Deletar" );
         $action_del->setImage( "fa:trash-o red fa-lg" );
         $action_del->setField( "id" );
         $this->datagrid->addAction( $action_del );
 
-        $action_onoff = new TDataGridAction( [ $this, "onTurnOnOff" ] );
+        $action_onoff = new CustomDataGridAction( [ $this, "onTurnOnOff" ] );
         $action_onoff->setButtonClass( "btn btn-default" );
         $action_onoff->setLabel( "Ativar/Desativar" );
         $action_onoff->setImage( "fa:power-off fa-lg orange" );
         $action_onoff->setField( "id" );
         $this->datagrid->addAction( $action_onoff );
 
-        $subgrupo = new TDataGridAction( [ 'SideMenuList', "onReload" ] );
+        $subgrupo = new CustomDataGridAction( [ 'SideMenuList', "onReload" ] );
         $subgrupo->setButtonClass( "btn btn-default" );
         $subgrupo->setLabel( "Sub Menu" );
         $subgrupo->setImage( "fa:bars fa-lg green" );
@@ -115,13 +115,9 @@ class SideMenuList extends TPage
             $criteria->setProperty( "order", 'sequence' );
 
             if ( !empty( $param[ "key" ] )  ) {
-
                 $criteria->add( new TFilter( 'menu_id', "=",  $param[ "key" ] ));
-
-            }else{
-
+            } else {
                $criteria->add( new TFilter( 'menu_type', "=", "menu" ));
-
             }
 
             $objects = $repository->load( $criteria, FALSE );
