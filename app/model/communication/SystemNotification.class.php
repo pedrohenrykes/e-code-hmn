@@ -38,7 +38,7 @@ class SystemNotification extends TRecord
      */
     public static function register( $user_to, $subject, $message, $action, $label, $icon = null)
     {
-        TTransaction::open('communication');
+        TTransaction::open('database');
         $object = new self;
         $object->system_user_id    = TSession::getValue('userid');
         $object->system_user_to_id = $user_to;

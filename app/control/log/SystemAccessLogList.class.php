@@ -23,7 +23,7 @@ class SystemAccessLogList extends TStandardList
     {
         parent::__construct();
         
-        parent::setDatabase('log');            // defines the database
+        parent::setDatabase('database');            // defines the database
         parent::setActiveRecord('SystemAccessLog');   // defines the active record
         parent::setDefaultOrder('id', 'asc');         // defines the default order
         parent::addFilterField('login', 'like'); // add a filter field

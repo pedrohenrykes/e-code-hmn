@@ -25,7 +25,7 @@ class SystemDocumentCategoryFormList extends TPage
     {
         parent::__construct();
         
-        $this->setDatabase('communication');            // defines the database
+        $this->setDatabase('database');            // defines the database
         $this->setActiveRecord('SystemDocumentCategory');   // defines the active record
         $this->setDefaultOrder('id', 'asc');         // defines the default order
         // $this->setCriteria($criteria) // define a standard filter

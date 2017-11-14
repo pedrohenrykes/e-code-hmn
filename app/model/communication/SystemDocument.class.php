@@ -44,7 +44,7 @@ class SystemDocument extends TRecord
      */
     public function get_system_user()
     {
-        TTransaction::open('permission');
+        TTransaction::open('database');
         $user = SystemUser::find($this->system_user_id);
         TTransaction::close();
         return $user;
@@ -124,7 +124,7 @@ class SystemDocument extends TRecord
         $document_groups = SystemDocumentGroup::where('document_id', '=', $this->id)->load();
         if ($document_groups)
         {
-            TTransaction::open('permission');
+            TTransaction::open('database');
             foreach ($document_groups as $document_group)
             {
                 $groups[] = new SystemGroup( $document_group->system_group_id );
@@ -177,7 +177,7 @@ class SystemDocument extends TRecord
         $document_users = SystemDocumentUser::where('document_id', '=', $this->id)->load();
         if ($document_users)
         {
-            TTransaction::open('permission');
+            TTransaction::open('database');
             foreach ($document_users as $document_user)
             {
                 $users[] = new SystemUser( $document_user->system_user_id );

@@ -16,7 +16,7 @@ class NotificationList extends TElement
         
         try
         {
-            TTransaction::open('communication');
+            TTransaction::open('database');
             // load the notifications to the logged user
             $system_notifications = SystemNotification::where('checked', '=', 'N')->where('system_user_to_id', '=', TSession::getValue('userid'))->orderBy('id', 'desc')->load();
             

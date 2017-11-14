@@ -27,7 +27,7 @@ class SystemProgramForm extends TStandardForm
         $this->form->setFormTitle(_t('Program'));
         
         // defines the database
-        parent::setDatabase('permission');
+        parent::setDatabase('database');
         
         // defines the active record
         parent::setActiveRecord('SystemProgram');

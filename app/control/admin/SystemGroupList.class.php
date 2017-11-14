@@ -25,7 +25,7 @@ class SystemGroupList extends TStandardList
     {
         parent::__construct();
         
-        parent::setDatabase('permission');            // defines the database
+        parent::setDatabase('database');            // defines the database
         parent::setActiveRecord('SystemGroup');   // defines the active record
         parent::setDefaultOrder('id', 'asc');         // defines the default order
         parent::addFilterField('id', '=', 'id'); // filterField, operator, formField

@@ -11,10 +11,10 @@
  */
 class SystemPreference extends TRecord
 {
-    const TABLENAME  = 'system_preference';
+    const TABLENAME  = 'preferencias';
     const PRIMARYKEY = 'id';
     const IDPOLICY   = 'max'; // {max, serial}
-    
+
     /**
      * Constructor method
      */
@@ -23,7 +23,7 @@ class SystemPreference extends TRecord
         parent::__construct($id, $callObjectLoad);
         parent::addAttribute('value');
     }
-    
+
     /**
      * Retorna uma preferência
      * @param $id Id da preferência
@@ -33,7 +33,7 @@ class SystemPreference extends TRecord
         $preference = new SystemPreference($id);
         return $preference->value;
     }
-    
+
     /**
      * Altera uma preferência
      * @param $id  Id da preferência
@@ -48,7 +48,7 @@ class SystemPreference extends TRecord
             $preference->store();
         }
     }
-    
+
     /**
      * Retorna um array com todas preferências
      */
@@ -57,7 +57,7 @@ class SystemPreference extends TRecord
         $rep = new TRepository('SystemPreference');
         $objects = $rep->load(new TCriteria);
         $dataset = array();
-        
+
         if ($objects)
         {
             foreach ($objects as $object)

@@ -29,7 +29,7 @@ class SystemGroupForm extends TPage
         // create the form fields
         $id   = new TEntry('id');
         $name = new TEntry('name');
-        $program_id = new TDBSeekButton('program_id', 'permission', 'form_System_group', 'SystemProgram', 'name', 'program_id', 'program_name');
+        $program_id = new TDBSeekButton('program_id', 'database', 'form_System_group', 'SystemProgram', 'name', 'program_id', 'program_name');
         $program_name = new TEntry('program_name');
         $program_id->setSize('50');
         $program_name->setSize('calc(100% - 200px)');
@@ -112,8 +112,8 @@ class SystemGroupForm extends TPage
     {
         try
         {
-            // open a transaction with database 'permission'
-            TTransaction::open('permission');
+            // open a transaction with database 'database'
+            TTransaction::open('database');
             
             // get the form data into an active record System_group
             $object = new SystemGroup;
@@ -160,8 +160,8 @@ class SystemGroupForm extends TPage
                 // get the parameter $key
                 $key=$param['key'];
                 
-                // open a transaction with database 'permission'
-                TTransaction::open('permission');
+                // open a transaction with database 'database'
+                TTransaction::open('database');
                 
                 // instantiates object System_group
                 $object = new SystemGroup($key);
@@ -223,7 +223,7 @@ class SystemGroupForm extends TPage
             
             if (!empty($id) AND empty($program_list[$id]))
             {
-                TTransaction::open('permission');
+                TTransaction::open('database');
                 $program = SystemProgram::find($id);
                 $program_list[$id] = $program->toArray();
                 TSession::setValue('program_list', $program_list);

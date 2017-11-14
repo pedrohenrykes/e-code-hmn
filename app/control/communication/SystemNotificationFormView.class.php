@@ -25,7 +25,7 @@ class SystemNotificationFormView extends TPage
             $html = new THtmlRenderer('app/resources/system_notification_view.html');
             $html->enableTranslation(TRUE);
             
-            TTransaction::open('communication');
+            TTransaction::open('database');
             if (isset($data->id))
             {
                 // load customer identified in the form
@@ -39,7 +39,7 @@ class SystemNotificationFormView extends TPage
                         $array_object['checked_string'] = ($array_object['checked'] == 'Y' ? _t('Yes') : _t('No'));
                         $array_object['action_encoded'] = base64_encode($array_object['action_url']);
                         
-                        TTransaction::open('permission');
+                        TTransaction::open('database');
                         $user = SystemUser::find($array_object['system_user_id']);
                         if ($user instanceof SystemUser)
                         {
@@ -88,7 +88,7 @@ class SystemNotificationFormView extends TPage
     {
         try
         {
-            TTransaction::open('communication');
+            TTransaction::open('database');
             
             $notification = SystemNotification::find($param['id']);
             if ($notification)

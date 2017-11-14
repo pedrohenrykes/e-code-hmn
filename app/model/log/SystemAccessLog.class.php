@@ -33,7 +33,7 @@ class SystemAccessLog extends TRecord
      */
     public static function registerLogin()
     {
-        TTransaction::open('log');
+        TTransaction::open('database');
         $object = new self;
         $object->login = TSession::getValue('login');
         $object->sessionid = session_id();
@@ -47,7 +47,7 @@ class SystemAccessLog extends TRecord
      */
     public static function registerLogout()
     {
-        TTransaction::open('log');
+        TTransaction::open('database');
         // get logs by session id
         $logs = self::where('sessionid', '=', session_id())->load();
         if (count($logs)>0)
@@ -67,7 +67,7 @@ class SystemAccessLog extends TRecord
      */
     public static function getStatsByDay()
     {
-        TTransaction::open('log');
+        TTransaction::open('database');
         // get logs by session id
         $logs = self::where('login_time', '>=', date('Y-m-01'))->where('login_time', '<=', date('Y-m-t'))->load();
         $accesses = array();

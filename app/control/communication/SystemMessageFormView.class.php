@@ -25,7 +25,7 @@ class SystemMessageFormView extends TPage
             $html = new THtmlRenderer('app/resources/system_message_form_view.html');
             $html->enableTranslation();
             
-            TTransaction::open('communication');
+            TTransaction::open('database');
             if (isset($data->id))
             {
                 // load customer identified in the form
@@ -39,7 +39,7 @@ class SystemMessageFormView extends TPage
                         $array_object = $object->toArray();
                         $array_object['checked_string'] = ($array_object['checked'] == 'Y' ? _t('Yes') : _t('No'));
                         
-                        TTransaction::open('permission');
+                        TTransaction::open('database');
                         $user = SystemUser::find($array_object['system_user_id']);
                         if ($user instanceof SystemUser)
                         {
@@ -106,7 +106,7 @@ class SystemMessageFormView extends TPage
     {
         try
         {
-            TTransaction::open('communication');
+            TTransaction::open('database');
             $message = SystemMessage::find($param['id']);
             if ($message)
             {
@@ -137,7 +137,7 @@ class SystemMessageFormView extends TPage
     {
         try
         {
-            TTransaction::open('communication');
+            TTransaction::open('database');
             $message = SystemMessage::find($param['id']);
             if ($message)
             {

@@ -25,7 +25,7 @@ class SystemNotificationList extends TStandardList
     {
         parent::__construct();
         
-        parent::setDatabase('communication');            // defines the database
+        parent::setDatabase('database');            // defines the database
         parent::setActiveRecord('SystemNotification');   // defines the active record
         parent::setDefaultOrder('id', 'desc');         // defines the default order
         
@@ -70,7 +70,7 @@ class SystemNotificationList extends TStandardList
         $column_message->setTransformer( function($value, $object, $row) {
             try
             {
-                TTransaction::open('permission');
+                TTransaction::open('database');
                 $user = SystemUser::find($object->system_user_id);
                 $name = $user->name;
                 TTransaction::close();
@@ -162,7 +162,7 @@ class SystemNotificationList extends TStandardList
     {
         try
         {
-            TTransaction::open('communication');
+            TTransaction::open('database');
             
             $message = SystemNotification::find($param['id']);
             if ($message)
@@ -195,7 +195,7 @@ class SystemNotificationList extends TStandardList
     {
         try
         {
-            TTransaction::open('communication');
+            TTransaction::open('database');
             
             $message = SystemNotification::find($param['id']);
             if ($message)

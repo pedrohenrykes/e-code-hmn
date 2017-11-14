@@ -8,9 +8,9 @@ new TSession;
 if ( TSession::getValue('logged') )
 {
     $content     = file_get_contents("app/templates/{$theme}/layout.html");
-    $menu_string = AdiantiMenuBuilder::parse('menu.xml', $theme);
+    $menu_string = SideMenuCreate::createUserMenu( $theme );
     $content     = str_replace('{MENU}', $menu_string, $content);
-    
+
     if ((TSession::getValue('login') == 'admin') && isset($ini['general']['token']))
     {
         $content = str_replace('{IF-BUILDER}', '', $content);

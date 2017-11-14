@@ -132,7 +132,7 @@ class SystemPageUpdate extends TWindow
             
             if ( (file_exists($file_path) AND is_writable($file_path)) OR (!file_exists($file_path) AND is_writable($path)) )
             {
-                TTransaction::open('permission');
+                TTransaction::open('database');
                 if (($param['type'] == 'control') && !SystemProgram::findByController($class_name))
                 {
                     $program = new SystemProgram;

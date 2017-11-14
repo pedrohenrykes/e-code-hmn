@@ -5,19 +5,40 @@ class SideMenuCreate
     public static function createUserMenu()
     {
         ob_start();
-
         $callback = array('SystemPermission', 'checkPermission');
-
         $xml = new SimpleXMLElement( self::mountRuntimeXml() );
+        $menu_string = "";
 
-        $menu = new TMenu($xml, $callback, 1, 'treeview-menu', 'treeview', '');
-        $menu->class = 'sidebar-menu';
-        $menu->id    = 'side-menu';
-        $menu->show();
+        switch( $theme ) {
 
-        $menu_string = ob_get_clean();
+            case 'theme3':
 
-        return $menu_string;
+                $menu = new TMenu($xml, $callback, 1, 'treeview-menu', 'treeview', '');
+                $menu->class = 'sidebar-menu';
+                $menu->id    = 'side-menu';
+                $menu->show();
+                $menu_string = ob_get_clean();
+
+                return $menu_string;
+
+            default:
+
+                $menu = new TMenu($xml, $callback, 1, 'ml-menu', 'x', 'menu-toggle waves-effect waves-block');
+                $li = new TElement('li');
+                $li->{'class'} = 'active';
+                $menu->add($li);
+                $li = new TElement('li');
+                $li->add('MENU');
+                $li->{'class'} = 'header';
+                $menu->add($li);
+                $menu->class = 'list';
+                $menu->style = 'overflow: hidden; width: auto; height: 390px;';
+                $menu->show();
+                $menu_string = ob_get_clean();
+
+                return $menu_string;
+
+        }
     }
 
     private static function mountRuntimeXml()

@@ -11,11 +11,11 @@
  */
 class SystemUnit extends TRecord
 {
-    const TABLENAME = 'system_unit';
+    const TABLENAME = 'unidades';
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'max'; // {max, serial}
-    
-    
+
+
     /**
      * Constructor method
      */

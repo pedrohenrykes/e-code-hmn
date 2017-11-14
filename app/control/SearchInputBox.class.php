@@ -41,7 +41,7 @@ class SearchInputBox extends TPage
     {
         try
         {
-            TTransaction::open('permission');
+            TTransaction::open('database');
             $user = SystemUser::newFromLogin( TSession::getValue('login') );
             $programs = $user->getProgramsList();
             

@@ -79,7 +79,7 @@ class LoginForm extends TPage
     {
         try
         {
-            TTransaction::open('permission');
+            TTransaction::open('database');
             
             $user = SystemUser::newFromLogin( $param['login'] );
             if ($user instanceof SystemUser)
@@ -115,7 +115,7 @@ class LoginForm extends TPage
         
         try
         {
-            TTransaction::open('permission');
+            TTransaction::open('database');
             $data = (object) $param;
             
             if (empty($data->login))
@@ -185,7 +185,7 @@ class LoginForm extends TPage
     {
         try
         {
-            TTransaction::open('permission');
+            TTransaction::open('database');
             $user = SystemUser::newFromLogin( TSession::getValue('login') );
             if ($user)
             {

@@ -11,12 +11,12 @@
  */
 class SystemProgram extends TRecord
 {
-    const TABLENAME = 'system_program';
+    const TABLENAME = 'programas';
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'max'; // {max, serial}
-    
+
     // use SystemChangeLogTrait;
-    
+
     /**
      * Constructor method
      */
@@ -26,7 +26,7 @@ class SystemProgram extends TRecord
         parent::addAttribute('name');
         parent::addAttribute('controller');
     }
-    
+
     /**
      * Find program by controller
      */

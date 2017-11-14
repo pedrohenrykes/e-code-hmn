@@ -48,7 +48,7 @@ class SystemProfileForm extends TPage
     {
         try
         {
-            TTransaction::open('permission');
+            TTransaction::open('database');
             $login = SystemUser::newFromLogin( TSession::getValue('login') );
             $this->form->setData($login);
             TTransaction::close();
@@ -67,7 +67,7 @@ class SystemProfileForm extends TPage
             
             $object = $this->form->getData();
             
-            TTransaction::open('permission');
+            TTransaction::open('database');
             $user = SystemUser::newFromLogin( TSession::getValue('login') );
             $user->name = $object->name;
             $user->email = $object->email;

@@ -29,11 +29,11 @@ class SystemDocumentForm extends TPage
         $id = new THidden('id');
         $title = new TEntry('title');
         $description = new TText('description');
-        $category_id = new TDBCombo('category_id', 'communication', 'SystemDocumentCategory', 'id', 'name');
+        $category_id = new TDBCombo('category_id', 'database', 'SystemDocumentCategory', 'id', 'name');
         $submission_date = new TDate('submission_date');
         $archive_date = new TDate('archive_date');
-        $user_ids = new TDBMultiSearch('user_ids', 'permission', 'SystemUser', 'id', 'name');
-        $group_ids = new TDBCheckGroup('group_ids', 'permission', 'SystemGroup', 'id', 'name');
+        $user_ids = new TDBMultiSearch('user_ids', 'database', 'SystemUser', 'id', 'name');
+        $group_ids = new TDBCheckGroup('group_ids', 'database', 'SystemGroup', 'id', 'name');
         $group_ids->setLayout('horizontal');
         $user_ids->setMinLength(1);
         
@@ -60,7 +60,7 @@ class SystemDocumentForm extends TPage
         $lc->setFontColor('red');
         $ls->setFontColor('red');
         
-        $this->form->addContent( [TElement::tag('h3', _t('Permission'))] );
+        $this->form->addContent( [TElement::tag('h3', _t('database'))] );
         
         $this->form->addFields( [_t('Users')],  [$user_ids] );
         $this->form->addFields( [_t('Groups')], [$group_ids] );
@@ -90,7 +90,7 @@ class SystemDocumentForm extends TPage
     {
         try
         {
-            TTransaction::open('communication'); // open a transaction
+            TTransaction::open('database'); // open a transaction
             $this->form->validate(); // validate form data
             
             $object = new SystemDocument;  // create an empty object
@@ -105,7 +105,7 @@ class SystemDocumentForm extends TPage
             {
                 foreach ($data->user_ids as $user_id)
                 {
-                    TTransaction::open('permission');
+                    TTransaction::open('database');
                     $system_user = SystemUser::find($user_id);
                     TTransaction::close();
                     $object->addSystemUser( $system_user );
@@ -116,7 +116,7 @@ class SystemDocumentForm extends TPage
             {
                 foreach ($data->group_ids as $group_id)
                 {
-                    TTransaction::open('permission');
+                    TTransaction::open('database');
                     $system_group = SystemGroup::find($group_id);
                     TTransaction::close();
                     $object->addSystemGroup( $system_group );
@@ -189,7 +189,7 @@ class SystemDocumentForm extends TPage
             if (isset($param['key']))
             {
                 $key = $param['key'];  // get the parameter $key
-                TTransaction::open('communication'); // open a transaction
+                TTransaction::open('database'); // open a transaction
                 $object = new SystemDocument($key); // instantiates the Active Record
                 
                 if ($object->system_user_id == TSession::getValue('userid') OR TSession::getValue('login') === 'admin')

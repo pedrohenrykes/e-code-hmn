@@ -11,11 +11,11 @@
  */
 class SystemUserGroup extends TRecord
 {
-    const TABLENAME = 'system_user_group';
+    const TABLENAME = 'usuarios_grupos';
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'max'; // {max, serial}
-    
-    
+
+
     /**
      * Constructor method
      */

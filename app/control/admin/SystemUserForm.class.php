@@ -33,13 +33,13 @@ class SystemUserForm extends TPage
         $password            = new TPassword('password');
         $repassword          = new TPassword('repassword');
         $email               = new TEntry('email');
-        $unit_id             = new TDBCombo('system_unit_id','permission','SystemUnit','id','name');
-        $program_id          = new TDBSeekButton('program_id', 'permission', 'form_System_user', 'SystemProgram', 'name', 'program_id', 'program_name');
+        $unit_id             = new TDBCombo('system_unit_id','database','SystemUnit','id','name');
+        $program_id          = new TDBSeekButton('program_id', 'database', 'form_System_user', 'SystemProgram', 'name', 'program_id', 'program_name');
         $program_name        = new TEntry('program_name');
-        $groups              = new TDBCheckGroup('groups','permission','SystemGroup','id','name');
-        $frontpage_id        = new TDBSeekButton('frontpage_id', 'permission', 'form_System_user', 'SystemProgram', 'name', 'frontpage_id', 'frontpage_name');
+        $groups              = new TDBCheckGroup('groups','database','SystemGroup','id','name');
+        $frontpage_id        = new TDBSeekButton('frontpage_id', 'database', 'form_System_user', 'SystemProgram', 'name', 'frontpage_id', 'frontpage_name');
         $frontpage_name      = new TEntry('frontpage_name');
-        $units               = new TDBCheckGroup('units','permission','SystemUnit','id','name');
+        $units               = new TDBCheckGroup('units','database','SystemUnit','id','name');
         
         $units->setLayout('horizontal');
         if ($units->getLabels())
@@ -152,8 +152,8 @@ class SystemUserForm extends TPage
     {
         try
         {
-            // open a transaction with database 'permission'
-            TTransaction::open('permission');
+            // open a transaction with database 'database'
+            TTransaction::open('database');
             
             $object = new SystemUser;
             $object->fromArray( $param );
@@ -253,8 +253,8 @@ class SystemUserForm extends TPage
                 // get the parameter $key
                 $key=$param['key'];
                 
-                // open a transaction with database 'permission'
-                TTransaction::open('permission');
+                // open a transaction with database 'database'
+                TTransaction::open('database');
                 
                 // instantiates object System_user
                 $object = new SystemUser($key);
@@ -340,7 +340,7 @@ class SystemUserForm extends TPage
             
             if (!empty($id) AND empty($program_list[$id]))
             {
-                TTransaction::open('permission');
+                TTransaction::open('database');
                 $program = SystemProgram::find($id);
                 $program_list[$id] = $program->toArray();
                 TSession::setValue('program_list', $program_list);

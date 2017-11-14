@@ -16,7 +16,7 @@ class MessageList extends TElement
         
         try
         {
-            TTransaction::open('communication');
+            TTransaction::open('database');
             
             // load the messages to the logged user
             $system_messages = SystemMessage::where('checked', '=', 'N')->where('system_user_to_id', '=', TSession::getValue('userid'))->orderBy('id', 'desc')->load();
@@ -35,7 +35,7 @@ class MessageList extends TElement
                 $a->add( TElement::tag('i',    '', array('class'=>"fa fa-caret-down")) );
                 $a->show();
                 
-                TTransaction::open('permission');
+                TTransaction::open('database');
                 foreach ($system_messages as $system_message)
                 {
                     $name    = SystemUser::find($system_message->system_user_id)->name;
@@ -103,7 +103,7 @@ class MessageList extends TElement
                 $li_master->add($ul_wrapper);
                 parent::add($li_master);
                 
-                TTransaction::open('permission');
+                TTransaction::open('database');
                 foreach ($system_messages as $system_message)
                 {
                     $name    = SystemUser::find($system_message->system_user_id)->name;
@@ -160,7 +160,7 @@ class MessageList extends TElement
                 parent::add( TElement::tag('li', _t('Messages'), ['class'=>'header']));
                 parent::add($li_master);
                 
-                TTransaction::open('permission');
+                TTransaction::open('database');
                 foreach ($system_messages as $system_message)
                 {
                     $name    = SystemUser::find($system_message->system_user_id)->name;
