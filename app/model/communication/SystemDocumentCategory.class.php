@@ -11,11 +11,11 @@
  */
 class SystemDocumentCategory extends TRecord
 {
-    const TABLENAME = 'system_document_category';
+    const TABLENAME = 'documentos_categorias';
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'max'; // {max, serial}
-    
-    
+
+
     /**
      * Constructor method
      */

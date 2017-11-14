@@ -26,9 +26,7 @@ class SideMenuForm extends TWindow
         $criteria->add( new TFilter( "menu_type", "=", "menu" ) );
         $menu_id = new TDBCombo( "menu_id", "database", "SideMenuModel", "id", "name", "name", $criteria );
 
-        $icon = new TDBCombo( "icon", "database", "FontAwesomeIconsModel", "class", "unicode", "id" );
-        $icon->style = "font-family:'FontAwesome',Helvetica;font-size:20px";
-        $icon->setValue( "fa-500px" );
+        $icon  = new TDialogIcon( "icon" ); 
 
         $menu_type->setChangeAction( new TAction( [ $this, 'onChangeAction' ] ) );
         $menu_type->addItems( [ "menu" => "Menu", "submenu" => "Sub-Menu" ] );
@@ -48,7 +46,7 @@ class SideMenuForm extends TWindow
         $sequence->setSize( "38%" );
         $action_class->setSize( "38%" );
         $menu_id->setSize( "38%" );
-        
+
         $menu_type->addValidation( TextFormat::set( "Tipo" ), new TRequiredValidator );
         $name->addValidation( TextFormat::set( "Nome" ), new TRequiredValidator );
 
@@ -71,13 +69,15 @@ class SideMenuForm extends TWindow
 
     public function onSave()
     {
-        $object = $this->form->getData( "SideMenuModel" );
+      
 
         try {
 
             $this->form->validate();
 
             TTransaction::open( "database" );
+
+            $object = $this->form->getData( "SideMenuModel" );
 
             $object->active = "Y";
             $object->sequence = str_replace( ",", ".", $object->sequence );

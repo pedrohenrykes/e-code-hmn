@@ -11,11 +11,11 @@
  */
 class SystemDocument extends TRecord
 {
-    const TABLENAME = 'system_document';
+    const TABLENAME = 'documentos';
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'max'; // {max, serial}
-    
-    
+
+
     /**
      * Constructor method
      */
@@ -38,7 +38,7 @@ class SystemDocument extends TRecord
     {
         return SystemDocumentCategory::find($this->category_id);
     }
-    
+
     /**
      * Return category
      */
@@ -49,7 +49,7 @@ class SystemDocument extends TRecord
         TTransaction::close();
         return $user;
     }
-    
+
     /**
      * Reset aggregates
      */
@@ -60,15 +60,15 @@ class SystemDocument extends TRecord
             // delete the related System_userSystem_user_group objects
             $criteria = new TCriteria;
             $criteria->add(new TFilter('document_id', '=', $this->id));
-            
+
             $repository = new TRepository('SystemDocumentUser');
             $repository->delete($criteria);
-            
+
             $repository = new TRepository('SystemDocumentGroup');
             $repository->delete($criteria);
-        }   
+        }
     }
-    
+
     /**
      * Delete the object and its aggregates
      * @param $id object ID
@@ -77,20 +77,20 @@ class SystemDocument extends TRecord
     {
         // delete the related System_groupSystem_program objects
         $id = isset($id) ? $id : $this->id;
-        
+
         $criteria = new TCriteria;
         $criteria->add(new TFilter('document_id', '=', $id));
-        
+
         $repository = new TRepository('SystemDocumentUser');
         $repository->delete($criteria);
-        
+
         $repository = new TRepository('SystemDocumentGroup');
-        $repository->delete($criteria);  
-        
+        $repository->delete($criteria);
+
         // delete the object itself
         parent::delete($id);
     }
-    
+
     /**
      * Add a SystemGroup
      * @param $object Instance of SystemGroup
@@ -102,7 +102,7 @@ class SystemDocument extends TRecord
         $object->document_id = $this->id;
         $object->store();
     }
-    
+
     /**
      * Add a SystemUser
      * @param $object Instance of SystemUser
@@ -114,7 +114,7 @@ class SystemDocument extends TRecord
         $object->document_id = $this->id;
         $object->store();
     }
-    
+
     /**
      * @return Collection of SystemGroup
      */
@@ -133,7 +133,7 @@ class SystemDocument extends TRecord
         }
         return $groups;
     }
-    
+
     /**
      * @return Collection of SystemUser' ids
      */
@@ -150,7 +150,7 @@ class SystemDocument extends TRecord
         }
         return $user_ids;
     }
-    
+
     /**
      * @return Collection of SystemGroup' ids
      */
@@ -167,7 +167,7 @@ class SystemDocument extends TRecord
         }
         return $group_ids;
     }
-    
+
     /**
      * @return Collection of SystemUserGroup
      */
@@ -186,7 +186,7 @@ class SystemDocument extends TRecord
         }
         return $users;
     }
-    
+
     /**
      * Check if the user has access to the document
      */
@@ -195,7 +195,7 @@ class SystemDocument extends TRecord
         return (SystemDocumentUser::where('system_user_id','=', $userid)
                                   ->where('document_id', '=', $this->id)->count() >0);
     }
-    
+
     /**
      * Check if the group has access to the document
      */

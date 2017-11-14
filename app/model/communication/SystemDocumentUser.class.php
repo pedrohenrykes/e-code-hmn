@@ -11,11 +11,11 @@
  */
 class SystemDocumentUser extends TRecord
 {
-    const TABLENAME = 'system_document_user';
+    const TABLENAME = 'documentos_usuarios';
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'max'; // {max, serial}
-    
-    
+
+
     /**
      * Constructor method
      */

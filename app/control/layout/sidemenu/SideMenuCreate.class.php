@@ -2,7 +2,7 @@
 
 class SideMenuCreate
 {
-    public static function createUserMenu()
+    public static function createUserMenu( $theme )
     {
         ob_start();
         $callback = array('SystemPermission', 'checkPermission');
@@ -65,7 +65,7 @@ class SideMenuCreate
                     {
 
                         $xml = $xml . "<menuitem label='" . $menu->name . "'><icon>" .
-                            str_replace("fa-", "fa:", $menu->icon) . "</icon><menu>";
+                             $menu->icon . "</icon><menu>";
 
                         foreach ( $objects as $submenu ) {
 
@@ -75,7 +75,7 @@ class SideMenuCreate
                             {
 
                                 $xml = $xml . "<menuitem label='" . $submenu->name . "'><icon>" .
-                                    str_replace("fa-", "fa:", $submenu->icon) . "</icon><action>" .
+                                     $submenu->icon . "</icon><action>" .
                                     $submenu->action_class . "</action></menuitem>";
 
                             }

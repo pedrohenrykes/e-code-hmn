@@ -11,16 +11,19 @@ class SideMenuList extends TPage
     {
         parent::__construct();
 
-        $this->form = new TQuickForm( "form_list_sidemenu" );
-        $this->form->setFormTitle( "Listegem de Itens do Sidemenu" );
-        $this->form->class = "tform";
+        $this->form = new BootstrapFormWrapper(new TQuickForm);
 
-        $this->form->addQuickAction( "Novo", new TAction( [ "SideMenuForm", "onEdit" ] ), "bs:plus-sign green" );
+        $new_button = $this->form->addQuickAction( "Novo", new TAction( [ "SideMenuForm", "onEdit" ] ), "fa:file" );
+        $new_button->class = 'btn btn-sm btn-primary';
 
-        $this->datagrid = new BootstrapDatagridWrapper( new TDataGrid() );
-        $this->datagrid->datatable = "true";
-        $this->datagrid->style = "width: 100%";
-        $this->datagrid->setHeight( 320 );
+        if ( filter_input(INPUT_GET, 'key') ){
+            $back_button = $this->form->addQuickAction( "Voltar", new TAction( [ $this, "onReload" ] ), "fa:arrow-left" );
+            $back_button->class = 'btn btn-sm btn-primary';
+        }
+
+        //DATAGRID ------------------------------------------------------------------------------------------
+
+        $this->datagrid = new TDatagridTables;
 
         $column_name = new TDataGridColumn( "name", "Nome", "left", 200 );
         $column_type = new TDataGridColumn( "menu_type", "Tipo", "left" );
@@ -49,37 +52,11 @@ class SideMenuList extends TPage
 
         $column_icon->setTransformer( function($value, $object, $row)
         {
-            $div = new TElement('span');
-            $div->style="font-family:'FontAwesome',Helvetica;font-size:20px";
 
-            try {
-
-                TTransaction::open("database");
-
-                $repo = new TRepository( "FontAwesomeIconsModel" );
-
-                $crit = new TCriteria();
-                $crit->setProperty( "order", "id" );
-                $crit->add( new TFilter( "class", "=", $value ) );
-
-                $obj = $repo->load($crit);
-
-                if ( !empty ( $obj ) ) {
-                    foreach ( $obj as $item ) {
-                        $div->add( $item->unicode );
-                    }
-                }
-
-                TTransaction::close();
-
-            } catch ( Exception $ex ) {
-
-                TTransaction::rollback();
-
-                new TMessage( "error", $ex->getMessage() );
-            }
+            $div = new TImage( $value );
 
             return $div;
+
         });
 
         $action_edit = new TDataGridAction( [ "SideMenuForm", "onEdit" ] );
@@ -103,20 +80,28 @@ class SideMenuList extends TPage
         $action_onoff->setField( "id" );
         $this->datagrid->addAction( $action_onoff );
 
+        $subgrupo = new TDataGridAction( [ 'SideMenuList', "onReload" ] );
+        $subgrupo->setButtonClass( "btn btn-default" );
+        $subgrupo->setLabel( "Sub Menu" );
+        $subgrupo->setImage( "fa:bars fa-lg green" );
+        $subgrupo->setField( "id" );
+        $subgrupo->setDisplayCondition( array($this, 'displayColumn') );
+        $this->datagrid->addAction( $subgrupo );
+
         $this->datagrid->createModel();
 
-        $this->pageNavigation = new TPageNavigation();
-        $this->pageNavigation->setAction( new TAction( [ $this, "onReload" ] ) );
-        $this->pageNavigation->setWidth( $this->datagrid->getWidth() );
+        //FIM DATAGRID -----------------------------------------------------------------------------------------
+
 
         $container = new TVBox();
-        $container->style = "width: 90%";
-        $container->add( $this->form );
+        $container->style = "width: 100%";
+        $container->add( TPanelGroup::pack( 'SideMenu', $this->form ) );
         $container->add( TPanelGroup::pack( NULL, $this->datagrid ) );
-        $container->add( $this->pageNavigation );
 
         parent::add( $container );
+
     }
+
 
     public function onReload( $param = NULL )
     {
@@ -126,34 +111,33 @@ class SideMenuList extends TPage
 
             $repository = new TRepository( "SideMenuModel" );
 
-            if ( empty( $param[ "order" ] ) ) {
-                $param[ "order" ] = "sequence";
-                $param[ "direction" ] = "asc";
-            }
-
-            $limit = 10;
-
             $criteria = new TCriteria();
-            $criteria->setProperties( $param );
-            $criteria->setProperty( "limit", $limit );
+            $criteria->setProperty( "order", 'sequence' );
+
+            if ( !empty( $param[ "key" ] )  ) {
+
+                $criteria->add( new TFilter( 'menu_id', "=",  $param[ "key" ] ));
+
+            }else{
+
+               $criteria->add( new TFilter( 'menu_type', "=", "menu" ));
+
+            }
 
             $objects = $repository->load( $criteria, FALSE );
 
             $this->datagrid->clear();
 
             if ( !empty( $objects ) ) {
+
                 foreach ( $objects as $object ) {
+
                     $this->datagrid->addItem( $object );
+
                 }
             }
 
             $criteria->resetProperties();
-
-            $count = $repository->count($criteria);
-
-            $this->pageNavigation->setCount($count);
-            $this->pageNavigation->setProperties($param);
-            $this->pageNavigation->setLimit($limit);
 
             TTransaction::close();
 
@@ -228,6 +212,16 @@ class SideMenuList extends TPage
             TTransaction::rollback();
 
         }
+    }
+
+
+    public function displayColumn( $object )
+    {
+        if (!$object->menu_id)
+        {
+            return TRUE;
+        }
+        return FALSE;
     }
 
     public function show()

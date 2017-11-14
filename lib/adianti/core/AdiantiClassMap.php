@@ -157,10 +157,15 @@ class AdiantiClassMap
         $classPath['BootstrapDatagridWrapper']   = 'lib/adianti/wrapper/BootstrapDatagridWrapper.php';
         $classPath['BootstrapFormWrapper']       = 'lib/adianti/wrapper/BootstrapFormWrapper.php';
         $classPath['BootstrapFormBuilder']       = 'lib/adianti/wrapper/BootstrapFormBuilder.php';
-        
+
+        // Classes customizadas para o sistema
+        $classPath['TDialogIcon']                = 'app/lib/widget/TDialogIcon.php';
+        $classPath['TDatagridTables']            = 'app/lib/widget/TDatagridTables.php';
+        $classPath['TDashboard']                 = 'app/lib/widget/TDashboard.php';
+
         return $classPath;
     }
-    
+
     /**
      * Return classes allowed to be directly executed
      */
@@ -168,7 +173,7 @@ class AdiantiClassMap
     {
         return array('AdiantiAutocompleteService', 'AdiantiMultiSearchService', 'AdiantiUploaderService', 'TStandardSeek');
     }
-    
+
     /**
      * Return internal classes
      */
@@ -176,7 +181,7 @@ class AdiantiClassMap
     {
         return array_diff( array_keys(self::getMap()), self::getAllowedClasses() );
     }
-    
+
     /**
      * Aliases for backward compatibility
      */

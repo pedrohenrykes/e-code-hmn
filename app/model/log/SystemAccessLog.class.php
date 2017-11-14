@@ -11,11 +11,11 @@
  */
 class SystemAccessLog extends TRecord
 {
-    const TABLENAME = 'system_access_log';
+    const TABLENAME = 'acessos';
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'max'; // {max, serial}
-    
-    
+
+
     /**
      * Constructor method
      */
@@ -41,7 +41,7 @@ class SystemAccessLog extends TRecord
         $object->store();
         TTransaction::close();
     }
-    
+
     /**
      * Register logout
      */
@@ -61,7 +61,7 @@ class SystemAccessLog extends TRecord
         }
         TTransaction::close();
     }
-    
+
     /**
      *
      */
@@ -71,7 +71,7 @@ class SystemAccessLog extends TRecord
         // get logs by session id
         $logs = self::where('login_time', '>=', date('Y-m-01'))->where('login_time', '<=', date('Y-m-t'))->load();
         $accesses = array();
-        
+
         if (count($logs)>0)
         {
             $accesses = array();
@@ -88,7 +88,7 @@ class SystemAccessLog extends TRecord
                 }
             }
         }
-        
+
         TTransaction::close();
         return $accesses;
     }
