@@ -539,17 +539,17 @@ input[type="radio"], input[type="checkbox"]
 }
 
 .left-mailbox {
-    float: left; 
+    float: left;
     width: 160px;
     margin-right: 10px;
 }
 
-.right-mailbox { 
+.right-mailbox {
     overflow: hidden;
 }
 
 @media screen and (max-width: 500px) {
-    .left-mailbox { 
+    .left-mailbox {
         float: none;
         width: auto;
         margin-right:0;
@@ -698,4 +698,33 @@ input[widget="tfile"], input[widget="tmultifile"] {
     font-family: Andale mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Lucida Console, Monaco, Consolas, Droid Sans monospace, Monospace;
     line-height: normal;
     background: #262722;
+}
+
+/* Alterações da aplicação */
+
+.ml-menu li a, .x {
+    position: relative;
+}
+
+.menu-toggle span {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    padding: 10px 0px 0px 45px;
+    margin-top: 0 !important;
+}
+
+.x a i {
+    zoom: 140% !important;
+}
+
+.ml-menu li span {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 2000;
+    left: 0;
+    padding: 10px 0px 0px 80px;
+    margin-top: -5px !important;
 }

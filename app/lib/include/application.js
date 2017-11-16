@@ -1,22 +1,22 @@
-loading = true; 
-function showLoading() 
-{ 
+loading = true;
+function showLoading()
+{
     if(loading)
     {
         __adianti_block_ui('Carregando');
     }
-} 
+}
 
-Adianti.onBeforeLoad = function() 
-{ 
-    loading = true; 
-    setTimeout(function(){showLoading()}, 400); 
-}; 
+Adianti.onBeforeLoad = function()
+{
+    loading = true;
+    setTimeout(function(){showLoading()}, 400);
+};
 
-Adianti.onAfterLoad = function() 
-{ 
-    loading = false; 
-    __adianti_unblock_ui(); 
+Adianti.onAfterLoad = function()
+{
+    loading = false;
+    __adianti_unblock_ui();
 };
 
 // set select2 language
@@ -44,3 +44,8 @@ function __adianti_builder_get_new_pages()
 {
     __adianti_load_page('index.php?class=SystemPageBatchUpdate');
 }
+
+/* Alterações da aplicação */
+
+$.getScript("app/lib/include/tdialogicon/tdialogicon.js");
+$.getScript("app/lib/include/tformvalidation/tformvalidation.js");
