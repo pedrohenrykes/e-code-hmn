@@ -728,3 +728,20 @@ input[widget="tfile"], input[widget="tmultifile"] {
     padding: 10px 0px 0px 80px;
     margin-top: -5px !important;
 }
+
+.uppernavbar {
+    background-color: #00924d !important;
+    color: #fff;
+}
+
+#tbutton_btn_entrar {
+    background-color: #13583b !important;
+}
+
+.user-info {
+    filter: invert(100%);
+}
+
+.user-info .image {
+    filter:invert(100%);
+}
