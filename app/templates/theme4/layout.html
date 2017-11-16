@@ -47,7 +47,7 @@
 </head>
 
 <body class="theme-red">
-    <!-- Page Loader 
+    <!-- Page Loader
     <div class="page-loader-wrapper">
         <div class="loader">
             <div class="preloader">
@@ -91,9 +91,9 @@
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <!-- Call Search -->
+                    <!-- Call Search
                     <li><a href="javascript:void(0);" class="js-search" data-close="true"><i class="material-icons">search</i></a></li>
-                    <!-- #END# Call Search -->
+                    #END# Call Search -->
 
                       {IF-BUILDER}
                       <li class="dropdown" id="asdf">
@@ -111,28 +111,20 @@
                                     <i class="fa fa-download green"></i> Atualizar a página
                                 </a>
                             </li>
-                    <li>
-                        <a onclick="__adianti_builder_get_new_pages()" generator="adianti" style="cursor:pointer">
-                            <i class="fa fa-cloud-download orange"></i> Baixar novas páginas
-                        </a>
-                    </li>
+                            <li>
+                                <a onclick="__adianti_builder_get_new_pages()" generator="adianti" style="cursor:pointer">
+                                    <i class="fa fa-cloud-download orange"></i> Baixar novas páginas
+                                </a>
+                            </li>
                          </ul>
                       </li>
                       {/IF-BUILDER}
 
                       <!-- Notifications -->
-                      <li>
-                          <a generator="adianti" href="index.php?class=SystemSupportForm">
-                              <i class="material-icons">help_outline</i>
-                          </a>
-                      </li>
-                      <li class="dropdown messages-menu" id="envelope_messages">
-                          <!-- /.dropdown-messages -->
-                      </li>
-
-                      <li class="dropdown notifications-menu" id="envelope_notifications">
-                          <!-- /.dropdown-messages -->
-                      </li>
+                      <!--<li><a generator="adianti" href="index.php?class=SystemSupportForm"><i class="material-icons">help_outline</i></a></li>-->
+                      <li class="dropdown messages-menu" id="envelope_messages"><!-- /.dropdown-messages --></li>
+                      <li class="dropdown notifications-menu" id="envelope_notifications"><!-- /.dropdown-messages --></li>
+                      <li><a generator="adianti" href="index.php?class=LoginForm&method=onLogout&static=1"><i class="material-icons">power_settings_new</i></a></li>
                 </ul>
             </div>
         </div>
@@ -158,7 +150,7 @@
                             <li><a href="index.php?class=SystemNotificationList"><i class="material-icons">notifications</i>_t{Notifications}</a></li>
                             <li role="seperator" class="divider"></li>
                             <li><a href="index.php?class=LoginForm&method=reloadPermissions&static=1"><i class="material-icons">cached</i>_t{Reload}</a></li>
-                            <li><a generator="adianti" href="index.php?class=LoginForm&method=onLogout&static=1"><i class="material-icons">input</i>Logout</a></li>
+                            <li><a generator="adianti" href="index.php?class=LoginForm&method=onLogout&static=1"><i class="material-icons">power_settings_new</i>Logout</a></li>
                         </ul>
                     </div>
                 </div>
@@ -172,7 +164,7 @@
             <!-- Footer -->
             <div class="legal">
                 <div class="copyright">
-                    &copy; 2016 AdminBSB 1.0.4
+                    &copy; 2017 Kiron v1.0
                 </div>
             </div>
             <!-- #Footer -->

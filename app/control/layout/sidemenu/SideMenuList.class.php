@@ -52,9 +52,9 @@ class SideMenuList extends TPage
 
         $column_icon->setTransformer( function($value, $object, $row)
         {
-            $div = new TImage( $value );
-            // $div->class = "fa fa-fw {$value}";
-            // $div->style = "padding-right:4px";
+            $div = new TElement( "i" );
+            $div->class = "fa fa-fw {$value}";
+            $div->style = "padding-right:4px";
 
             return $div;
         });
