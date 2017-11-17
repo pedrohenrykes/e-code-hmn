@@ -733,20 +733,6 @@ input[widget="tfile"], input[widget="tmultifile"] {
     background-color: #00924d !important;
 }
 
-#tbutton_btn_entrar {
-    background-color: #13583b !important;
-}
-
-
-.user-info {
-    background-color: #34a562 !important;
-    background-image: image();
-}
-
-.systemicons {
-    padding: 5px 0px 15px 25px !important;
-}
-
 .ui-dialog-titlebar {
     background-color: #44934d !important;
     color: #fff !important;

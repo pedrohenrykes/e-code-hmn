@@ -310,7 +310,7 @@ class ClassificacaoRiscoDetail extends TPage
         $vbox4->style = 'width:100%';
         $this->form->addContent( [ $frame4 ] );
         $tipoclassificacaorisco_id = new THidden( "tipoclassificacaorisco_id" );
-        $button_style = "width:108px; color:#FFF !important; font-weight: bold;";
+        $button_style = "width:122px; color:#FFF !important; font-weight: bold;";
         $save_parameters = [ "fk" => $fk, "did" => $did, "page" => $page ];
 
         try {

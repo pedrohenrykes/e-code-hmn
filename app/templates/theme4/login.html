@@ -6,20 +6,17 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Adianti Framework ERP Template IV</title>
+        <title>{APP_NAME}</title>
 
         {LIBRARIES}
         {HEAD}
-        <!-- Google Fonts -->
-        <link href="app/templates/{template}/plugins/node-waves/waves.css" rel="stylesheet" />
-        <link href="app/templates/{template}/plugins/animate-css/animate.css" rel="stylesheet" />
-        <link href="app/templates/{template}/css/style.css" rel="stylesheet">
-        <link href="app/templates/{template}/css/themes/all-themes.css" rel="stylesheet" />
 
         <style>
-            .navbar {
-                position: relative;
-            }
+            .navbar { position: relative; }
+            .systemicons { padding: 5px 0px 15px 25px !important; }
+            #tbutton_btn_entrar { background-color: #13583b !important; }
+            body { overflow: hidden; }
+            .navbar-brand { margin-left: 0 !important; }
         </style>
     </head>
     <body>
@@ -60,6 +57,10 @@
         </div>
         <!-- /#wrapper -->
         <script src="app/templates/{template}/js/admin-login.js"></script>
+        <script src="app/templates/{template}/plugins/node-waves/waves.js"></script>
+        <script src="app/templates/{template}/js/admin.js"></script>
+        <script src="app/templates/{template}/js/custom.js"></script>
+        <script src="app/templates/{template}/js/sweetalert.min.js"></script>
         <script>
             $(function() {
                 setTimeout(function() {
