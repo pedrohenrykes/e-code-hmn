@@ -12,7 +12,7 @@
 class SystemPHPInfoView extends TPage
 {
     protected $form; // formulário
-    
+
     /**
      * método construtor
      * Cria a página e o formulário de cadastro
@@ -20,16 +20,16 @@ class SystemPHPInfoView extends TPage
     function __construct()
     {
         parent::__construct();
-        
+
         ob_start();
         phpinfo();
         $content = ob_get_contents();
         ob_end_clean();
         $content = preg_replace( '%^.*<body>(.*)</body>.*$%ms','$'.'1',$content);
-        
+
         $div = new TElement('div');
         $div->{'id'} = 'phpinfo';
-        
+
         // Está assim (um por linha), por que o parser ignora linhas que iniciam com "#"
         $styles = '<style type="text/css">';
         $styles.= '#phpinfo pre {margin: 0px; font-family: monospace;} ';
@@ -55,17 +55,17 @@ class SystemPHPInfoView extends TPage
 
         $div->add($styles);
         $div->add($content);
-        
+
         $panel = new TPanelGroup('PHP Info');
         $panel->add(new TAlert('info', _t('The php.ini current location is <b>^1</b>', php_ini_loaded_file())));
-        
+
         $panel->add($div);
-        
+
         $container = new TVBox;
         $container->style = 'width: 90%';
-        $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
+        // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $container->add($panel);
-        
+
         parent::add($container);
     }
 }

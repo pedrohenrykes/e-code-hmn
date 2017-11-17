@@ -41,7 +41,7 @@ class SideMenuCreate
         }
     }
 
-    private static function mountRuntimeXml()
+    public static function mountRuntimeXml()
     {
         $xml = "<menu>";
 

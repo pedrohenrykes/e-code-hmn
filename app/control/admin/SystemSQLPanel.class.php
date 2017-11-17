@@ -13,14 +13,14 @@ class SystemSQLPanel extends TPage
 {
     private $form;
     private $container;
-    
+
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->form = new BootstrapFormBuilder('sqlpanel');
         $this->form->setFormTitle('SQL Panel');
-        
+
         $list = scandir('app/config');
         $options = array();
         foreach ($list as $entry)
@@ -28,28 +28,28 @@ class SystemSQLPanel extends TPage
             if (substr($entry, -4) == '.ini')
             {
                 $ini = parse_ini_file('app/config/'.$entry);
-                
+
                 if (!empty($ini['type']) && in_array($ini['type'], ['pgsql', 'mysql', 'sqlite', 'oracle', 'mssql']))
                 {
                     $options[ substr($entry,0,-4) ] = str_replace('.ini', '', $entry);
                 }
             }
         }
-        
+
         $database = new TCombo('database');
         $table = new TCombo('table');
         $select = new TText('select');
-        
+
         $this->form->addFields( [ $ld=new TLabel(_t('Database'))], [ $database], [$lt=new TLabel(_t('Table'))], [$table] );
         $this->form->addFields( [ $ls=new TLabel('SELECT')], [$select] );
-        
+
         $btn = $this->form->addAction( _t('Generate'), new TAction(array($this, 'onGenerate')), 'fa:check-circle');
         $btn->class = 'btn btn-sm btn-primary';
-        
+
         $ld->setFontColor('red');
         $lt->setFontColor('red');
         $ls->setFontColor('red');
-        
+
         $database->addItems($options);
         $database->setChangeAction(new TAction(array($this, 'onDatabaseChange')));
         $table->setChangeAction(new TAction(array($this, 'onTableChange')));
@@ -59,15 +59,15 @@ class SystemSQLPanel extends TPage
         $database->setSize('100%');
         $table->setSize('100%');
         $select->setSize('100%', 100);
-        
+
         $this->container = new TVBox;
         $this->container->style = 'width: 90%';
-        $this->container->add(new TXMLBreadCrumb('menu.xml','SystemProgramList'));
+        // $this->container->add(new TXMLBreadCrumb('menu.xml','SystemProgramList'));
         $this->container->add($this->form);
-        
+
         parent::add($this->container);
     }
-    
+
     /**
      * onDatabaseChange
      */
@@ -90,7 +90,7 @@ class SystemSQLPanel extends TPage
             new TMessage('error', $e->getMessage());
         }
     }
-    
+
     /**
      * onTableChange
      */
@@ -104,7 +104,7 @@ class SystemSQLPanel extends TPage
             TForm::sendData('sqlpanel', $obj);
         }
     }
-    
+
     public function onLoad($param)
     {
         $obj = new stdClass;
@@ -113,7 +113,7 @@ class SystemSQLPanel extends TPage
         $obj->select = "SELECT * FROM {$obj->table}";
         TForm::sendData('sqlpanel', $obj);
     }
-    
+
     /**
      * onGenerate
      */
@@ -123,17 +123,17 @@ class SystemSQLPanel extends TPage
         {
             self::onDatabaseChange($param);
             $obj = new stdClass;
-            
+
             // keep table filled via javascript
             if (isset($param['table']))
             {
                 $obj->table = $param['table'];
                 TForm::sendData('sqlpanel', $obj);
             }
-            
+
             $this->form->validate();
             $data = $this->form->getData();
-            
+
             if (strtoupper(substr( $data->select, 0, 6)) !== 'SELECT')
             {
                 throw new Exception(_t('Invalid command'));
@@ -141,15 +141,15 @@ class SystemSQLPanel extends TPage
             // creates a DataGrid
             $datagrid = new BootstrapDatagridWrapper(new TDataGrid);
             $datagrid->datatable = 'true';
-            
+
             $panel = new TPanelGroup( _t('Results') );
             $panel->add($datagrid);
-            
+
             TTransaction::open( $data->database );
             $conn = TTransaction::get();
             $result = $conn->query( $data->select );
             $row = $result->fetch();
-            
+
             $i = 0;
             if ($row)
             {
@@ -161,12 +161,12 @@ class SystemSQLPanel extends TPage
                         $datagrid->addColumn($col);
                     }
                 }
-                
+
                 // create the datagrid model
                 $datagrid->createModel();
-                
+
                 $datagrid->addItem( (object) $row );
-                
+
                 $i = 1;
                 while ($row = $result->fetch() AND $i<= 1000)
                 {

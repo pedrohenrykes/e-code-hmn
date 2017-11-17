@@ -13,8 +13,7 @@ class LoginForm extends TPage
         $this->{'style'} .= 'clear:both;text-align:center;';
 
         $this->form = new BootstrapFormBuilder('form_login');
-        // $this->form->setFormTitle( 'LOG IN' );
-
+        
         $icon = new TImage( 'app/images/system/logo.png' );
         $login = new TEntry('login');
         $password = new TPassword('password');
@@ -22,11 +21,11 @@ class LoginForm extends TPage
         $login->setSize('70%', 40);
         $password->setSize('70%', 40);
 
-        $login->{'style'} .= 'height:35px; font-size:14px;float:left;border-bottom-left-radius: 0;border-top-left-radius: 0;';
-        $password->{'style'} .= 'height:35px;font-size:14px;float:left;border-bottom-left-radius: 0;border-top-left-radius: 0;';
+        $login->setProperty( 'style', 'height:35px; font-size:14px;float:left;border-bottom-left-radius: 0;border-top-left-radius: 0;' );
+        $password->setProperty( 'style', 'height:35px;font-size:14px;float:left;border-bottom-left-radius: 0;border-top-left-radius: 0;' );
 
-        $login->{'placeholder'} .= _t('User');
-        $password->{'placeholder'} .= _t('Password');
+        $login->setProperty( 'placeholder', 'Usuário' );
+        $password->setProperty( 'placeholder', 'Senha' );
 
         $user = '<span style="float:left;margin-left:44px;height:35px;" class="login-avatar"><span class="glyphicon glyphicon-user"></span></span>';
         $locker = '<span style="float:left;margin-left:44px;height:35px;" class="login-avatar"><span class="glyphicon glyphicon-lock"></span></span>';
@@ -39,18 +38,18 @@ class LoginForm extends TPage
         if (!empty($ini['general']['multiunit']) and $ini['general']['multiunit'] == '1') {
             $unit_id = new TCombo('unit_id');
             $unit_id->setSize('70%');
-            $unit_id->{'style'} .= 'height:35px;font-size:14px;float:left;border-bottom-left-radius: 0;border-top-left-radius: 0;';
+            $unit_id->setProperty( 'style', 'height:35px;font-size:14px;float:left;border-bottom-left-radius: 0;border-top-left-radius: 0;' );
             $this->form->addFields( [$unit, $unit_id] );
             $login->setExitAction(new TAction( [$this, 'onExitUser'] ) );
         }
 
         $btn = $this->form->addAction(_t('Log in'), new TAction(array($this, 'onLogin')), '');
-        $btn->{'class'} .= 'waves-effect waves-light btn btn-primary';
-        $btn->{'style'} .= 'height:50px; width:90%; display:block; margin:auto; font-size:17px; border-radius:7px;';
+        $btn->setProperty( 'class', 'waves-effect waves-light btn btn-primary' );
+        $btn->setProperty( 'style', 'height:50px; width:90%; display:block; margin:auto; font-size:17px; border-radius:7px;' );
 
         $wrapper = new TElement('div');
         $wrapper->{'style'} .= 'margin:auto; margin-top:100px; max-width:460px; border-radius:7px;';
-        $wrapper->{'id'} = 'login-wrapper';
+        $wrapper->{'id'} .= 'login-wrapper';
         $wrapper->add($this->form);
 
         parent::add($wrapper);

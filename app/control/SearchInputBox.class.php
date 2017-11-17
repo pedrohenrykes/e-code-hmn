@@ -11,7 +11,7 @@
 class SearchInputBox extends TPage
 {
     private $form;
-    
+
     /**
      * Constructor method
      */
@@ -19,7 +19,7 @@ class SearchInputBox extends TPage
     {
         parent::__construct('search_box');
         $this->form = new TForm('search_box');
-        
+
         $input = new TEntry('input');
         $input->setCompletion( array_values(self::getPrograms()) );
         $input->placeholder = 'Search...';
@@ -33,7 +33,7 @@ class SearchInputBox extends TPage
         $this->form->setFields(array($input));
         parent::add($this->form);
     }
-    
+
     /**
      * Returns an indexed array with all programs
      */
@@ -44,10 +44,10 @@ class SearchInputBox extends TPage
             TTransaction::open('database');
             $user = SystemUser::newFromLogin( TSession::getValue('login') );
             $programs = $user->getProgramsList();
-            
+/*            
             $menu = new TMenuParser('menu.xml');
             $menu_programs = $menu->getIndexedPrograms();
-            
+
             foreach ($programs as $program => $label)
             {
                 if (!isset($menu_programs[$program]))
@@ -55,7 +55,7 @@ class SearchInputBox extends TPage
                     unset($programs[$program]);
                 }
             }
-            
+*/
             TTransaction::close();
             return $programs;
         }
@@ -64,7 +64,7 @@ class SearchInputBox extends TPage
             new TMessage('error', $e->getMessage());
         }
     }
-    
+
     /**
      * Load an specific program
      */
@@ -73,16 +73,16 @@ class SearchInputBox extends TPage
         $programs = self::getPrograms();
         $program = $param['input'];
         $controller = array_search($program, $programs);
-        
+
         if ($controller)
         {
             TApplication::loadPage($controller);
         }
-        
+
         $data = new stdClass;
         $data->input = '';
         TForm::sendData('search_box', $data, false, false);
-        
+
         TScript::create("$('.search-bar').removeClass('open');");
     }
 }

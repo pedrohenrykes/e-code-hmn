@@ -12,7 +12,7 @@
 class SystemDocumentUploadForm extends TPage
 {
     protected $form; // form
-    
+
     /**
      * Form constructor
      * @param $param Request
@@ -20,7 +20,7 @@ class SystemDocumentUploadForm extends TPage
     public function __construct( $param )
     {
         parent::__construct();
-        
+
         // creates the form
         $this->form = new BootstrapFormBuilder('form_SystemUploadDocument');
         $this->form->setFormTitle(_t('Send document'));
@@ -35,23 +35,23 @@ class SystemDocumentUploadForm extends TPage
         $this->form->addFields( [new TLabel(_t('File'))], [$filename] );
         $filename->setSize('80%');
         $filename->addValidation( _t('File'), new TRequiredValidator );
-        
+
         $btn = $this->form->addAction(_t('Next'), new TAction(array($this, 'onNext')), 'fa:arrow-circle-o-right');
         $btn->class = 'btn btn-sm btn-primary';
-        
+
         // vertical box container
         $container = new TVBox;
         $container->style = 'width: 90%';
-        $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
+        // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $container->add($this->form);
-        
+
         parent::add($container);
     }
 
     public function onNew()
     {
     }
-    
+
     public function onEdit( $param )
     {
         if ($param['id'])
@@ -61,7 +61,7 @@ class SystemDocumentUploadForm extends TPage
             $this->form->setData($obj);
         }
     }
-    
+
     /**
      * Save form data
      * @param $param Request
@@ -73,7 +73,7 @@ class SystemDocumentUploadForm extends TPage
             $data = $this->form->getData(); // get form data as array
             $this->form->validate(); // validate form data
             TSession::setValue('system_document_upload_file', $data->filename);
-            
+
             if ($data->id)
             {
                 $param['key'] = $param['id'];
