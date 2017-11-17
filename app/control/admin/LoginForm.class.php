@@ -61,8 +61,8 @@ class LoginForm extends TPage
         }
 
         $btn = $this->form->addAction(_t('Log in'), new TAction(array($this, 'onLogin')), '');
-        $btn->class = 'btn btn-success waves-effect';
-        $btn->style = 'height: 40px;width: 90%;display: block;margin: auto;font-size:17px;';
+        $btn->class = 'btn btn-sm btn-primary';
+        $btn->style = 'height: 50px;width: 90%;display: block;margin: auto;font-size:17px;';
 
         $wrapper = new TElement('div');
         $wrapper->style = 'margin:auto; margin-top:100px;max-width:460px;';

@@ -731,17 +731,18 @@ input[widget="tfile"], input[widget="tmultifile"] {
 
 .uppernavbar {
     background-color: #00924d !important;
-    color: #fff;
 }
 
 #tbutton_btn_entrar {
     background-color: #13583b !important;
 }
 
+
 .user-info {
-    filter: invert(100%);
+    background-color: #34a562 !important;
+    background-image: image();
 }
 
-.user-info .image {
-    filter:invert(100%);
+.systemicons {
+    padding: 5px 0px 15px 25px !important;
 }
