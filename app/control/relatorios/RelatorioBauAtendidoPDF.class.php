@@ -10,7 +10,7 @@ class RelatorioBauAtendidoPDF extends FPDF {
 
     function Header() {
 
-        $this->Image("app/images/sponsors/hmn.jpg", 8, 15, 28, 10);
+        $this->Image("app/images/system/hmn.jpg", 8, 15, 28, 10);
 
         $this->SetFont('Arial', 'B', 12);
         $this->SetY("15");
@@ -44,7 +44,7 @@ class RelatorioBauAtendidoPDF extends FPDF {
 
         TTransaction::open('database');
         $repository = new TRepository('VwBauPacientesRecord');
-        
+
         $criteria = new TCriteria;
 
         $criteria->setProperty('order', 'dataentrada', 'asc');
@@ -59,11 +59,11 @@ class RelatorioBauAtendidoPDF extends FPDF {
             foreach ($rows as $row) {
 
                 $this->SetFont('Arial', '', 8);
-                $this->Cell(80, 5, utf8_decode($row->nomepaciente), 0, 0, 'L'); 
-                $this->Cell(35, 5, utf8_decode($row->dataentrada), 0, 0, 'L'); 
-                $this->Cell(35, 5, utf8_decode($row->situacao), 0, 0, 'L'); 
+                $this->Cell(80, 5, utf8_decode($row->nomepaciente), 0, 0, 'L');
+                $this->Cell(35, 5, utf8_decode($row->dataentrada), 0, 0, 'L');
+                $this->Cell(35, 5, utf8_decode($row->situacao), 0, 0, 'L');
                 $this->Cell(40, 5, utf8_decode($row->nometipoclassificacaorisco), 0, 1, 'L');
-                $this->Cell(0, 0, '', 1, 1, 'L'); 
+                $this->Cell(0, 0, '', 1, 1, 'L');
 
                 $total++;
             }
@@ -76,7 +76,7 @@ class RelatorioBauAtendidoPDF extends FPDF {
 
         TTransaction::close();
     }
-    
+
     function Footer() {
 
         $this->SetY(-15);

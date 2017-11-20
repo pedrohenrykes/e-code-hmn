@@ -9,7 +9,7 @@ use Adianti\Database\TFilter;
 class RelatorioMedicamentoAplicadoPDF extends FPDF {
 
     function Header() {
-        $this->Image("app/images/sponsors/hmn.jpg", 8, 15, 28, 10);
+        $this->Image("app/images/system/hmn.jpg", 8, 15, 28, 10);
 
         $this->SetFont('Arial', 'B', 12);
         $this->SetY("15");

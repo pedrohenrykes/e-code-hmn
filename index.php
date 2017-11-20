@@ -1,4 +1,9 @@
 <?php
+// header('Location: error404'); exit;
+// ini_set ( 'display_errors', 1 );
+// ini_set ( 'display_startup_erros', 1 );
+// error_reporting ( E_ALL );
+
 require_once 'init.php';
 $theme  = $ini['general']['theme'];
 $class  = isset($_REQUEST['class']) ? $_REQUEST['class'] : '';
