@@ -17,53 +17,53 @@ class DashBoardForm extends TWindow
         $this->form->class = "tform";
 
         $id         = new THidden( "id" );
-        $quantifier = new TCombo( "quantifier" );
         $dataview   = new TCombo( "dataview" );
-        $title      = new TEntry( "title" );
-        $page       = new TMultiSearch('page');
-        $action     = new TEntry( "action" );
+        $datacolumn = new TCombo( "datacolumn" );
+        $dashauxtxt = new TEntry( "dashauxtxt" );
+        $dashtitle  = new TEntry( "dashtitle" );
+        $dashicon   = new TEntry( "dashicon" );
+        $bgdcolor   = new TColor( "bgdcolor" );
+        $txtcolor   = new TColor( "txtcolor" );
+        $dashpage   = new TCombo( "dashpage" );
+        $dashaction = new TEntry( "dashaction" );
 
-        $icon = new TDBCombo( "icon", "database", "FontAwesomeIconsModel", "class", "unicode", "id" );
-        $icon->style = "font-family:'FontAwesome',Helvetica;font-size:20px";
-        $icon->setValue( "fa-500px" );
-
-        $color = new TDBCombo( "color", "database", "AdminLteColorsModel", "class", "colorname", "id" );
-        $color->setDefaultOption( "..::SELECIONE::.." );
-
-        // $quantifier->addItems( [ "amount"  => "Quantidade", "percent" => "Percentual" ] );
-        $quantifier->setDefaultOption( "..::SELECIONE::.." );
-        $quantifier->setEditable( false );
+        $datacolumn->setDefaultOption( "..::SELECIONE::.." );
+        $datacolumn->setEditable( false );
 
         $dataview->addItems( $this->getDatabaseViews() );
         $dataview->setDefaultOption( "..::SELECIONE::.." );
-        $dataview->setChangeAction( new TAction( [ $this, 'onChangeComboQuantifier' ] ) );
+        $dataview->setChangeAction( new TAction( [ $this, 'onChangeComboDataColumn' ] ) );
 
-        $page->addItems( $this->getPageClasses() );
-        $page->setMaxSize(1);
-        $page->setMinLength(0);
-        $page->setChangeAction( new TAction( [ $this, 'onChangeMultiSearchPage' ] ) );
+        $dashpage->enableSearch();
+        $dashpage->addItems( $this->getPageClasses() );
+        $dashpage->setChangeAction( new TAction( [ $this, 'onChangeMultiSearchPage' ] ) );
 
         $dataview->setSize( "38%" );
-        $quantifier->setSize( "38%" );
-        $title->setSize( "38%" );
-        $icon->setSize( "38%" );
-        $color->setSize( "38%" );
-        $page->setSize( "38%" );
-        $action->setSize( "38%" );
+        $datacolumn->setSize( "38%" );
+        $dashauxtxt->setSize( "38%" );
+        $dashtitle->setSize( "38%" );
+        $dashicon->setSize( "38%" );
+        $bgdcolor->setSize( "38%" );
+        $txtcolor->setSize( "38%" );
+        $dashpage->setSize( "38%" );
+        $dashaction->setSize( "38%" );
 
         $dataview->addValidation( TextFormat::set( "View" ), new TRequiredValidator );
-        $quantifier->addValidation( TextFormat::set( "Indicador" ), new TRequiredValidator );
-        $title->addValidation( TextFormat::set( "Título" ), new TRequiredValidator );
-        $icon->addValidation( TextFormat::set( "Icone" ), new TRequiredValidator );
-        $color->addValidation( TextFormat::set( "Cor" ), new TRequiredValidator );
+        $datacolumn->addValidation( TextFormat::set( "Coluna" ), new TRequiredValidator );
+        $dashtitle->addValidation( TextFormat::set( "Título" ), new TRequiredValidator );
+        $dashicon->addValidation( TextFormat::set( "Icone" ), new TRequiredValidator );
+        $bgdcolor->addValidation( TextFormat::set( "Cor do Componente" ), new TRequiredValidator );
+        $txtcolor->addValidation( TextFormat::set( "Cor do Texto" ), new TRequiredValidator );
 
         $this->form->addFields( [ new TLabel( "View: $redstar" ) ], [ $dataview ] );
-        $this->form->addFields( [ new TLabel( "Indicador: $redstar" ) ], [ $quantifier ] );
-        $this->form->addFields( [ new TLabel( "Título: $redstar" ) ], [ $title ] );
-        $this->form->addFields( [ new TLabel( "Icone: $redstar" ) ], [ $icon ] );
-        $this->form->addFields( [ new TLabel( "Cor: $redstar" ) ], [ $color ] );
-        $this->form->addFields( [ new TLabel( "Página:" ) ], [ $page ] );
-        $this->form->addFields( [ new TLabel( "Ação:" ) ], [ $action ] );
+        $this->form->addFields( [ new TLabel( "Coluna: $redstar" ) ], [ $datacolumn ] );
+        $this->form->addFields( [ new TLabel( "Texto Auxiliar:" ) ], [ $dashauxtxt ] );
+        $this->form->addFields( [ new TLabel( "Título: $redstar" ) ], [ $dashtitle ] );
+        $this->form->addFields( [ new TLabel( "Icone: $redstar" ) ], [ $dashicon ] );
+        $this->form->addFields( [ new TLabel( "Cor do Componente: $redstar" ) ], [ $bgdcolor ] );
+        $this->form->addFields( [ new TLabel( "Cor do Texto: $redstar" ) ], [ $txtcolor ] );
+        $this->form->addFields( [ new TLabel( "Página:" ) ], [ $dashpage ] );
+        $this->form->addFields( [ new TLabel( "Ação:" ) ], [ $dashaction ] );
         $this->form->addFields( [ $id ] );
 
         $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );
@@ -72,7 +72,7 @@ class DashBoardForm extends TWindow
         $container->style = "width: 100%";
         $container->add( $this->form );
 
-        TQuickForm::hideField("form_dashboard", "action");
+        TQuickForm::hideField("form_dashboard", "dashaction");
 
         parent::add( $container );
     }
@@ -86,8 +86,6 @@ class DashBoardForm extends TWindow
             TTransaction::open( "database" );
 
             $object = $this->form->getData( "DashBoardModel" );
-
-            $object->page = reset( $object->page );
 
             $object->store();
 
@@ -119,17 +117,13 @@ class DashBoardForm extends TWindow
 
                 $object = new DashBoardModel( $param[ "key" ] );
 
-                if ( !isset( $object->page ) ) {
-                    unset( $object->page );
-                } else {
-                    $object->page = [ $object->page, $object->page ];
-                }
-
-                if ( isset( $object->action ) ) {
-                    TQuickForm::showField("form_dashboard", "action");
+                if ( !empty( $object->dashaction ) ) {
+                    TQuickForm::showField("form_dashboard", "dashaction");
                 }
 
                 $this->form->setData( $object );
+
+                self::onChangeComboDataColumn( [ 'dataview' => $object->dataview ] );
 
                 TTransaction::close();
             }
@@ -147,22 +141,22 @@ class DashBoardForm extends TWindow
     {
         $object = new StdClass;
 
-        if ( empty( reset( $param[ "page" ] ) ) ) {
+        if ( empty( $param[ "dashpage" ] ) ) {
 
-            $object->action = "";
+            $object->dashaction = "";
             TQuickForm::sendData( "form_dashboard", $object );
-            TQuickForm::hideField( "form_dashboard", "action" );
+            TQuickForm::hideField( "form_dashboard", "dashaction" );
 
         } else {
 
-            $object->action = "onReload";
+            $object->dashaction = "onReload";
             TQuickForm::sendData( "form_dashboard", $object );
-            TQuickForm::showField( "form_dashboard", "action" );
+            TQuickForm::showField( "form_dashboard", "dashaction" );
 
         }
     }
 
-    public static function onChangeComboQuantifier( $param = null )
+    public static function onChangeComboDataColumn( $param = null )
     {
         $columns = [];
 
@@ -198,8 +192,8 @@ class DashBoardForm extends TWindow
 
             }
 
-            TCombo::enableField( "form_dashboard", "quantifier" );
-            TCombo::reload( "form_dashboard", "quantifier", $columns, true );
+            TCombo::enableField( "form_dashboard", "datacolumn" );
+            TCombo::reload( "form_dashboard", "datacolumn", $columns, true );
         }
 
     }

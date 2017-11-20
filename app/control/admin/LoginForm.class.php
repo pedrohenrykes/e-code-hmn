@@ -13,7 +13,7 @@ class LoginForm extends TPage
         $this->{'style'} .= 'clear:both;text-align:center;';
 
         $this->form = new BootstrapFormBuilder('form_login');
-        
+
         $icon = new TImage( 'app/images/system/logo.png' );
         $login = new TEntry('login');
         $password = new TPassword('password');
@@ -43,7 +43,7 @@ class LoginForm extends TPage
             $login->setExitAction(new TAction( [$this, 'onExitUser'] ) );
         }
 
-        $btn = $this->form->addAction(_t('Log in'), new TAction(array($this, 'onLogin')), '');
+        $btn = $this->form->addAction('Entrar', new TAction(array($this, 'onLogin')), '');
         $btn->setProperty( 'class', 'waves-effect waves-light btn btn-primary' );
         $btn->setProperty( 'style', 'height:50px; width:90%; display:block; margin:auto; font-size:17px; border-radius:7px;' );
 
@@ -51,6 +51,8 @@ class LoginForm extends TPage
         $wrapper->{'style'} .= 'margin:auto; margin-top:100px; max-width:460px; border-radius:7px;';
         $wrapper->{'id'} .= 'login-wrapper';
         $wrapper->add($this->form);
+
+        self::runJScript( 'addLoader' );
 
         parent::add($wrapper);
     }
@@ -90,6 +92,8 @@ class LoginForm extends TPage
 
     public static function onLogin($param)
     {
+        self::runJScript( 'addLoader' );
+
         $ini  = AdiantiApplicationConfig::get();
 
         try
@@ -139,9 +143,11 @@ class LoginForm extends TPage
                     AdiantiCoreApplication::gotoPage($frontpage->controller);
                     TSession::setValue('frontpage', $frontpage->controller);
                 } else {
-                    AdiantiCoreApplication::gotoPage('EmptyPage');
-                    TSession::setValue('frontpage', 'EmptyPage');
+                    AdiantiCoreApplication::gotoPage('DashBoardCreate');
+                    TSession::setValue('frontpage', 'DashBoardCreate');
                 }
+
+                self::runJScript( 'hideForm' );
             }
 
             TTransaction::close();
@@ -149,10 +155,14 @@ class LoginForm extends TPage
         } catch (Exception $e) {
 
             new TMessage('error',$e->getMessage());
+
             TSession::setValue('logged', FALSE);
+
             TTransaction::rollback();
 
         }
+
+        self::runJScript( 'rmLoader' );
     }
 
     public static function reloadPermissions()
@@ -172,7 +182,7 @@ class LoginForm extends TPage
                 if ($frontpage instanceof SystemProgram AND $frontpage->controller) {
                     TApplication::gotoPage($frontpage->controller); // reload
                 } else {
-                    TApplication::gotoPage('EmptyPage'); // reload
+                    TApplication::gotoPage('DashBoardCreate'); // reload
                 }
 
             }
@@ -189,5 +199,50 @@ class LoginForm extends TPage
         SystemAccessLog::registerLogout();
         TSession::freeSession();
         AdiantiCoreApplication::gotoPage('LoginForm', '');
+    }
+
+    public static function runJScript( $optins )
+    {
+        switch( $optins ) {
+
+            case 'addLoader':
+                TScript::create('
+                    $(document).ready(function(){
+                      var oneClick = true;
+                      $("#tbutton_btn_entrar").click(function(){
+                        if( oneClick ) {
+                          $("#login-wrapper").append("
+                            <div id=\"login_loader\" class=\"preloader pl-size-xs\">
+                              <div class=\"spinner-layer pl-green\">
+                                <div class=\"circle-clipper left\"><div class=\"circle\"></div></div>
+                                <div class=\"circle-clipper right\"><div class=\"circle\"></div></div>
+                              </div>
+                            </div>
+                          ");
+                          oneClick = false;
+                        }
+                      });
+                    });
+                ');
+                break;
+
+            case 'rmLoader':
+                TScript::create('
+                    $(document).ready(function(){
+                      $("#login_loader").remove();
+                    });
+                ');
+                break;
+
+            case 'hideForm':
+                TScript::create('
+                    $(document).ready(function(){
+                      $("#adianti_div_content").attr(
+                        "class", "animated fadeOutDown"
+                      );
+                    });
+                ');
+                break;
+        }
     }
 }

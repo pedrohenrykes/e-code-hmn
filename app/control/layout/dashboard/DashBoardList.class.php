@@ -23,49 +23,31 @@ class DashBoardList extends TPage
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
 
-        $column_title = new TDataGridColumn( "title", "Titulo", "left", 200);
-        $column_dataview = new TDataGridColumn( "dataview", "View", "left", 150);
-        $column_icon = new TDataGridColumn( "icon", "Icone", "center" );
-        $column_color = new TDataGridColumn( "color", "Cor", "left" );
-        $column_page = new TDataGridColumn( "page", "Página", "left" );
+        $column_dashtitle = new TDataGridColumn( "dashtitle", "Titulo", "left" );
+        $column_dataview = new TDataGridColumn( "dataview", "View", "left" );
+        $column_dashicon = new TDataGridColumn( "dashicon", "Icone", "center" );
+        $column_bgdcolor = new TDataGridColumn( "bgdcolor", "Cor", "center" );
+        $column_dashpage = new TDataGridColumn( "dashpage", "Página", "left" );
 
-        $this->datagrid->addColumn( $column_title );
+        $this->datagrid->addColumn( $column_dashtitle );
         $this->datagrid->addColumn( $column_dataview );
-        $this->datagrid->addColumn( $column_icon );
-        $this->datagrid->addColumn( $column_color );
-        $this->datagrid->addColumn( $column_page );
+        $this->datagrid->addColumn( $column_dashicon );
+        $this->datagrid->addColumn( $column_bgdcolor );
+        $this->datagrid->addColumn( $column_dashpage );
 
-        $column_icon->setTransformer( function($value, $object, $row)
+        $column_dashicon->setTransformer( function($value, $object, $row)
         {
-            $div = new TElement('span');
-            $div->style="font-family:'FontAwesome',Helvetica;font-size:20px";
+            $div = new TElement('i');
+            $div->class = "material-icons";
+            $div->add( $value );
 
-            try {
+            return $div;
+        });
 
-                TTransaction::open("database");
-
-                $repo = new TRepository( "FontAwesomeIconsModel" );
-
-                $crit = new TCriteria();
-                $crit->setProperty( "order", "id" );
-                $crit->add( new TFilter( "class", "=", $value ) );
-
-                $obj = $repo->load($crit);
-
-                if ( !empty ( $obj ) ) {
-                    foreach ( $obj as $item ) {
-                        $div->add( $item->unicode );
-                    }
-                }
-
-                TTransaction::close();
-
-            } catch ( Exception $ex ) {
-
-                TTransaction::rollback();
-
-                new TMessage( "error", $ex->getMessage() );
-            }
+        $column_bgdcolor->setTransformer( function($value, $object, $row)
+        {
+            $div = new TElement('div');
+            $div->style = "width:30px; height:20px; background-color:{$value} !important;";
 
             return $div;
         });
