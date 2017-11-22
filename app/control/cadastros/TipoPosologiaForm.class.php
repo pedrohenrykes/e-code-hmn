@@ -7,32 +7,41 @@ class TipoPosologiaForm extends TWindow
     public function __construct()
     {
         parent::__construct();
-        parent::setTitle( "Cadastro de Destino de Óbito" );
+        parent::setTitle( "Cadastro Tipo de Profissional" );
         parent::setSize( 0.600, 0.800 );
 
         $redstar = '<font color="red"><b>*</b></font>';
 
-        $this->form = new BootstrapFormBuilder( "form_destino_obito" );
+        $this->form = new BootstrapFormBuilder( "form_tipo_profissional" );
         $this->form->setFormTitle( "($redstar) campos obrigatórios" );
         $this->form->class = "tform";
 
         $id                   = new THidden( "id" );
-        $nomedestinoobito = new TEntry("nomedestinoobito");
-        $situacao       = new TCombo( "situacao" );
+        $nome               = new TEntry('nometipoposologia');
+        $qtdpordia          = new TEntry('qtdpordia');
+        $antesrefeicao      = new TRadioGroup('antesrefeicao');
+        $aposrefeicao       = new TRadioGroup('aposrefeicao');
+        $apenasrefeicao     = new TRadioGroup('apenasrefeicao');
 
-        $nomedestinoobito->setProperty("title", "O campo e obrigatorio");
+        $antesrefeicao->addItems(array('SIM'=>'SIM', 'NAO'=>'NÃO'));
+        $antesrefeicao->setLayout('horizontal');
+        $aposrefeicao->addItems(array('SIM'=>'SIM', 'NAO'=>'NÃO'));
+        $aposrefeicao->setLayout('horizontal');
+        $apenasrefeicao->addItems(array('SIM'=>'SIM', 'NAO'=>'NÃO'));
+        $apenasrefeicao->setLayout('horizontal');
 
-        $nomedestinoobito->setSize("38%");
-        $situacao->setSize("38%");
+        $antesrefeicao->setValue('NAO');
+        $aposrefeicao->setValue('NAO');
+        $apenasrefeicao->setValue('NAO'); 
 
-        $situacao->addItems( [ "ATIVO" => "ATIVO", "INATIVO" => "INATIVO" ] );
-        $situacao->setDefaultOption( "..::SELECIONE::.." );
+        $nome->addValidation( TextFormat::set( "Nome" ), new TRequiredValidator );
+        $qtdpordia->addValidation( TextFormat::set( "Quantidade" ), new TRequiredValidator );
 
-        $nomedestinoobito->addValidation( TextFormat::set( "Destino Óbito" ), new TRequiredValidator );
-        $situacao->addValidation( TextFormat::set( "Situação" ), new TRequiredValidator );
-
-        $this->form->addFields([new TLabel("Destino Óbito: $redstar")], [$nomedestinoobito]);
-        $this->form->addFields([new TLabel("Situação: $redstar")], [$situacao]);
+        $this->form->addFields([new TLabel("Nome :$redstar")], [$nome]);
+        $this->form->addFields([new TLabel("Quantidade :$redstar")], [$qtdpordia]);
+        $this->form->addFields([new TLabel("Antes da Refeição :$redstar")], [$antesrefeicao]);
+        $this->form->addFields([new TLabel("Após Refeição] :$redstar")], [$aposrefeicao]);
+        $this->form->addFields([new TLabel("Somente nas Refeições :$redstar")], [$apenasrefeicao]);
         $this->form->addFields( [ $id ] );
 
         $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );
@@ -51,11 +60,11 @@ class TipoPosologiaForm extends TWindow
             $this->form->validate();
 
             TTransaction::open( "database" );
-                $object = $this->form->getData("DestinoObitoRecord");
+                $object = $this->form->getData("TipoPosologiaRecord");
                 $object->store();
             TTransaction::close();
 
-            $action = new TAction( [ "DestinoObitoList", "onReload" ] );
+            $action = new TAction( [ "TipoPosologiaList", "onReload" ] );
 
             new TMessage( "info", "Registro salvo com sucesso!", $action );
 
@@ -75,7 +84,7 @@ class TipoPosologiaForm extends TWindow
             if( isset( $param[ "key" ] ) ) {
 
                 TTransaction::open( "database" );
-                    $object = new DestinoObitoRecord($param["key"]);
+                    $object = new TipoPosologiaRecord($param["key"]);
                     $this->form->setData($object);
                 TTransaction::close();
             }

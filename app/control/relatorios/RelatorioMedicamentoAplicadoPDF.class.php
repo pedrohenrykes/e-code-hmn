@@ -115,7 +115,7 @@ $file = "app/reports/RelatorioMedicamentoAplicadoPDF.pdf";
 
 //abrir pdf
 $pdf->Output($file);
-$pdf->open($file);
+$pdf->openFile($file);
 
 
 ?>

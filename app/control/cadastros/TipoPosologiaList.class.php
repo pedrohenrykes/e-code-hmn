@@ -1,101 +1,5 @@
 <?php
 
-
-
-class TipoPosologiaList extends TStandardFormList
-{
-    protected $form;
-    protected $datagrid; 
-    protected $loaded;
-    protected $pageNavigation;
-    
-    public function __construct(){
-        parent::__construct();
-        
-        parent::setDatabase('database');
-        parent::setActiveRecord('TipoPosologiaRecord'); // define the Active Record
-        parent::setDefaultOrder('nometipoposologia', 'asc'); // define the default order
-        $this->setLimit(-1); // turn off limit for datagrid
-        
-        $this->form = new TQuickForm('form_posologia');
-        $this->form->class = 'tform';
-        $this->form->setFormTitle('Tipo Posologia');
-        
-        $id                 = new THidden('id');
-        $nome               = new TEntry('nometipoposologia');
-        $qtdpordia          = new TEntry('qtdpordia');
-        $antesrefeicao      = new TRadioGroup('antesrefeicao');
-        $aposrefeicao       = new TRadioGroup('aposrefeicao');
-        $apenasrefeicao     = new TRadioGroup('apenasrefeicao');
-
-        $antesrefeicao->addItems(array('SIM'=>'SIM', 'NAO'=>'NÃO'));
-        $antesrefeicao->setLayout('horizontal');
-        $aposrefeicao->addItems(array('SIM'=>'SIM', 'NAO'=>'NÃO'));
-        $aposrefeicao->setLayout('horizontal');
-        $apenasrefeicao->addItems(array('SIM'=>'SIM', 'NAO'=>'NÃO'));
-        $apenasrefeicao->setLayout('horizontal');
-
-        $antesrefeicao->setValue('NAO');
-        $aposrefeicao->setValue('NAO');
-        $apenasrefeicao->setValue('NAO'); 
-        
-        //$this->form->addQuickField('ID',    $id,    '30%');
-        $this->form->addQuickField('Nome',  $nome,  '50%', new TRequiredValidator);
-        $this->form->addQuickField('Quantidade por dia',  $qtdpordia,  '20%', new TRequiredValidator);
-        $this->form->addQuickField('Antes das Refeições',  $antesrefeicao,  '70%', new TRequiredValidator);
-        $this->form->addQuickField('Após as Refeições',  $aposrefeicao,  '70%', new TRequiredValidator);
-        $this->form->addQuickField('Somente nas Refeições',  $apenasrefeicao,  '70%', new TRequiredValidator);
-        $this->form->addQuickField(  '', $id  );
-        
-        $this->form->addQuickAction(_t('Save'), new TAction(array($this, 'onSave')), 'fa:save green');
-        $this->form->addQuickAction('Limpar',  new TAction(array($this, 'onClear')), 'fa:eraser red');
-        
-        
-        $this->datagrid = new TQuickGrid;
-        $this->datagrid->style = 'width: 100%';
-        
-        $this->datagrid->addQuickColumn('Nome',   'nometipoposologia',  'center', '20%', new TAction(array($this, 'onReload')), array('order', 'nometipoposologia'));
-        $this->datagrid->addQuickColumn('Quantidade por Dia', 'qtdpordia','left',  '20%', new TAction(array($this, 'onReload')), array('order', 'qtdpordia'));
-        $this->datagrid->addQuickColumn('Antes das Refeições', 'antesrefeicao','left',  '20%', new TAction(array($this, 'onReload')), array('order', 'antesrefeicao'));
-        $this->datagrid->addQuickColumn('Após as Refeições', 'aposrefeicao','left',  '20%', new TAction(array($this, 'onReload')), array('order', 'aposrefeicao'));
-        $this->datagrid->addQuickColumn('Somente nas Refeições', 'apenasrefeicao','left',  '20%', new TAction(array($this, 'onReload')), array('order', 'apenasrefeicao'));
-        
-        $this->datagrid->addQuickAction('Edit',  new TDataGridAction(array($this, 'onEdit')),   'id', 'fa:edit blue');
-        $this->datagrid->addQuickAction('Delete', new TDataGridAction(array($this, 'onDelete')), 'id', 'fa:trash red');
-        
-        $this->datagrid->createModel();
-        
-        $vbox = new TVBox;
-        $vbox->add($this->form);
-        $vbox->add($this->datagrid);
-        
-        parent::add($vbox);
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
 class TipoPosologiaList extends TPage
 {
     private $form;
@@ -107,8 +11,8 @@ class TipoPosologiaList extends TPage
     {
         parent::__construct();
 
-        $this->form = new BootstrapFormBuilder( "list_posologia" );
-        $this->form->setFormTitle( "Listagem Tipos de Posologia" );
+        $this->form = new BootstrapFormBuilder( "form_list_tipo_profissional" );
+        $this->form->setFormTitle( "Listagem Tipo de Profissional" );
         $this->form->class = "tform";
 
         $opcao = new TCombo( "opcao" );
@@ -120,7 +24,7 @@ class TipoPosologiaList extends TPage
         $opcao->setSize( "38%" );
         $dados->setSize( "38%" );
 
-        $opcao->addItems( [ "nometipoposologia" => "Tipo Posologia", "situacao" => "Situação" ] );
+        $opcao->addItems( [ "nometipoposologia" => "Nome", "qtdpordia" => "Quantidade" ] );
 
         $this->form->addFields( [ new TLabel( "Opção de busca:" ) ], [ $opcao ] );
         $this->form->addFields( [ new TLabel( "Dados à buscar:" )  ], [ $dados ] );
@@ -133,11 +37,17 @@ class TipoPosologiaList extends TPage
         $this->datagrid->style = "width: 100%";
         $this->datagrid->setHeight( 320 );
 
-        $column_nomedestinoobito = new TDataGridColumn( "nomedestinoobito", "Destino de Óbito", "left" );
-        $column_situacao = new TDataGridColumn( "situacao", "Situação", "left" );
+        $column_1 = new TDataGridColumn( "nometipoposologia", "Nome", "left" );
+        $column_2 = new TDataGridColumn( "qtdpordia", "Quantidade por Dia", "left" );
+        $column_3 = new TDataGridColumn( "antesrefeicao", "Antes das Refeições", "left" );
+        $column_4 = new TDataGridColumn( "aposrefeicao", "Após as Refeições", "left" );
+        $column_5 = new TDataGridColumn( "apenasrefeicao", "Somente nas Refeições", "left" );
 
-        $this->datagrid->addColumn( $column_nomedestinoobito );
-        $this->datagrid->addColumn( $column_situacao );
+        $this->datagrid->addColumn( $column_1 );
+        $this->datagrid->addColumn( $column_2 );
+        $this->datagrid->addColumn( $column_3 );
+        $this->datagrid->addColumn( $column_4 );
+        $this->datagrid->addColumn( $column_5 );
 
         $action_edit = new TDataGridAction( [ "TipoPosologiaForm", "onEdit" ] );
         $action_edit->setButtonClass( "btn btn-default" );
@@ -243,11 +153,7 @@ class TipoPosologiaList extends TPage
 
                 switch ( $data->opcao ) {
 
-                    case "nomedestinoobito":
-                        $criteria->add( new TFilter( $data->opcao, "LIKE", "%" . $data->dados . "%" ) );
-                        break;
-                        
-                    case "situacao":
+                    case "nometipoprofissional":
                         $criteria->add( new TFilter( $data->opcao, "LIKE", "%" . $data->dados . "%" ) );
                         break;
 
@@ -322,7 +228,7 @@ class TipoPosologiaList extends TPage
         try {
 
             TTransaction::open( "database" );
-                $object = new DestinoObitoRecord( $param[ "key" ] );
+                $object = new TipoPosologiaRecord( $param[ "key" ] );
                 $object->delete();
             TTransaction::close();
 
@@ -346,4 +252,3 @@ class TipoPosologiaList extends TPage
         parent::show();
     }
 }
-*/

@@ -14,8 +14,8 @@ class  GeraPrincipioAtivoMedicamento extends TPage{
     $this->form->setFormTitle( "Relatório de Medicamentos" );
     $this->form->class = "tform";
 
-    $situacao = new TCombo( 'Situacao' );
-
+    $situacao = new TCombo( 'principioativo' );
+/*
     TTransaction::open('database');
     $repository = new TRepository('VwPrincipioAtivoMedicamentoRecord');
     $criteria = new TCriteria;
@@ -26,17 +26,18 @@ class  GeraPrincipioAtivoMedicamento extends TPage{
     foreach ($cadastros as $object) {
       $items[$object->medicamento_id] = $object->medicamento_id;
     }
+    TTransaction::close();
+    */
     $items['TODOS'] = 'TODOS';
 
 
     $situacao->addItems($items);
-    TTransaction::close();
 
     $situacao->setDefaultOption( "..::SELECIONE::.." );
 
-    $this->form->addFields([new TLabel("situacao") ],[$situacao]);
+    $this->form->addFields([new TLabel("Principio Ativo") ],[$situacao]);
     $this->form->addAction( "Gerar", new TAction( [ $this, "onGenerate" ] ), "fa:table blue" );
-    $situacao->addValidation('situacao', new TRequiredValidator);
+    $situacao->addValidation('principioativo', new TRequiredValidator);
 
     $this->pageNavigation = new TPageNavigation();
     $this->pageNavigation->setAction( new TAction( [ $this, "onGenerate" ] ) );
