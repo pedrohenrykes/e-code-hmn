@@ -6,10 +6,10 @@ class BauAtendimentoRecord extends TRecord
     const PRIMARYKEY = "id";
     const IDPOLICY   = "serial";
 
-    private $paciente;
+    //private $paciente;
     private $tipoclassificacaorisco;
     private $profissional;
-
+/*
     public function get_paciente_nome()
     {
         if ( empty( $this->paciente ) ) {
@@ -18,6 +18,7 @@ class BauAtendimentoRecord extends TRecord
 
         return $this->paciente->nomepaciente;
     }
+    */
 
     public function get_tipoclassificacaorisco_nome()
     {
