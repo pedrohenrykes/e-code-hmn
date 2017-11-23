@@ -41,7 +41,7 @@ class FarmaciaEntradaDetail extends TStandardList
         $dataentrada->addValidation( TextFormat::set( "Data Entrada" ), new TRequiredValidator );
         $documento->addValidation( TextFormat::set( "Documento" ), new TRequiredValidator );
 
-        $this->form->addFields( [ new TLabel( "Entrada:" ) ], [ $dataentrada ] );
+        $this->form->addFields( [ new TLabel( "Entrada:" ) ], [ $dataentrada->setMask( "dd/mm/yyyy" ) ] );
         $this->form->addFields( [ new TLabel( "Documento:" ) ], [ $documento ] );
         $this->form->addFields( [ $id, $farmacia_id ] );
 
