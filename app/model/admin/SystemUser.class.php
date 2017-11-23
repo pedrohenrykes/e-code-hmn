@@ -22,21 +22,6 @@ class SystemUser extends TRecord
     private $system_user_units = array();
 
     /**
-     * Constructor method
-     */
-    public function __construct($id = NULL)
-    {
-        parent::__construct($id);
-        parent::addAttribute('name');
-        parent::addAttribute('login');
-        parent::addAttribute('password');
-        parent::addAttribute('email');
-        parent::addAttribute('frontpage_id');
-        parent::addAttribute('system_unit_id');
-        parent::addAttribute('active');
-    }
-
-    /**
      * Returns the frontpage name
      */
     public function get_frontpage_name()
