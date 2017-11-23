@@ -41,13 +41,13 @@ class AtendimentoDetail extends TPage
 
         try {
             TTransaction::open( "database" );
-            $paciente = new BauRecord($fk);
+            $paciente = new PacienteRecord($did);
             if( isset($paciente) ) {
-                $paciente_nome->setValue($paciente->paciente_nome);
+                $paciente_nome->setValue($paciente->nomepaciente);
             }
             TTransaction::close();
         } catch (Exception $ex) {
-            $action = new TAction(["PacientesEncaminhamentoList", "onReload"]);
+            $action = new TAction(["PacientesAtendimentoList", "onReload"]);
             new TMessage("error", "Ocorreu um erro ao carregar as dependência do formulário.", $action);
         }
 
@@ -216,10 +216,21 @@ class AtendimentoDetail extends TPage
     {
         $object = $this->form->getData( "BauAtendimentoRecord" );
 
+            $param = [
+            "fk"  => $param[ "fk" ],
+            "did"  => $param[ "did" ]
+            ];
+
         try {
             $object->profissional_id = TSession::getValue('profissionalid');
+            
+/*
+            var_dump($_SESSION);
+            exit();
+*/
             unset( $object->paciente_nome );
             unset( $object->cid_id );
+
 
             $this->form->validate();
             TTransaction::open( "database" );
@@ -519,7 +530,7 @@ class AtendimentoDetail extends TPage
 
     public function onError()
     {
-        $action = new TAction( [ "PacientesClassificacaoRiscoList", "onReload" ] );
+        $action = new TAction( [ "AtendimentoDetail", "onReload" ] );
 
         new TMessage( "error", "Uma instabilidade momentâneo no sistema impediu a ação, tente novamente mais tarde.", $action );
     }
