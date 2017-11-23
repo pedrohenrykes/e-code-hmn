@@ -158,11 +158,6 @@ class AdiantiClassMap
         $classPath['BootstrapFormWrapper']       = 'lib/adianti/wrapper/BootstrapFormWrapper.php';
         $classPath['BootstrapFormBuilder']       = 'lib/adianti/wrapper/BootstrapFormBuilder.php';
 
-        // Classes customizadas para o sistema
-        $classPath['TDialogIcon']                = 'app/lib/widget/TDialogIcon.php';
-        $classPath['TDatagridTables']            = 'app/lib/widget/TDatagridTables.php';
-        $classPath['TDashboard']                 = 'app/lib/widget/TDashboard.php';
-
         return $classPath;
     }
 

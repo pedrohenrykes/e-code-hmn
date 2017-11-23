@@ -39,10 +39,7 @@ class PacienteList extends TPage
         $this->form->addAction( "Buscar", new TAction( [$this, "onSearch"  ] ), "fa:search" );
         $this->form->addAction( "Novo"  , new TAction( ["PacienteForm", "onEdit"] ), "bs:plus-sign green" );
 
-        $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
-        $this->datagrid->datatable = "true";
-        $this->datagrid->style = "width: 100%";
-        $this->datagrid->setHeight( 320 );
+        $this->datagrid = new TDatagridTables();
 
         $column_nomepaciente = new TDataGridColumn( "nomepaciente", "Nome", "left" );
         $column_numerosus    = new TDataGridColumn( "numerosus", "Cartão SUS", "left");
@@ -56,40 +53,34 @@ class PacienteList extends TPage
         $this->datagrid->addColumn( $column_numerocpf );
         $this->datagrid->addColumn( $column_telcelular );
 
-
-        $action_edit = new CustomDataGridAction ( [ "PacienteForm", "onEdit" ] );
+        $action_edit = new TDatagridTablesAction ( [ "PacienteForm", "onEdit" ] );
         $action_edit->setButtonClass ( "btn btn-default" );
         $action_edit->setLabel ( "Editar" );
         $action_edit->setImage ( "fa:pencil-square-o blue fa-lg" );
         $action_edit->setField ( "id" );
         $this->datagrid->addAction ( $action_edit );
 
-        $action_del = new CustomDataGridAction( [ $this, "onDelete" ] );
+        $action_del = new TDatagridTablesAction( [ $this, "onDelete" ] );
         $action_del->setButtonClass( "btn btn-default" );
         $action_del->setLabel( "Deletar" );
         $action_del->setImage( "fa:trash-o red fa-lg" );
         $action_del->setField( "id" );
         $this->datagrid->addAction( $action_del );
 
-        $action_bau = new CustomDataGridAction( [ "BauDetail", "onReload" ] );
-        $action_bau->setButtonClass( "btn btn-dafault" );
-        $action_bau->setLabel( "B.A.U." );
-        $action_bau->setImage( "fa:clipboard green fa-lg" );
-        $action_bau->setField( "id" );
-        $action_bau->setFk( "id" );
-        $this->datagrid->addAction( $action_bau );
+        $action_boletim = new TDatagridTablesAction( [ "BauDetail", "onReload" ] );
+        $action_boletim->setButtonClass( "btn btn-primary" );
+        $action_boletim->setImage( "fa:clipboard white fa-lg" );
+        $action_boletim->setField( "id" );
+        $action_boletim->setFk( "id" );
+        $action_boletim->setUseButton(TRUE);
+        $this->datagrid->addQuickAction( "Abrir Boletim", $action_boletim, 'id');
 
         $this->datagrid->createModel();
 
-        $this->pageNavigation = new TPageNavigation();
-        $this->pageNavigation->setAction( new TAction( [ $this, "onReload" ] ) );
-        $this->pageNavigation->setWidth( $this->datagrid->getWidth() );
-
         $container = new TVBox();
-        $container->style = "width: 90%";
+        $container->style = "width: 100%";
         $container->add( $this->form );
         $container->add( TPanelGroup::pack( NULL, $this->datagrid ) );
-        $container->add( $this->pageNavigation );
 
         parent::add( $container );
     }
@@ -107,11 +98,11 @@ class PacienteList extends TPage
                 $param[ "direction" ] = "asc";
             }
 
-            $limit = 10;
+            // $limit = 10;
 
             $criteria = new TCriteria();
             $criteria->setProperties( $param );
-            $criteria->setProperty( "limit", $limit );
+            // $criteria->setProperty( "limit", $limit );
 
             $objects = $repository->load( $criteria, FALSE );
 
@@ -125,11 +116,11 @@ class PacienteList extends TPage
 
             $criteria->resetProperties();
 
-            $count = $repository->count( $criteria );
+            // $count = $repository->count( $criteria );
 
-            $this->pageNavigation->setCount( $count );
-            $this->pageNavigation->setProperties( $param );
-            $this->pageNavigation->setLimit( $limit );
+            // $this->pageNavigation->setCount( $count );
+            // $this->pageNavigation->setProperties( $param );
+            // $this->pageNavigation->setLimit( $limit );
 
             TTransaction::close();
 

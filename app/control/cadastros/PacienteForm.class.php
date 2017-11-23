@@ -103,10 +103,7 @@ class PacienteForm extends TPage
         $nomemae->addValidation( TextFormat::set( "Nome da Mãe" ), new TRequiredValidator );
         $numerosus->addValidation( TextFormat::set( "Cartão SUS" ), new TRequiredValidator );
 
-        $page1 = new TLabel( "Identificação", '#7D78B6', 12, 'bi');
-        $page1->style='text-align:left;border-bottom:1px solid #c0c0c0;width:100%';
         $this->form->appendPage( "Pessoal" );
-        $this->form->addContent( [ $page1 ] );
 
         $this->form->addFields( [ new TLabel( "Cartão SUS: {$redstar}" ) ], [ $numerosus ] );
         $this->form->addFields( [ new TLabel( "Nome do Paciente: {$redstar}" ) ], [ $nomepaciente ] );
@@ -125,10 +122,7 @@ class PacienteForm extends TPage
         $this->form->addFields( [ new TLabel( "Profissão Exercida:" ) ], [ $profissao_id ] );
         $this->form->addFields( [ $id ] );
 
-        $page2 = new TLabel( "Endereço e Contatos", '#7D78B6', 12, 'bi');
-        $page2->style='text-align:left;border-bottom:1px solid #c0c0c0;width:100%';
         $this->form->appendPage( "Residêncial" );
-        $this->form->addContent( [ $page2 ] );
 
         $this->form->addFields( [ new TLabel( "Endereço:" ) ], [ $endereco ]);
         $this->form->addFields( [ new TLabel( "Bairro:" ) ], [ $bairro ] );
