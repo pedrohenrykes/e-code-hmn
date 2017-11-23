@@ -21,7 +21,9 @@ class PacientesAtendimentoList extends TStandardList
         //parent::addFilterField('dataentrada', 'like', 'nomepaciente');
         //parent::addFilterField('dataentrada', '=', 'nomepaciente'); // filter field, operator, form field
 
-        parent::setDefaultOrder('ordem, dataorganizar, horaentrada', 'asc');
+        //parent::setDefaultOrder('ordem', 'desc');
+        parent::setDefaultOrder("ordem desc, fatoridade desc, dataentrada asc, horaentrada asc",'');
+
         // $this->setLimit(-1); // turn off limit for datagrid
 
         $this->form = new BootstrapFormBuilder( "list_pacientes_atendimento" );
