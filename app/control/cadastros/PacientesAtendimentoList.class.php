@@ -104,7 +104,7 @@ class PacientesAtendimentoList extends TStandardList
 
                     case "nomepaciente":
 
-                        $criteria->add( new TFilter( $data->opcao, "LIKE", $data->dados . "%" ) );
+                        $criteria->add( new TFilter( $data->opcao, "LIKE", "%" . $data->dados . "%" ) );
 
                         break;
 
@@ -122,7 +122,7 @@ class PacientesAtendimentoList extends TStandardList
                         $this->datagrid->addItem( $object );
                     }
                 } else {
-                  new TMessage( "info", "Não há dados cadastrados!" );
+                  new TMessage( "error", "Não há dados cadastrados!" );
                 }
 
                 $criteria->resetProperties();

@@ -161,7 +161,7 @@ class SistemaCorporeoList extends TPage{
                         $this->datagrid->addItem( $object );
                     }
                 } else {
-                    new TMessage( "info", "Não há dados cadastrados!" );
+                    new TMessage( "error", "Não há dados cadastrados!" );
                 }
 
                 $criteria->resetProperties();

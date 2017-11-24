@@ -152,7 +152,7 @@ class CidList extends TPage
                         break;
 
                     default:
-                        $criteria->add( new TFilter( $data->opcao, "LIKE", $data->dados . "%" ) );
+                        $criteria->add( new TFilter( $data->opcao, "LIKE", "%" . $data->dados . "%" ) );
                         break;
 
                 }

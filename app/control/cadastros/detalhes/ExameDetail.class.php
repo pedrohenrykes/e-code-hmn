@@ -139,8 +139,8 @@ class ExameDetail extends TStandardList
             $object->delete();
             TTransaction::close();
 
-            $this->onReload( $param );
             new TMessage('info', AdiantiCoreTranslator::translate('Record deleted'));
+            $this->onReload( $param );
         }
         catch (Exception $e){
             new TMessage('error', '<b>O Registro possui dependências! Não é permitido exclui-lo! </b>');

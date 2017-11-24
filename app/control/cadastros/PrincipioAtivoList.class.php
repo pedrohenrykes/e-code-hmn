@@ -150,7 +150,7 @@ class PrincipioAtivoList extends TPage
                         break;
 
                     default:
-                        $criteria->add( new TFilter( $data->opcao, "LIKE", $data->dados . "%" ) );
+                        $criteria->add( new TFilter( $data->opcao, "LIKE", "%" . $data->dados . "%" ) );
                         break;
 
                 }
@@ -164,7 +164,7 @@ class PrincipioAtivoList extends TPage
                         $this->datagrid->addItem( $object );
                     }
                 } else {
-                  new TMessage( "info", "Não há dados cadastrados!" );
+                  new TMessage( "error", "Não há dados cadastrados!" );
                 }
 
                 $criteria->resetProperties();

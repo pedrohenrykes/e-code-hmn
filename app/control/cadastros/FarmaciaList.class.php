@@ -166,7 +166,7 @@ class FarmaciaList extends TPage
                     case "unidadesaude_id":
                             $repostiry2 = new TRepository('UnidadeDeSaudeRecord');
                             $criteria2 = new TCriteria();
-                            $criteria2->add( new TFilter('nomeunidade', "LIKE", $data->dados. "%" ) );
+                            $criteria2->add( new TFilter('nomeunidade', "LIKE", "%" . $data->dados . "%" ) );
                             $ids = [];
                            
                             $objects2 = $repostiry2->load( $criteria2, FALSE );
@@ -176,11 +176,11 @@ class FarmaciaList extends TPage
                                 }
                                   $criteria->add( new TFilter( 'unidadesaude_id', "IN", $ids ));
                             } else {
-                              new TMessage( "info", "Não há dados cadastrados!" );
+                              new TMessage( "error", "Não há dados cadastrados!" );
                             }
                             break;
                     default:
-                        $criteria->add( new TFilter( $data->opcao, "LIKE", $data->dados . "%" ) );
+                        $criteria->add( new TFilter( $data->opcao, "LIKE", "%" . $data->dados . "%" ) );
                         break;
 
                 }
@@ -194,7 +194,7 @@ class FarmaciaList extends TPage
                         $this->datagrid->addItem( $object );
                     }
                 } else {
-                  new TMessage( "info", "Não há dados cadastrados!" );
+                  new TMessage( "error", "Não há dados cadastrados!" );
                 }
 
                 $criteria->resetProperties();
