@@ -1,13 +1,13 @@
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
 $(document).ready(function() {
-    var table = $("#example").dataTable({
+    var table = $("#tdatagridtables").dataTable({
         "responsive": true,
-        "language": {"url": "app/resources/translator.txt"},
+        "language": {"url": "app/lib/include/tdatagridtables/translation.json"},
         "dom": "lfrtipCT",
         "tableTools": {
             "sSwfPath": "//cdn.datatables.net/tabletools/2.2.3/swf/copy_csv_xls_pdf.swf",

@@ -38,7 +38,7 @@ class TDatagridTables extends TTable
         $this->actions = array();
         $this->action_groups = array();
         $this->{'class'} = 'display responsive nowrap';
-        $this->{'id'} = 'example';
+        $this->{'id'} = 'tdatagridtables';
         $this->cellspacing = '0';
         $this->width = '100%';
         $this->exportBtn = $exportBtn;
@@ -718,11 +718,11 @@ class TDatagridTables extends TTable
         ');
 
         if ($this->exportBtn == FALSE) {
-            TPage::include_js('app/lib/include/initDataTable.js');
+            TPage::include_js('app/lib/include/tdatagridtables/init.js');
         } else {
             TScript::create('
                 $(document).ready(function() {
-                  $("#example").dataTable();
+                  $("#tdatagridtables").dataTable();
                 } );
             ');
         }
