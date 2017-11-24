@@ -336,7 +336,7 @@ class FarmaciaMovimentacaoDetail extends TStandardList
             unset( $object->frequenciarespiratoria );
             unset( $object->temperatura );
             unset( $object->spo2 );
-            unset( $object->htg );
+            unset( $object->hgt );
             unset( $object->queixaprincipal );
             unset( $object->dor );
             unset( $object->observacoes );

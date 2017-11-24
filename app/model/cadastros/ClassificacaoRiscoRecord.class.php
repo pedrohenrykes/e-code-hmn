@@ -34,6 +34,6 @@ class ClassificacaoRiscoRecord extends TRecord
             $this->enfermeiro = new ProfissionalRecord( $this->enfermeiro_id );
         }
 
-        return $this->paciente->nomeprofissional;
+        return $this->enfermeiro->nomeprofissional;
     }
 }

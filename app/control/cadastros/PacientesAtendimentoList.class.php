@@ -27,7 +27,7 @@ class PacientesAtendimentoList extends TStandardList
         // $this->setLimit(-1); // turn off limit for datagrid
 
         $this->form = new BootstrapFormBuilder( "list_pacientes_atendimento" );
-        $this->form->setFormTitle( "Atendimento " );
+        $this->form->setFormTitle( "Atendimento Médico" );
         $this->form->class = "tform";
 
         $opcao = new TCombo( "opcao" );
@@ -44,14 +44,11 @@ class PacientesAtendimentoList extends TStandardList
         $this->form->addFields( [ new TLabel( "Opção de busca:" ) ], [ $opcao ] );
         $this->form->addFields( [ new TLabel( "Dados à buscar:" )  ], [ $dados ] );
 
-        $this->form->addAction( "Buscar", new TAction( [ $this, "onSearch" ] ), "fa:search" );
+        $this->form->addAction( "Buscar Paciente", new TAction( [ $this, "onSearch" ] ), "fa:search" );
 
         //$this->form->setData( TSession::getValue('nomepaciente') );
 
-        $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
-        $this->datagrid->datatable = "true";
-        $this->datagrid->style = "width: 100%";
-        $this->datagrid->setHeight( 320 );
+        $this->datagrid = new TDatagridTables();
 
         $column_paciente_nome   = new TDataGridColumn( "nomepacientecor", "Classificação/Paciente", "left" );
         $column_dataentrada     = new TDataGridColumn( "dataentrada", "Data de Chegada", "left" );
@@ -63,32 +60,26 @@ class PacientesAtendimentoList extends TStandardList
         $this->datagrid->addColumn( $column_horaentrada );
         $this->datagrid->addColumn( $column_queixaprincipal );
 
-        $action_avaliacao = new CustomDataGridAction( [ "AtendimentoDetail", "onReload" ] );
+        $action_avaliacao = new TDatagridTablesAction( [ "AtendimentoDetail", "onReload" ] );
         $action_avaliacao->setButtonClass( "btn btn-primary" );
         $action_avaliacao->setImage( "fa:user-md white fa-lg" );
         $action_avaliacao->setField( "bau_id" );
         $action_avaliacao->setFk( "bau_id" );
         $action_avaliacao->setDid( "paciente_id" );
         $action_avaliacao->setUseButton(TRUE);
-        $this->datagrid->addQuickAction( "Atender", $action_avaliacao, 'bau_id');
+        $this->datagrid->addQuickAction( "Atender Paciente", $action_avaliacao, 'bau_id');
 
         $this->datagrid->createModel();
 
-        $this->pageNavigation = new TPageNavigation();
-        $this->pageNavigation->setAction( new TAction( [ $this, "onReload" ] ) );
-        $this->pageNavigation->setWidth( $this->datagrid->getWidth() );
-
         $container = new TVBox();
-        $container->style = "width: 90%";
+        $container->style = "width: 100%";
         $container->add( $this->form );
-
-        //$container->add($this->datagrid);
         $container->add( TPanelGroup::pack( NULL, $this->datagrid ) );
-        $container->add( $this->pageNavigation );
 
         parent::add( $container );
     }
-     public function onSearch()
+
+    public function onSearch()
     {
         $data = $this->form->getData();
 
@@ -100,16 +91,13 @@ class PacientesAtendimentoList extends TStandardList
 
                 $repository = new TRepository( "VwBauPacientesRecord" );
 
-                if ( empty( $param[ "order" ] ) ) {
-                    $param[ "order" ] = "dataentrada";
-                    $param[ "direction" ] = "desc";
-                }
-
-                $limit = 10;
+                $properties = [
+                    "order" => "dataentrada",
+                    "direction" => "desc"
+                ];
 
                 $criteria = new TCriteria();
-                $criteria->setProperties( $param );
-                $criteria->setProperty( "limit", $limit );
+                $criteria->setProperties( $properties );
                 $criteria->add( new TFilter( "situacao", "=", "CLASSIFICADO") );
 
                 switch( $data->opcao ) {
@@ -139,12 +127,6 @@ class PacientesAtendimentoList extends TStandardList
 
                 $criteria->resetProperties();
 
-                $count = $repository->count( $criteria );
-
-                $this->pageNavigation->setCount( $count );
-                $this->pageNavigation->setProperties( $param );
-                $this->pageNavigation->setLimit( $limit );
-
                 TTransaction::close();
 
                 $this->form->setData( $data );
@@ -170,10 +152,10 @@ class PacientesAtendimentoList extends TStandardList
         }
     }
 
-    public function show(){
-
+    public function show()
+    {
         $this->onReload();
-        parent::show();
 
+        parent::show();
     }
 }

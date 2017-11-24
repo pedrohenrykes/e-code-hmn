@@ -36,12 +36,12 @@ class PacienteList extends TPage
         $this->form->addFields( [ new TLabel( "Opção de busca:" ) ], [ $opcao ] );
         $this->form->addFields( [ new TLabel( "Dados à buscar:" )  ], [ $dados ] );
 
-        $this->form->addAction( "Buscar", new TAction( [$this, "onSearch"  ] ), "fa:search" );
-        $this->form->addAction( "Novo"  , new TAction( ["PacienteForm", "onEdit"] ), "bs:plus-sign green" );
+        $this->form->addAction( "Buscar Paciente", new TAction( [$this, "onSearch"  ] ), "fa:search" );
+        $this->form->addAction( "Novo Paciente"  , new TAction( ["PacienteForm", "onEdit"] ), "bs:plus-sign green" );
 
         $this->datagrid = new TDatagridTables();
 
-        $column_nomepaciente = new TDataGridColumn( "nomepaciente", "Nome", "left" );
+        $column_nomepaciente = new TDataGridColumn( "nomepaciente", "Nome do Paciente", "left" );
         $column_numerosus    = new TDataGridColumn( "numerosus", "Cartão SUS", "left");
         $column_numerorg     = new TDataGridColumn( "numerorg", "RG", "left");
         $column_numerocpf    = new TDataGridColumn( "numerocpf", "CPF", "left");
@@ -55,14 +55,14 @@ class PacienteList extends TPage
 
         $action_edit = new TDatagridTablesAction ( [ "PacienteForm", "onEdit" ] );
         $action_edit->setButtonClass ( "btn btn-default" );
-        $action_edit->setLabel ( "Editar" );
+        $action_edit->setLabel ( "Editar Registro" );
         $action_edit->setImage ( "fa:pencil-square-o blue fa-lg" );
         $action_edit->setField ( "id" );
         $this->datagrid->addAction ( $action_edit );
 
         $action_del = new TDatagridTablesAction( [ $this, "onDelete" ] );
         $action_del->setButtonClass( "btn btn-default" );
-        $action_del->setLabel( "Deletar" );
+        $action_del->setLabel( "Deletar Registro" );
         $action_del->setImage( "fa:trash-o red fa-lg" );
         $action_del->setField( "id" );
         $this->datagrid->addAction( $action_del );
@@ -93,16 +93,13 @@ class PacienteList extends TPage
 
             $repository = new TRepository( "PacienteRecord" );
 
-            if ( empty( $param[ "order" ] ) ) {
-                $param[ "order" ] = "nomepaciente";
-                $param[ "direction" ] = "asc";
-            }
-
-            // $limit = 10;
+            $properties = [
+                "order" => "nomepaciente",
+                "direction" => "asc"
+            ];
 
             $criteria = new TCriteria();
-            $criteria->setProperties( $param );
-            // $criteria->setProperty( "limit", $limit );
+            $criteria->setProperties( $properties );
 
             $objects = $repository->load( $criteria, FALSE );
 
@@ -116,12 +113,6 @@ class PacienteList extends TPage
 
             $criteria->resetProperties();
 
-            // $count = $repository->count( $criteria );
-
-            // $this->pageNavigation->setCount( $count );
-            // $this->pageNavigation->setProperties( $param );
-            // $this->pageNavigation->setLimit( $limit );
-
             TTransaction::close();
 
             $this->loaded = true;
@@ -131,6 +122,7 @@ class PacienteList extends TPage
             TTransaction::rollback();
 
             new TMessage( "error", $ex->getMessage() );
+
         }
     }
 
@@ -151,11 +143,8 @@ class PacienteList extends TPage
                     "direction" => "asc"
                 ];
 
-                $limit = 10;
-
                 $criteria = new TCriteria();
                 $criteria->setProperties( $properties );
-                $criteria->setProperty( "limit", $limit );
 
                 switch( $data->opcao ) {
 
@@ -189,12 +178,6 @@ class PacienteList extends TPage
                 }
 
                 $criteria->resetProperties();
-
-                $count = $repository->count( $criteria );
-
-                $this->pageNavigation->setCount( $count );
-                $this->pageNavigation->setProperties( $properties );
-                $this->pageNavigation->setLimit( $limit );
 
                 TTransaction::close();
 

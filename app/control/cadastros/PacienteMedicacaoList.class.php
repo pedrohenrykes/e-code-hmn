@@ -29,12 +29,9 @@ class PacienteMedicacaoList extends TPage
         $this->form->addFields( [ new TLabel( "Opção de busca:" ) ], [ $opcao ] );
         $this->form->addFields( [ new TLabel( "Dados à buscar:" )  ], [ $dados ] );
 
-        $this->form->addAction( "Buscar", new TAction( [ $this, "onSearch" ] ), "fa:search" );
+        $this->form->addAction( "Buscar Paciente", new TAction( [ $this, "onSearch" ] ), "fa:search" );
 
-        $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
-        $this->datagrid->datatable = "true";
-        $this->datagrid->style = "width: 100%";
-        $this->datagrid->setHeight( '20%' );
+        $this->datagrid = new TDatagridTables();
 
         $column_1       = new TDataGridColumn( "nomepacientecor", "Paciente", "left" );
         $column_2       = new TDataGridColumn( "proximaaplicacao", "Proxima Aplicação", "left" );
@@ -45,29 +42,23 @@ class PacienteMedicacaoList extends TPage
         $this->datagrid->addColumn( $column_2 );
         $this->datagrid->addColumn( $column_3 );
         $this->datagrid->addColumn( $column_4 );
-        
 
-        $action_avaliacao = new CustomDataGridAction( [ "MedicarPacienteDetail", "onReload" ] );
+
+        $action_avaliacao = new TDatagridTablesAction( [ "MedicarPacienteDetail", "onReload" ] );
         $action_avaliacao->setButtonClass( "btn btn-primary" );
         $action_avaliacao->setImage( "fa:user-md white fa-lg" );
         $action_avaliacao->setField( "bauatendimento_id" );
         $action_avaliacao->setFk( "bau_id" );
         $action_avaliacao->setDid( "bauatendimento_id" );
         $action_avaliacao->setUseButton(TRUE);
-        $this->datagrid->addQuickAction( "Medicar", $action_avaliacao, 'bauatendimento_id');
-        
+        $this->datagrid->addQuickAction( "Medicar Paciente", $action_avaliacao, 'bauatendimento_id');
 
         $this->datagrid->createModel();
 
-        $this->pageNavigation = new TPageNavigation();
-        $this->pageNavigation->setAction( new TAction( [ $this, "onReload" ] ) );
-        $this->pageNavigation->setWidth( $this->datagrid->getWidth() );
-
         $container = new TVBox();
-        $container->style = "width: 90%";
+        $container->style = "width: 100%";
         $container->add( $this->form );
         $container->add( TPanelGroup::pack( NULL, $this->datagrid ) );
-        $container->add( $this->pageNavigation );
 
         parent::add( $container );
     }
@@ -80,17 +71,13 @@ class PacienteMedicacaoList extends TPage
 
             $repository = new TRepository( "VwMedicacaoPacienteRecord" );
 
-
             $properties = [
                 "order" => "dataentrada",
                 "direction" => "desc"
             ];
 
-            $limit = 10;
-
             $criteria = new TCriteria();
             $criteria->setProperties( $properties );
-            $criteria->setProperty( "limit", $limit );
             //$criteria->add(new TFilter('status', '=', 'PRESCRITO'));
 
             $objects = $repository->load( $criteria, FALSE );
@@ -108,12 +95,6 @@ class PacienteMedicacaoList extends TPage
             }
 
             $criteria->resetProperties();
-
-            $count = $repository->count( $criteria );
-
-            $this->pageNavigation->setCount( $count );
-            $this->pageNavigation->setProperties( $properties );
-            $this->pageNavigation->setLimit( $limit );
 
             TTransaction::close();
 
@@ -137,16 +118,13 @@ class PacienteMedicacaoList extends TPage
                 TTransaction::open( "database" );
                 $repository = new TRepository( "VwMedicacaoPacienteRecord" );
 
-                if ( empty( $param[ "order" ] ) ) {
-                    $param[ "order" ] = "dataentrada";
-                    $param[ "direction" ] = "desc";
-                }
-
-                $limit = 10;
+                $properties = [
+                    "order" => "dataentrada",
+                    "direction" => "desc"
+                ];
 
                 $criteria = new TCriteria();
-                $criteria->setProperties( $param );
-                $criteria->setProperty( "limit", $limit );
+                $criteria->setProperties( $properties );
                 //$criteria->add(new TFilter('status', '=', 'PRESCRITO'));
 
                 switch( $data->opcao ) {
@@ -178,11 +156,6 @@ class PacienteMedicacaoList extends TPage
                 }
 
                 $criteria->resetProperties();
-                $count = $repository->count( $criteria );
-
-                $this->pageNavigation->setCount( $count );
-                $this->pageNavigation->setProperties( $param );
-                $this->pageNavigation->setLimit( $limit );
 
                 TTransaction::close();
                 $this->form->setData( $data );

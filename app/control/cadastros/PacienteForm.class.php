@@ -103,7 +103,7 @@ class PacienteForm extends TPage
         $nomemae->addValidation( TextFormat::set( "Nome da Mãe" ), new TRequiredValidator );
         $numerosus->addValidation( TextFormat::set( "Cartão SUS" ), new TRequiredValidator );
 
-        $this->form->appendPage( "Pessoal" );
+        $this->form->appendPage( "Pessoais" );
 
         $this->form->addFields( [ new TLabel( "Cartão SUS: {$redstar}" ) ], [ $numerosus ] );
         $this->form->addFields( [ new TLabel( "Nome do Paciente: {$redstar}" ) ], [ $nomepaciente ] );
@@ -122,7 +122,7 @@ class PacienteForm extends TPage
         $this->form->addFields( [ new TLabel( "Profissão Exercida:" ) ], [ $profissao_id ] );
         $this->form->addFields( [ $id ] );
 
-        $this->form->appendPage( "Residêncial" );
+        $this->form->appendPage( "Residenciais" );
 
         $this->form->addFields( [ new TLabel( "Endereço:" ) ], [ $endereco ]);
         $this->form->addFields( [ new TLabel( "Bairro:" ) ], [ $bairro ] );
@@ -132,11 +132,11 @@ class PacienteForm extends TPage
         $this->form->addFields( [ new TLabel( "Tel. Residêncial:" ) ], [ $telresidencial ] );
         $this->form->addFields( [ new TLabel( "Tel. Comercial:" ) ], [ $telcomercial ] );
 
-        $this->form->addAction( "Salvar", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );
-        $this->form->addAction( "Voltar", new TAction( [ "PacienteList", "onReload" ] ), "fa:table blue" );
+        $this->form->addAction( "Registrar Paciente", new TAction( [ $this, "onSave" ] ), "fa:floppy-o" );
+        $this->form->addAction( "Listagem de Pacientes", new TAction( [ "PacienteList", "onReload" ] ), "fa:table blue" );
 
         $container = new TVBox();
-        $container->style = "width: 90%";
+        $container->style = "width: 100%";
         $container->add( $this->form );
 
         parent::add( $container );

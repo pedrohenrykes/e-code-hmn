@@ -29,24 +29,21 @@ class PacientesClassificacaoRiscoList extends TPage
         $this->form->addFields( [ new TLabel( "Opção de busca:" ) ], [ $opcao ] );
         $this->form->addFields( [ new TLabel( "Dados à buscar:" )  ], [ $dados ] );
 
-        $this->form->addAction( "Buscar", new TAction( [ $this, "onSearch" ] ), "fa:search" );
+        $this->form->addAction( "Buscar Paciente", new TAction( [ $this, "onSearch" ] ), "fa:search" );
 
-        $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
-        $this->datagrid->datatable = "true";
-        $this->datagrid->style = "width: 100%";
-        $this->datagrid->setHeight( 320 );
+        $this->datagrid = new TDatagridTables();
 
-        $column_paciente_nome   = new TDataGridColumn( "nomepaciente", "Paciente", "left" );
+        $column_paciente_nome   = new TDataGridColumn( "nomepaciente", "Nome do Paciente", "left" );
+        $column_paciente_idade  = new TDataGridColumn( "idade", "Idade do Paciente", "left" );
         $column_dataentrada     = new TDataGridColumn( "dataentrada", "Data de Chegada", "left" );
         $column_horaentrada     = new TDataGridColumn( "horaentrada", "Hora de Chegada", "left" );
-        $column_queixaprincipal = new TDataGridColumn( "queixaprincipal", "Queixa Principal", "left" );
 
         $this->datagrid->addColumn( $column_paciente_nome );
+        $this->datagrid->addColumn( $column_paciente_idade );
         $this->datagrid->addColumn( $column_dataentrada );
         $this->datagrid->addColumn( $column_horaentrada );
-        $this->datagrid->addColumn( $column_queixaprincipal );
 
-        $action_avaliacao = new CustomDataGridAction( [ "ClassificacaoRiscoDetail", "onReload" ] );
+        $action_avaliacao = new TDatagridTablesAction( [ "ClassificacaoRiscoDetail", "onReload" ] );
         $action_avaliacao->setButtonClass( "btn btn-primary" );
         $action_avaliacao->setImage( "fa:stethoscope white fa-lg" );
         $action_avaliacao->setField( "bau_id" );
@@ -54,19 +51,14 @@ class PacientesClassificacaoRiscoList extends TPage
         $action_avaliacao->setDid( "paciente_id" );
         $action_avaliacao->setParameter( "page", __CLASS__ );
         $action_avaliacao->setUseButton(TRUE);
-        $this->datagrid->addQuickAction( "Classificar", $action_avaliacao, 'bau_id');
+        $this->datagrid->addQuickAction( "Classificar Paciente", $action_avaliacao, 'bau_id');
 
         $this->datagrid->createModel();
 
-        $this->pageNavigation = new TPageNavigation();
-        $this->pageNavigation->setAction( new TAction( [ $this, "onReload" ] ) );
-        $this->pageNavigation->setWidth( $this->datagrid->getWidth() );
-
         $container = new TVBox();
-        $container->style = "width: 90%";
+        $container->style = "width: 100%";
         $container->add( $this->form );
         $container->add( TPanelGroup::pack( NULL, $this->datagrid ) );
-        $container->add( $this->pageNavigation );
 
         parent::add( $container );
     }
@@ -84,11 +76,8 @@ class PacientesClassificacaoRiscoList extends TPage
                 "direction" => "desc"
             ];
 
-            $limit = 10;
-
             $criteria = new TCriteria();
             $criteria->setProperties( $properties );
-            $criteria->setProperty( "limit", $limit );
             $criteria->add( new TFilter( "situacao", "=", "ABERTO") );
 
             $objects = $repository->load( $criteria, FALSE );
@@ -98,25 +87,12 @@ class PacientesClassificacaoRiscoList extends TPage
                 $this->datagrid->clear();
 
                 foreach ( $objects as $object ) {
-
-                    //$dataentrada = new DateTime( $object->dataentrada );
-                    $horaentrada = new DateTime( $object->horaentrada );
-
-                    //$object->dataentrada = $dataentrada->format("d/m/Y");
-                    $object->horaentrada = $horaentrada->format("H:i");
-
                     $this->datagrid->addItem( $object );
                 }
 
             }
 
             $criteria->resetProperties();
-
-            $count = $repository->count( $criteria );
-
-            $this->pageNavigation->setCount( $count );
-            $this->pageNavigation->setProperties( $properties );
-            $this->pageNavigation->setLimit( $limit );
 
             TTransaction::close();
 
@@ -142,16 +118,13 @@ class PacientesClassificacaoRiscoList extends TPage
 
                 $repository = new TRepository( "VwBauPacientesRecord" );
 
-                if ( empty( $param[ "order" ] ) ) {
-                    $param[ "order" ] = "dataentrada";
-                    $param[ "direction" ] = "desc";
-                }
-
-                $limit = 10;
+                $properties = [
+                    "order" => "dataentrada",
+                    "direction" => "desc"
+                ];
 
                 $criteria = new TCriteria();
-                $criteria->setProperties( $param );
-                $criteria->setProperty( "limit", $limit );
+                $criteria->setProperties( $properties );
                 $criteria->add( new TFilter( "situacao", "=", "ABERTO") );
 
                 switch( $data->opcao ) {
@@ -169,25 +142,18 @@ class PacientesClassificacaoRiscoList extends TPage
                 $this->datagrid->clear();
 
                 if ( $objects ) {
-                    foreach ( $objects as $object ) {
-                        $dataentrada = new DateTime( $object->dataentrada );
-                        $horaentrada = new DateTime( $object->horaentrada );
 
-                        $object->dataentrada = $dataentrada->format("d/m/Y");
-                        $object->horaentrada = $horaentrada->format("H:i");
+                    foreach ( $objects as $object ) {
                         $this->datagrid->addItem( $object );
                     }
+
                 } else {
+
                   new TMessage( "info", "Não há dados cadastrados!" );
+
                 }
 
                 $criteria->resetProperties();
-
-                $count = $repository->count( $criteria );
-
-                $this->pageNavigation->setCount( $count );
-                $this->pageNavigation->setProperties( $param );
-                $this->pageNavigation->setLimit( $limit );
 
                 TTransaction::close();
 

@@ -30,7 +30,7 @@ class TDatagridTables extends TTable
     {
         parent::__construct();
         $this->modelCreated = FALSE;
-        $this->defaultClick = TRUE;
+        $this->defaultClick = FALSE;
         $this->popover = FALSE;
         $this->groupColumn = NULL;
         $this->groupContent = NULL;
@@ -70,9 +70,9 @@ class TDatagridTables extends TTable
         $this->actionWidth = $width;
     }
 
-    public function disableDefaultClick()
+    public function enableDefaultClick()
     {
-        $this->defaultClick = FALSE;
+        $this->defaultClick = TRUE;
     }
 
     public function setHeight($height)

@@ -18,14 +18,14 @@ class BauDetail extends TPage
         $this->form->setFormTitle( "({$redstar}) campos obrigatórios" );
         $this->form->class = "tform";
 
-        $id                    = new THidden("id");
-        $paciente_id           = new THidden("paciente_id");
-        $paciente_nome         = new TEntry("paciente_nome");
-        $dataentrada           = new TDate("dataentrada");
-        $horaentrada           = new TDateTime("horaentrada");
-        $responsavel           = new TEntry("responsavel");
-        $convenio_id           = new TDBCombo("convenio_id", "database", "ConvenioRecord", "id", "nome", "nome");
-        $queixaprincipal       = new TText("queixaprincipal");
+        $id            = new THidden("id");
+        $paciente_id   = new THidden("paciente_id");
+        $paciente_nome = new TEntry("paciente_nome");
+        $dataentrada   = new TDate("dataentrada");
+        $horaentrada   = new TDateTime("horaentrada");
+        $responsavel   = new TEntry("responsavel");
+        $convenio_id   = new TDBCombo("convenio_id", "database", "ConvenioRecord", "id", "nome", "nome");
+        $rgresponsavel = new TEntry("rgresponsavel");
 
         $fk = filter_input( INPUT_GET, "fk" );
 
@@ -53,9 +53,27 @@ class BauDetail extends TPage
         $horaentrada->setSize( "38%" );
         $responsavel->setSize( "38%" );
         $convenio_id->setSize( "38%" );
-        $queixaprincipal->setSize( "38%" );
+        $rgresponsavel->setSize( "38%" );
 
         $convenio_id->setDefaultOption( "..::SELECIONE::.." );
+
+        try {
+            TTransaction::open( "database" );
+            $repo = new TRepository( "ConvenioRecord" );
+            $cri = new TCriteria();
+            $cri->add( new TFilter( "nome", "=", "SUS" ) );
+            $obj = $repo->load( $cri );
+            foreach ( $obj as $ob ) {
+                $convenio_id->setValue( $ob->id );
+                break;
+            }
+            TTransaction::close();
+        } catch ( Exception $e ) {
+            TTransaction::rollback();
+            new TMessage( "erro", "Não foi possível carregar o convênio." );
+        }
+
+        $rgresponsavel->setMask("9!");
 
         $horaentrada->setMask( "hh:ii" );
         $dataentrada->setMask( "dd/mm/yyyy" );
@@ -71,60 +89,57 @@ class BauDetail extends TPage
         $responsavel->forceUpperCase();
         $responsavel->setProperty( "title", "Caso o paciente seja menor de idade." );
 
-        $dataentrada->addValidation( TextFormat::set( "Data de Entrada:" ), new TRequiredValidator );
+        $paciente_nome->addValidation( TextFormat::set( "Nome do Paciente" ), new TRequiredValidator );
+        $dataentrada->addValidation( TextFormat::set( "Data de Entrada" ), new TRequiredValidator );
+        $horaentrada->addValidation( TextFormat::set( "Hora de Entrada" ), new TRequiredValidator );
 
-        $page1 = new TLabel( "Identificação", "#7D78B6", 12, "bi");
-        $page1->style="text-align:left;border-bottom:1px solid #c0c0c0;width:100%";
-        $this->form->appendPage( "Identificação" );
-        $this->form->addContent( [ $page1 ] );
-        $this->form->addFields( [ new TLabel( "Nome do Paciente:") ], [ $paciente_nome ] );
-        $this->form->addFields( [ new TLabel( "Data de Entrada:" ) ], [ $dataentrada ] );
-        $this->form->addFields( [ new TLabel( "Hora de Entrada:" ) ], [ $horaentrada ] );
-        $this->form->addFields( [ new TLabel( "Responsável:") ], [ $responsavel ] );
+        $this->form->addFields( [ new TLabel( "Nome do Paciente: {$redstar}" ) ], [ $paciente_nome ] );
+        $this->form->addFields( [ new TLabel( "Data de Entrada: {$redstar}" ) ], [ $dataentrada ] );
+        $this->form->addFields( [ new TLabel( "Hora de Entrada: {$redstar}" ) ], [ $horaentrada ] );
+        $this->form->addFields( [ new TLabel( "Nome do Responsável:" ) ], [ $responsavel ] );
+        $this->form->addFields( [ new TLabel( "RG do Responsável:" ) ], [ $rgresponsavel ] );
         $this->form->addFields( [ new TLabel( "Convênio:" ) ], [ $convenio_id ] );
-        $this->form->addFields( [ new TLabel( "Queixa Principal:" ) ], [ $queixaprincipal ] );
         $this->form->addFields( [ $id, $paciente_id ] );
 
         $onSave = new TAction( [ $this, "onSave" ] );
         $onSave->setParameter( "fk", $fk );
 
-        $this->form->addAction( "Salvar", $onSave, "fa:floppy-o" );
-        $this->form->addAction( "Voltar", new TAction( [ "PacienteList", "onReload" ] ), "fa:table blue" );
+        $this->form->addAction( "Registrar Boletim", $onSave, "fa:floppy-o" );
+        $this->form->addAction( "Listagem de Pacientes", new TAction( [ "PacienteList", "onReload" ] ), "fa:table blue" );
 
-        $this->datagrid = new BootstrapDatagridWrapper( new CustomDataGrid() );
-        $this->datagrid->datatable = "true";
-        $this->datagrid->style = "width: 100%";
-        $this->datagrid->setHeight( 320 );
+        $this->datagrid = new TDatagridTables();
 
-        $column_paciente_nome   = new TDataGridColumn( "paciente_nome", "Paciente", "left" );
-        $column_dataentrada     = new TDataGridColumn( "dataentrada", "Data de Chegada", "left" );
-        $column_horaentrada     = new TDataGridColumn( "horaentrada", "Hora de Chegada", "left" );
-        $column_queixaprincipal = new TDataGridColumn( "queixaprincipal", "Queixa Principal", "left" );
+        $column_paciente_nome = new TDataGridColumn( "paciente_nome", "Nome do Paciente", "left" );
+        $column_dataentrada   = new TDataGridColumn( "dataentrada", "Data de Chegada", "left" );
+        $column_horaentrada   = new TDataGridColumn( "horaentrada", "Hora de Chegada", "left" );
+        $column_responsavel   = new TDataGridColumn( "responsavel", "Nome do Responsável", "left" );
+        $column_rgresponsavel = new TDataGridColumn( "rgresponsavel", "RG do Responsável", "left" );
 
         $this->datagrid->addColumn( $column_paciente_nome );
         $this->datagrid->addColumn( $column_dataentrada );
         $this->datagrid->addColumn( $column_horaentrada );
-        $this->datagrid->addColumn( $column_queixaprincipal );
+        $this->datagrid->addColumn( $column_responsavel );
+        $this->datagrid->addColumn( $column_rgresponsavel );
 
-        $action_edit = new CustomDataGridAction( [ $this, "onEdit" ] );
+        $action_edit = new TDatagridTablesAction( [ $this, "onEdit" ] );
         $action_edit->setButtonClass( "btn btn-default" );
-        $action_edit->setLabel( "Editar" );
+        $action_edit->setLabel( "Editar Registro" );
         $action_edit->setImage( "fa:pencil-square-o blue fa-lg" );
         $action_edit->setField( "id" );
         $action_edit->setParameter( "fk", $fk );
         $this->datagrid->addAction( $action_edit );
 
-        $action_del = new CustomDataGridAction( [ $this, "onDelete" ] );
+        $action_del = new TDatagridTablesAction( [ $this, "onDelete" ] );
         $action_del->setButtonClass( "btn btn-default" );
-        $action_del->setLabel( "Deletar" );
+        $action_del->setLabel( "Deletar Registro" );
         $action_del->setImage( "fa:trash-o red fa-lg" );
         $action_del->setField( "id" );
         $action_del->setParameter( "fk", $fk );
         $this->datagrid->addAction( $action_del );
 
-        $action_avaliacao = new CustomDataGridAction( [ "ClassificacaoRiscoDetail", "onReload" ] );
+        $action_avaliacao = new TDatagridTablesAction( [ "ClassificacaoRiscoDetail", "onReload" ] );
         $action_avaliacao->setButtonClass( "btn btn-default" );
-        $action_avaliacao->setLabel( "Classificações" );
+        $action_avaliacao->setLabel( "Classificações do Boletim" );
         $action_avaliacao->setImage( "fa:stethoscope green fa-lg" );
         $action_avaliacao->setField( "id" );
         $action_avaliacao->setFk( "id" );
@@ -134,18 +149,10 @@ class BauDetail extends TPage
 
         $this->datagrid->createModel();
 
-        $onReload = new TAction( [ $this, "onReload" ] );
-        $onReload->setParameter( "fk", $fk );
-
-        $this->pageNavigation = new TPageNavigation();
-        $this->pageNavigation->setAction( $onReload );
-        $this->pageNavigation->setWidth( $this->datagrid->getWidth() );
-
         $container = new TVBox();
-        $container->style = "width: 90%";
+        $container->style = "width: 100%";
         $container->add( $this->form );
         $container->add( TPanelGroup::pack( NULL, $this->datagrid ) );
-        $container->add( $this->pageNavigation );
 
         parent::add( $container );
     }
@@ -264,16 +271,13 @@ class BauDetail extends TPage
 
             $repository = new TRepository( "BauRecord" );
 
-            if ( empty( $param[ "order" ] ) ) {
-                $param[ "order" ] = "dataentrada";
-                $param[ "direction" ] = "desc";
-            }
-
-            $limit = 10;
+            $properties = [
+                "order" => "dataentrada",
+                "direction" => "desc"
+            ];
 
             $criteria = new TCriteria();
-            $criteria->setProperties( $param );
-            $criteria->setProperty( "limit", $limit );
+            $criteria->setProperties( $properties );
             $criteria->add( new TFilter( "paciente_id", "=", $param[ "fk" ] ) );
 
             $objects = $repository->load( $criteria );
@@ -298,12 +302,6 @@ class BauDetail extends TPage
 
             $criteria->resetProperties();
 
-            $count = $repository->count( $criteria );
-
-            $this->pageNavigation->setCount( $count );
-            $this->pageNavigation->setProperties( $param );
-            $this->pageNavigation->setLimit( $limit );
-
             TTransaction::close();
 
             $this->loaded = true;
@@ -313,6 +311,7 @@ class BauDetail extends TPage
             TTransaction::rollback();
 
             new TMessage( "error", $ex->getMessage() );
+
         }
     }
 }
